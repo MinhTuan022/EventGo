@@ -1,37 +1,48 @@
 import {View, Text, TextInput, Image} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {appInfo} from '../../constants/appInfos';
 import {appColors} from '../../constants/appColors';
-import {ButtonComponent} from '../../components';
+import {ButtonComponent, InputComponent, TextComponent} from '../../components';
 import {globalStyles} from '../../styles/globalStyles';
+import {Lock1, Sms} from 'iconsax-react-native';
+import { fontFamilies } from '../../constants/fontFamilies';
 
 const LoginScreen = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   return (
-    <View style={[globalStyles.container]}>
+    <View
+      style={[
+        globalStyles.container,
+        {justifyContent: 'center', padding: 20},
+      ]}>
       <Image
         source={require('../../assets/images/login-logo.png')}
         style={{
+         
           width: appInfo.sizes.WIDTH * 0.5,
           resizeMode: 'contain',
         }}
       />
-      <TextInput
-        placeholder="Email"
-        //   value={}
-        //   onChangeText={}
-        autoCapitalize="none"
-        keyboardType="email-address"
+      <TextComponent text='Sign in' font={fontFamilies.bold} size={24}/>
+      <InputComponent
+        value={email}
+        onChange={val => setEmail(val)}
+        placeHolder="Email"
+        type="email-address"
+        affix={<Sms color={appColors.gray2} />}
       />
-      <TextInput
-        placeholder="Password"
-        //   value={}
-        //   onChangeText={}
-        autoCapitalize="none"
-        keyboardType="email-address"
+      <InputComponent
+        value={password}
+        onChange={val => setPassword(val)}
+        placeHolder="Password"
+        isPassword
+        affix={<Lock1 color={appColors.gray2} />}
       />
       <ButtonComponent type='primary' iconFlex='left' text="Login" icon={
          <View>
-            <Text>-</Text>
+            <Text></Text>
          </View>
       }/>
     </View>

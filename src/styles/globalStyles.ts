@@ -23,5 +23,25 @@ export const globalStyles = StyleSheet.create({
       paddingVertical: 16,
       minHeight: 56,
       flexDirection: 'row'
+   },
+
+   inputContainer: {
+      borderRadius: 12,
+      flexDirection: 'row',
+      borderColor: appColors.gray2,
+      borderWidth: 1,
+      minHeight: 56,
+      justifyContent: 'center',
+      paddingHorizontal: 15,
+      alignItems: 'center',
+      width: '100%',
+      marginBottom: 19,
+   },
+
+   input: {
+      margin: 0,
+      padding: 0,
+      flex: 1,
+      paddingHorizontal: 14,
    }
 })

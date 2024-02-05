@@ -22,6 +22,7 @@ interface Props {
   textStyle?: StyleProp<TextStyle>;
   onPress?: () => void;
   iconFlex?: 'right' | 'left';
+  width?: number;
 }
 
 const ButtonComponent = (props: Props) => {
@@ -35,6 +36,7 @@ const ButtonComponent = (props: Props) => {
     textStyle,
     onPress,
     iconFlex,
+    width,
   } = props;
 
   return type === 'primary' ? (
@@ -42,18 +44,21 @@ const ButtonComponent = (props: Props) => {
       onPress={onPress}
       style={[
         globalStyles.button,
+        globalStyles.shadow,
         {
           backgroundColor: color ?? appColors.primary,
+          width,
         },
+        {},
         styles,
       ]}>
       {icon && iconFlex === 'left' && icon}
       <TextComponent
         text={text}
         color={textColor ?? appColors.white}
-        styles={textStyle}
-        font={fontFamilies.regular}
+        styles={[textStyle, {marginLeft: icon ? 12 : 0, fontSize: 16}]}
         flex={icon && iconFlex === 'right' ? 1 : 0}
+        font={fontFamilies.regular}
       />
       {icon && iconFlex === 'right' && icon}
     </TouchableOpacity>

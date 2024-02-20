@@ -7,12 +7,13 @@ import { globalStyles } from '../styles/globalStyles';
 
 const SocialComponent = () => {
   return (
-    <SectionComponent>
+    <SectionComponent styles={{alignItems:'center'}}>
       <TextComponent
         text="OR"
         color={appColors.gray2}
         styles={{textAlign: 'center'}}
       />
+      <SpaceComponent height={16} />
       <ButtonComponent
         textColor={appColors.text}
         color="white"

@@ -1,6 +1,12 @@
-import {ArrowCircleRight, Lock1, Sms} from 'iconsax-react-native';
+import {
+  ArrowCircleRight,
+  ArrowLeft,
+  Lock1,
+  PasswordCheck,
+  Sms,
+  User,
+} from 'iconsax-react-native';
 import React, {useState} from 'react';
-import {Image, Switch} from 'react-native';
 import {
   ButtonComponent,
   ContainerComponent,
@@ -12,22 +18,21 @@ import {
   TextComponent,
 } from '../../components';
 import {appColors} from '../../constants/appColors';
-import authenticationAPI from '../../apis/authApi';
-
 interface Errors {
   email?: string;
   password?: string;
+  confirm?: string;
 }
-const LoginScreen = ({navigation}: any) => {
+const SignUpScreen = ({navigation}: any) => {
+  const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isRemember, setIsRemember] = useState(false);
+  const [confirmPass, setConfirmPass] = useState('');
   const [errors, setErrors] = useState<Errors>({});
   const validateForm = () => {
     let formIsValid = true;
     const newErrors: Errors = {};
 
-    // Kiểm tra email
     if (!email) {
       newErrors.email = 'Vui lòng nhập email';
       formIsValid = false;
@@ -36,7 +41,6 @@ const LoginScreen = ({navigation}: any) => {
       formIsValid = false;
     }
 
-    // Kiểm tra password
     if (!password) {
       newErrors.password = 'Vui lòng nhập mật khẩu';
       formIsValid = false;
@@ -45,37 +49,39 @@ const LoginScreen = ({navigation}: any) => {
       formIsValid = false;
     }
 
+    if (password != confirmPass) {
+      newErrors.confirm = 'Password không khớp';
+      formIsValid = false;
+    }
+
     setErrors(newErrors);
     return formIsValid;
   };
 
-  const handleLogin = async () => {
+  const handleSignUp = () => {
     if (validateForm()) {
-      try {
-         const res = await authenticationAPI.HandleAuthentication('/test');
-         console.log(res);
-      } catch (error) {
-         console.log(error);
-         
-      }
+      // Xử lý đăng nhập
     }
   };
+
   return (
     <ContainerComponent isImageBackground isScroll>
-      <SectionComponent
-        styles={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginTop: 75,
-        }}>
-        <Image
-          source={require('../../assets/images/login-logo.png')}
-          style={{width: 162, height: 114, marginBottom: 30}}
+      <SectionComponent styles={{marginTop: 30}}>
+        <ArrowLeft
+          onPress={() => navigation.navigate('LoginScreen')}
+          size={22}
+          color="black"
         />
-      </SectionComponent>
-      <SectionComponent>
-        <TextComponent text="Sign in" title />
-        <SpaceComponent height={3} />
+        <SpaceComponent height={30} />
+        <TextComponent text="Sign up" title />
+        <SpaceComponent height={21} />
+
+        <InputComponent
+          value={userName}
+          onChange={val => setUserName(val)}
+          placeHolder="Full Name"
+          affix={<User color={appColors.gray2} />}
+        />
         <InputComponent
           styles={errors.email ? {borderColor: 'red'} : {}}
           value={email}
@@ -87,7 +93,6 @@ const LoginScreen = ({navigation}: any) => {
             errors.email && <TextComponent text={errors.email} color="red" />
           }
         />
-
         <InputComponent
           styles={errors.password ? {borderColor: 'red'} : {}}
           value={password}
@@ -101,38 +106,38 @@ const LoginScreen = ({navigation}: any) => {
             )
           }
         />
-        <SpaceComponent height={10} />
-        <RowComponent styles={{justifyContent: 'space-between'}}>
-          <RowComponent onPress={() => setIsRemember(!isRemember)}>
-            <Switch
-              thumbColor={appColors.white}
-              trackColor={{true: appColors.primary}}
-              value={isRemember}
-              onChange={() => setIsRemember(!isRemember)}
-            />
-            <TextComponent text="Remember me" />
-          </RowComponent>
-          <ButtonComponent text="Forgot Password?" type="link" onPress={() => navigation.navigate('ForgotPasswordScreen')}/>
-        </RowComponent>
+        <InputComponent
+          styles={errors.confirm ? {borderColor: 'red'} : {}}
+          value={confirmPass}
+          onChange={val => setConfirmPass(val)}
+          placeHolder="Confirm Password"
+          isPassword
+          affix={<PasswordCheck color={appColors.gray2} />}
+          validate={
+            errors.confirm && (
+              <TextComponent text={errors.confirm} color="red" />
+            )
+          }
+        />
       </SectionComponent>
       <SpaceComponent height={16} />
       <SectionComponent styles={{alignItems: 'center'}}>
         <ButtonComponent
-          onPress={handleLogin}
-          text="SIGN IN"
+          onPress={handleSignUp}
           iconFlex="right"
+          text="SIGN UP"
           type="primary"
-          icon={<ArrowCircleRight size={21} color={appColors.white} />}
+          icon={<ArrowCircleRight size={22} color={appColors.white} />}
         />
       </SectionComponent>
-      <SocialComponent />
+      <SocialComponent></SocialComponent>
       <SectionComponent>
         <RowComponent styles={{justifyContent: 'center'}}>
-          <TextComponent text="Don't have an account? " />
+          <TextComponent text="Already have an account? " />
           <ButtonComponent
-            onPress={() => navigation.navigate('SignUpScreen')}
+            onPress={() => navigation.navigate('LoginScreen')}
             type="link"
-            text="Sign up"
+            text="Sign in"
           />
         </RowComponent>
       </SectionComponent>
@@ -140,4 +145,4 @@ const LoginScreen = ({navigation}: any) => {
   );
 };
 
-export default LoginScreen;
+export default SignUpScreen;

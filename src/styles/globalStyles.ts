@@ -49,7 +49,7 @@ export const globalStyles = StyleSheet.create({
     paddingHorizontal: 15,
     alignItems: 'center',
     width: '100%',
-    marginBottom: 19,
+    marginTop: 19,
   },
 
   input: {

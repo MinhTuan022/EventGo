@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {SplashScreen} from './src/screens';
 import {NavigationContainer} from '@react-navigation/native';
 import AuthNavigator from './src/navigators/AuthNavigator';
+import MainNavigator from './src/navigators/MainNavigator';
 
 const App = () => {
   const [isShowSplash, setisShowSplash] = useState(true);
@@ -26,7 +27,8 @@ const App = () => {
         <SplashScreen />
       ) : (
         <NavigationContainer>
-          <AuthNavigator />
+          {/* <AuthNavigator /> */}
+          <MainNavigator/>
         </NavigationContainer>
       )}
     </>

@@ -1,8 +1,13 @@
+import AvataGroup from './AvataGroup';
 import ButtonComponent from './ButtonComponent';
+import CardComponent from './CardComponent';
 import ContainerComponent from './ContainerComponent';
+import DrawerCustom from './DrawerCustom';
+import EventItem from './EventItem';
 import InputComponent from './InputComponent';
 import RowComponent from './RowComponent';
 import SectionComponent from './SectionComponent';
+import ShapeComponent from './ShapeComponent';
 import SocialComponent from './SocialComponent';
 import SpaceComponent from './SpaceComponent';
 import TextComponent from './TextComponent';
@@ -15,5 +20,10 @@ export {
   ContainerComponent,
   RowComponent,
   SectionComponent,
-  SocialComponent
+  SocialComponent,
+  ShapeComponent,
+  DrawerCustom,
+  CardComponent,
+  EventItem,
+  AvataGroup
 };

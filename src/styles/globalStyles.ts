@@ -50,6 +50,7 @@ export const globalStyles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     marginTop: 19,
+
   },
 
   input: {
@@ -57,6 +58,8 @@ export const globalStyles = StyleSheet.create({
     padding: 0,
     flex: 1,
     paddingHorizontal: 14,
+
+    
   },
 
   row: {
@@ -64,4 +67,10 @@ export const globalStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  card: {
+   padding: 12,
+   borderRadius: 12,
+   backgroundColor: appColors.white,
+   margin: 12,
+ },
 });

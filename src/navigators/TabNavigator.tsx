@@ -18,6 +18,7 @@ import {AddNewScreen} from '../screens';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {View} from 'react-native';
 import {TextComponent} from '../components';
+import {globalStyles} from '../styles/globalStyles';
 
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
@@ -54,15 +55,18 @@ const TabNavigator = () => {
             case 'Add':
               icon = (
                 <View
-                  style={{
-                    backgroundColor: appColors.primary,
-                    width: 46,
-                    height: 46,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginBottom: 50,
-                    borderRadius: 100,
-                  }}>
+                  style={[
+                    globalStyles.shadow,
+                    {
+                      backgroundColor: appColors.primary,
+                      width: 46,
+                      height: 46,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: 50,
+                      borderRadius: 100,
+                    },
+                  ]}>
                   <AddSquare
                     color={appColors.white}
                     size={size}
@@ -74,7 +78,7 @@ const TabNavigator = () => {
           }
           return icon;
         },
-        tabBarLabel ({focused}) {
+        tabBarLabel({focused}) {
           return route.name === 'Add' ? null : (
             <TextComponent
               text={route.name}

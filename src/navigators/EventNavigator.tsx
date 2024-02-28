@@ -1,6 +1,5 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React from 'react';
 import { EventScreen } from '../screens';
 
 const EventNavigator = () => {
@@ -10,6 +9,7 @@ const EventNavigator = () => {
     
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name='EventScreen' component={EventScreen}/>
+      
     </Stack.Navigator>
   )
 }

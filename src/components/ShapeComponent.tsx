@@ -7,19 +7,19 @@ interface Props {
   radius?: number;
   color?: string;
   children: ReactNode;
-  
+  size?: number;
   styles?: StyleProp<ViewStyle>;
 }
 const ShapeComponent = (props: Props) => {
-  const {radius, color, children, styles} = props;
+  const {radius, color, children, styles, size} = props;
   return (
     <TouchableOpacity
       style={[
         {
           justifyContent: 'center',
           alignItems: 'center',
-          width: 33,
-          height: 33,
+          width: size ?? 33,
+          height: size ?? 33,
          // padding: 7,
           backgroundColor: color ?? appColors.gray3,
           borderRadius: radius ?? 100,

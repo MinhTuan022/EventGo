@@ -50,17 +50,17 @@ const LoginScreen = ({navigation}: any) => {
   };
 
   const handleLogin = async () => {
-   navigation.navigate('Main')
-   //  if (validateForm()) {
-      // try {
-      //    const res = await authenticationAPI.HandleAuthentication('/test');
-      //    console.log(res);
-      // } catch (error) {
-      //    console.log(error);
+   // navigation.navigate('SignUpScreen')
+    if (validateForm()) {
+      try {
+         const res = await authenticationAPI.HandleAuthentication('/test');
+         console.log(res);
+      } catch (error) {
+         console.log(error);
          
-      // }
+      }
       
-   //  }
+    }
   };
   return (
     <ContainerComponent isImageBackground isScroll>

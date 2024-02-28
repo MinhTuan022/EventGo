@@ -1,8 +1,9 @@
+import { useNavigation } from '@react-navigation/native';
+import { Facebook, Location } from 'iconsax-react-native';
 import React from 'react';
-import {Dimensions, ImageBackground} from 'react-native';
-import {AvataGroup, CardComponent, RowComponent, SpaceComponent, TextComponent} from '.';
-import {appColors} from '../constants/appColors';
-import {Facebook, Location} from 'iconsax-react-native';
+import { Dimensions, ImageBackground } from 'react-native';
+import { AvataGroup, CardComponent, RowComponent, SpaceComponent, TextComponent } from '.';
+import { appColors } from '../constants/appColors';
 import { fontFamilies } from '../constants/fontFamilies';
 
 interface Props {
@@ -12,13 +13,16 @@ interface Props {
 
 const EventItem = (props: Props) => {
   const {item, type} = props;
+  const navigation: any = useNavigation();
   return (
     <CardComponent
       styles={{
         width: Dimensions.get('window').width * 0.6,
         //   flexDirection: 'column'
         // backgroundColor: 'coral',
-      }}>
+        
+      }}
+      onPress={() => navigation.navigate('EventDetailScreen')}>
       <ImageBackground
         imageStyle={{padding: 10, resizeMode: 'cover', borderRadius: 12}}
         style={{flex: 1, height: 131, justifyContent: 'space-between', flexDirection:'row'}}

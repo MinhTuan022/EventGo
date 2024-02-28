@@ -54,12 +54,12 @@ const ButtonComponent = (props: Props) => {
       <TextComponent
         text={text}
         color={textColor ?? appColors.white}
-        styles={[
-          textStyle,
-          {marginLeft: icon ? 12 : 0, fontSize: 16, textAlign: 'center'},
-        ]}
         flex={icon && iconFlex === 'right' ? 1 : 0}
         font={fontFamilies.regular}
+        styles={[
+          {marginLeft: icon ? 12 : 0, fontSize: 16, textAlign: 'center'},
+          textStyle,
+        ]}
       />
       {icon && iconFlex === 'right' && icon}
     </TouchableOpacity>

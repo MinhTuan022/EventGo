@@ -75,7 +75,7 @@ const DrawerCustom = ({navigation}: any) => {
       style={{marginVertical: 30}}
         data={profileMenu}
         renderItem={({item, index}) => (
-          <RowComponent styles={{padding:20}}>
+          <RowComponent styles={{padding:20}} onPress={()=>{}}>
             {item.icon} 
             <TextComponent font={fontFamilies.regular} styles={{paddingLeft: 10}} text={item.title} />
           </RowComponent>

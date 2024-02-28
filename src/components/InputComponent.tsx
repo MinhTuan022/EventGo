@@ -54,7 +54,7 @@ const InputComponent = (props: Props) => {
           secureTextEntry={isShowPass}
           keyboardType={type ?? 'default'}
           autoCapitalize="none"
-          placeholderTextColor={appColors.gray3}
+          placeholderTextColor={appColors.textInput}
          
          //  onEndEditing={onEnd}
         />

@@ -4,6 +4,7 @@ import LoginScreen from './auth/LoginScreen';
 import OnBoardingScreen from './auth/OnBoardingScreen';
 import ResetPasswordScreen from './auth/ResetPasswordScreen';
 import SignUpScreen from './auth/SignUpScreen';
+import EventDetailScreen from './events/EventDetailScreen';
 import EventScreen from './events/EventScreen';
 import HomeScreen from './home/HomeScreen';
 import MapScreen from './map/MapScreen';
@@ -19,5 +20,6 @@ export {
   EventScreen,
   MapScreen,
   ProfileScreen,
-  AddNewScreen
+  AddNewScreen,
+  EventDetailScreen,
 };

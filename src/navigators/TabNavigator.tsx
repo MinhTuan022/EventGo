@@ -24,6 +24,7 @@ const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
 
   return (
+   
     <Tab.Navigator
       screenOptions={({route}) => ({
         headerShown: false,
@@ -88,7 +89,7 @@ const TabNavigator = () => {
           );
         },
       })}>
-      <Tab.Screen name="Explore" component={ExploerNavigator} />
+      <Tab.Screen options={{}} name="Explore" component={ExploerNavigator} />
       <Tab.Screen name="Events" component={EventNavigator} />
       <Tab.Screen name="Add" component={AddNewScreen} />
       <Tab.Screen name="Map" component={MapNavigator} />

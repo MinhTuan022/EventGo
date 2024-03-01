@@ -22,7 +22,7 @@ const EventItem = (props: Props) => {
         // backgroundColor: 'coral',
         
       }}
-      onPress={() => navigation.navigate('EventDetailScreen')}>
+      onPress={() => navigation.navigate('EventDetail')}>
       <ImageBackground
         imageStyle={{padding: 10, resizeMode: 'cover', borderRadius: 12}}
         style={{flex: 1, height: 131, justifyContent: 'space-between', flexDirection:'row'}}

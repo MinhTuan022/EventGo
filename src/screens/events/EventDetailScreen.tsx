@@ -42,7 +42,7 @@ const EventDetailScreen = ({navigation}: any) => {
           }}>
           <RowComponent styles={{justifyContent: 'space-between'}}>
             <RowComponent>
-              <ArrowLeft size={24} color="white" />
+              <ArrowLeft size={24} color="white" onPress={() => navigation.goBack()}/>
               <SpaceComponent width={15} />
               <TextComponent text="Event Details" title color="white" />
             </RowComponent>

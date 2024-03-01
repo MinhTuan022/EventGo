@@ -1,6 +1,6 @@
 import {ArrowCircleRight, Lock1, Sms} from 'iconsax-react-native';
 import React, {useState} from 'react';
-import {Image, Switch} from 'react-native';
+import {Alert, Image, Switch} from 'react-native';
 import {
   ButtonComponent,
   ContainerComponent,
@@ -13,12 +13,16 @@ import {
 } from '../../components';
 import {appColors} from '../../constants/appColors';
 import authenticationAPI from '../../apis/authApi';
+import {useDispatch} from 'react-redux';
+import {addAuth} from '../../redux/reducers/authReducer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Errors {
   email?: string;
   password?: string;
 }
 const LoginScreen = ({navigation}: any) => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isRemember, setIsRemember] = useState(false);
@@ -37,31 +41,45 @@ const LoginScreen = ({navigation}: any) => {
     }
 
     // Kiểm tra password
-    if (!password) {
-      newErrors.password = 'Vui lòng nhập mật khẩu';
-      formIsValid = false;
-    } else if (password.length < 6) {
-      newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
-      formIsValid = false;
-    }
+    //  if (!password) {
+    //    newErrors.password = 'Vui lòng nhập mật khẩu';
+    //    formIsValid = false;
+    //  } else if (password.length < 6) {
+    //    newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+    //    formIsValid = false;
+    //  }
 
     setErrors(newErrors);
     return formIsValid;
   };
 
   const handleLogin = async () => {
-   // navigation.navigate('SignUpScreen')
+    // navigation.navigate('SignUpScreen')
     if (validateForm()) {
       try {
-         const res = await authenticationAPI.HandleAuthentication('/test');
-         console.log(res);
+        const res = await authenticationAPI.HandleAuthentication(
+          '/login',
+          {email, password},
+          'post',
+        );
+        dispatch(addAuth(res.data));
+        if (res) {
+          await AsyncStorage.setItem(
+            'auth',
+            isRemember ? JSON.stringify(res.data) : email,
+          );
+        } else {
+          Alert.alert('Login Failed', 'Username or password is incorrect');
+        }
+
+        //   console.log(res);
       } catch (error) {
-         console.log(error);
-         
+        console.log(error);
+        Alert.alert('Error', 'An error occurred while logging in.');
       }
-      
     }
   };
+
   return (
     <ContainerComponent isImageBackground isScroll>
       <SectionComponent
@@ -114,7 +132,11 @@ const LoginScreen = ({navigation}: any) => {
             />
             <TextComponent text="Remember me" />
           </RowComponent>
-          <ButtonComponent text="Forgot Password?" type="link" onPress={() => navigation.navigate('ForgotPasswordScreen')}/>
+          <ButtonComponent
+            text="Forgot Password?"
+            type="link"
+            onPress={() => navigation.navigate('ForgotPasswordScreen')}
+          />
         </RowComponent>
       </SectionComponent>
       <SpaceComponent height={16} />

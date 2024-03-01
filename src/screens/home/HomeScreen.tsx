@@ -29,10 +29,12 @@ import {appColors} from '../../constants/appColors';
 import {fontFamilies} from '../../constants/fontFamilies';
 import {globalStyles} from '../../styles/globalStyles';
 import CategoriesList from '../../components/CategoriesList';
+import { useDispatch } from 'react-redux';
+import { removeAuth } from '../../redux/reducers/authReducer';
 
 const HomeScreen = ({navigation}: any) => {
   const [search, setSearch] = useState('');
-  //   const dispatch = useDispatch();
+    const dispatch = useDispatch();
   return (
     <View style={[globalStyles.container, {backgroundColor: appColors.white2}]}>
       <StatusBar barStyle={'light-content'} />
@@ -105,7 +107,7 @@ const HomeScreen = ({navigation}: any) => {
               />
             </RowComponent>
             <TouchableOpacity
-              onPress={() => console.log('log')}
+              onPress={() => dispatch(removeAuth({}))}
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',

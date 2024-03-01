@@ -1,7 +1,7 @@
 import {View, Text} from 'react-native';
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {EventDetailScreen, HomeScreen} from '../screens';
+import { HomeScreen} from '../screens';
 
 
 const ExploerNavigator = () => {
@@ -11,7 +11,7 @@ const ExploerNavigator = () => {
    
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="HomeScreen" component={HomeScreen} />
-      <Stack.Screen   name='EventDetailScreen' component={EventDetailScreen}/>
+      
     </Stack.Navigator>
   );
 };

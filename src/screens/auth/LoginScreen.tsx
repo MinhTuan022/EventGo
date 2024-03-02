@@ -16,12 +16,15 @@ import authenticationAPI from '../../apis/authApi';
 import {useDispatch} from 'react-redux';
 import {addAuth} from '../../redux/reducers/authReducer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingModal from '../../modals/LoadingModal';
 
 interface Errors {
   email?: string;
   password?: string;
+  generic?: string;
 }
 const LoginScreen = ({navigation}: any) => {
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -41,21 +44,18 @@ const LoginScreen = ({navigation}: any) => {
     }
 
     // Kiểm tra password
-    //  if (!password) {
-    //    newErrors.password = 'Vui lòng nhập mật khẩu';
-    //    formIsValid = false;
-    //  } else if (password.length < 6) {
-    //    newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
-    //    formIsValid = false;
-    //  }
+    if (!password) {
+      newErrors.password = 'Vui lòng nhập mật khẩu';
+      formIsValid = false;
+    }
 
     setErrors(newErrors);
     return formIsValid;
   };
 
   const handleLogin = async () => {
-    // navigation.navigate('SignUpScreen')
     if (validateForm()) {
+      setIsLoading(true);
       try {
         const res = await authenticationAPI.HandleAuthentication(
           '/login',
@@ -63,104 +63,110 @@ const LoginScreen = ({navigation}: any) => {
           'post',
         );
         dispatch(addAuth(res.data));
-        if (res) {
-          await AsyncStorage.setItem(
-            'auth',
-            isRemember ? JSON.stringify(res.data) : email,
-          );
-        } else {
-          Alert.alert('Login Failed', 'Username or password is incorrect');
-        }
-
-        //   console.log(res);
+        setIsLoading(false);
+        await AsyncStorage.setItem(
+          'auth',
+          isRemember ? JSON.stringify(res.data) : email,
+        );
       } catch (error) {
+        setIsLoading(false);
         console.log(error);
-        Alert.alert('Error', 'An error occurred while logging in.');
+        //   Alert.alert('Error', 'Có lỗi từ server');
+        setErrors({generic: 'Email hoặc mật khẩu không chính xác !'});
       }
     }
   };
 
   return (
-    <ContainerComponent isImageBackground isScroll>
-      <SectionComponent
-        styles={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginTop: 75,
-        }}>
-        <Image
-          source={require('../../assets/images/login-logo.png')}
-          style={{width: 162, height: 114, marginBottom: 30}}
-        />
-      </SectionComponent>
-      <SectionComponent>
-        <TextComponent text="Sign in" title />
-        <SpaceComponent height={3} />
-        <InputComponent
-          styles={errors.email ? {borderColor: 'red'} : {}}
-          value={email}
-          onChange={val => setEmail(val)}
-          placeHolder="Email"
-          type="email-address"
-          affix={<Sms color={appColors.gray2} />}
-          validate={
-            errors.email && <TextComponent text={errors.email} color="red" />
-          }
-        />
+    <>
+      <ContainerComponent isImageBackground isScroll>
+        <SectionComponent
+          styles={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 75,
+          }}>
+          <Image
+            source={require('../../assets/images/login-logo.png')}
+            style={{width: 162, height: 114, marginBottom: 30}}
+          />
+        </SectionComponent>
+        <SectionComponent>
+          <TextComponent text="Sign in" title />
+          <SpaceComponent height={3} />
+          <InputComponent
+            styles={errors.email ? {borderColor: 'red'} : {}}
+            value={email}
+            onChange={val => setEmail(val)}
+            placeHolder="Email"
+            type="email-address"
+            affix={<Sms color={appColors.gray2} />}
+            validate={
+              errors.email && <TextComponent text={errors.email} color="red" />
+            }
+          />
 
-        <InputComponent
-          styles={errors.password ? {borderColor: 'red'} : {}}
-          value={password}
-          onChange={val => setPassword(val)}
-          placeHolder="Password"
-          isPassword
-          affix={<Lock1 color={appColors.gray2} />}
-          validate={
-            errors.password && (
-              <TextComponent text={errors.password} color="red" />
-            )
-          }
-        />
-        <SpaceComponent height={10} />
-        <RowComponent styles={{justifyContent: 'space-between'}}>
-          <RowComponent onPress={() => setIsRemember(!isRemember)}>
-            <Switch
-              thumbColor={appColors.white}
-              trackColor={{true: appColors.primary}}
-              value={isRemember}
-              onChange={() => setIsRemember(!isRemember)}
+          <InputComponent
+            styles={errors.password ? {borderColor: 'red'} : {}}
+            value={password}
+            onChange={val => setPassword(val)}
+            placeHolder="Password"
+            isPassword
+            affix={<Lock1 color={appColors.gray2} />}
+            validate={
+              errors.password && (
+                <TextComponent text={errors.password} color="red" />
+              )
+            }
+          />
+          <SpaceComponent height={10} />
+          <RowComponent styles={{justifyContent: 'space-between'}}>
+            <RowComponent onPress={() => setIsRemember(!isRemember)}>
+              <Switch
+                thumbColor={appColors.white}
+                trackColor={{true: appColors.primary}}
+                value={isRemember}
+                onChange={() => setIsRemember(!isRemember)}
+              />
+              <TextComponent text="Remember me" />
+            </RowComponent>
+            <ButtonComponent
+              text="Forgot Password?"
+              type="link"
+              onPress={() => navigation.navigate('ForgotPasswordScreen')}
             />
-            <TextComponent text="Remember me" />
           </RowComponent>
+        </SectionComponent>
+        {errors.generic && (
+          <SectionComponent
+            styles={{paddingVertical: 0, alignItems: 'flex-start'}}>
+            <TextComponent text={errors.generic} color="red" />
+          </SectionComponent>
+        )}
+        <SpaceComponent height={16} />
+        <SectionComponent styles={{alignItems: 'center'}}>
           <ButtonComponent
-            text="Forgot Password?"
-            type="link"
-            onPress={() => navigation.navigate('ForgotPasswordScreen')}
+            onPress={handleLogin}
+            text="SIGN IN"
+            iconFlex="right"
+            type="primary"
+            icon={<ArrowCircleRight size={21} color={appColors.white} />}
           />
-        </RowComponent>
-      </SectionComponent>
-      <SpaceComponent height={16} />
-      <SectionComponent styles={{alignItems: 'center'}}>
-        <ButtonComponent
-          onPress={handleLogin}
-          text="SIGN IN"
-          iconFlex="right"
-          type="primary"
-          icon={<ArrowCircleRight size={21} color={appColors.white} />}
-        />
-      </SectionComponent>
-      <SocialComponent />
-      <SectionComponent>
-        <RowComponent styles={{justifyContent: 'center'}}>
-          <TextComponent text="Don't have an account? " />
-          <ButtonComponent
-            onPress={() => navigation.navigate('SignUpScreen')}
-            type="link"
-            text="Sign up"
-          />
-        </RowComponent>
-      </SectionComponent>
-    </ContainerComponent>
+        </SectionComponent>
+        <SocialComponent />
+        <SectionComponent>
+          <RowComponent styles={{justifyContent: 'center'}}>
+            <TextComponent text="Don't have an account? " />
+            <ButtonComponent
+              onPress={() => navigation.navigate('SignUpScreen')}
+              type="link"
+              text="Sign up"
+            />
+          </RowComponent>
+        </SectionComponent>
+      </ContainerComponent>
+      <LoadingModal visible={isLoading} />
+    </>
   );
 };
 

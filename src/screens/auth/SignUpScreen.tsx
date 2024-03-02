@@ -20,8 +20,8 @@ import {
 import {appColors} from '../../constants/appColors';
 import authenticationAPI from '../../apis/authApi';
 import LoadingModal from '../../modals/LoadingModal';
-import { addAuth } from '../../redux/reducers/authReducer';
-import { useDispatch } from 'react-redux';
+import {addAuth} from '../../redux/reducers/authReducer';
+import {useDispatch} from 'react-redux';
 interface Errors {
   email?: string;
   password?: string;
@@ -36,10 +36,6 @@ const initValue = {
 };
 const SignUpScreen = ({navigation}: any) => {
   const [isLoading, setIsLoading] = useState(false);
-  //   const [userName, setUserName] = useState('');
-  //   const [email, setEmail] = useState('');
-  //   const [password, setPassword] = useState('');
-  //   const [confirmPass, setConfirmPass] = useState('');
   const dispatch = useDispatch();
   const [values, setValues] = useState(initValue);
   const [errors, setErrors] = useState<Errors>({});
@@ -85,13 +81,13 @@ const SignUpScreen = ({navigation}: any) => {
       setIsLoading(true);
       try {
         const res = await authenticationAPI.HandleAuthentication(
-          '/register',{
-               fullname: values.username,
-               email: values.email,
-               password: values.password
-               
+          '/register',
+          {
+            fullname: values.username,
+            email: values.email,
+            password: values.password,
           },
-        
+
           'post',
         );
         dispatch(addAuth(res.data));

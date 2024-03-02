@@ -12,7 +12,6 @@ import AsyncStorage, {
 const AppRouters = () => {
   const [isShowSplash, setIsShowSplash] = useState(true);
   const {getItem} = useAsyncStorage('auth');
-
   const auth = useSelector(authSelector);
   const dispatch = useDispatch();
 
@@ -20,24 +19,46 @@ const AppRouters = () => {
     checkLogin();
     const timeout = setTimeout(() => {
       setIsShowSplash(false);
-    }, 1500);
+    }, 1000);
 
     return () => clearTimeout(timeout);
   }, []);
 
   const checkLogin = async () => {
-    const res = await getItem();
-    res && dispatch(addAuth(JSON.parse(res)));
+    try {
+      const res = await getItem();
+      if (res) {
+        if (isJSONString(res)) {
+          dispatch(addAuth(JSON.parse(res)));
+        }
+      }
+      console.log(res)
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        // Xử lý trường hợp parse JSON không thành công
+        console.error('Error occurred while parsing JSON:', error);
+      } else {
+        // Xử lý các trường hợp khác
+        console.error('Error occurred while checking login:', error);
+      }
+    }
+  };
+  const isJSONString = (str: any) => {
+    try {
+      JSON.parse(str);
+      return true;
+    } catch (error) {
+      return false;
+    }
   };
 
-  console.log(auth.accessToken);
   return (
     <>
       {isShowSplash ? (
         <SplashScreen />
       ) : auth.accessToken ? (
         <MainNavigator />
-      ) : (
+      ) :  (
         <AuthNavigator />
       )}
     </>

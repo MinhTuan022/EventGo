@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 
 interface AuthState {
   id: string;
@@ -18,10 +18,10 @@ const authSlice = createSlice({
     authData: inintialStase,
   },
   reducers: {
-    addAuth: (state, action) => {
+    addAuth: (state, action: PayloadAction<AuthState>) => {
       state.authData = action.payload;
     },
-    removeAuth: (state, action) => {
+    removeAuth: (state) => {
       state.authData = inintialStase;
     },
   },
@@ -29,4 +29,4 @@ const authSlice = createSlice({
 
 export const authReducer = authSlice.reducer;
 export const {addAuth, removeAuth} = authSlice.actions;
-export const authSelector = (state: any) => state.authReducer.authData;
+export const authSelector = (state:  { authReducer: { authData: AuthState } }) => state.authReducer.authData;

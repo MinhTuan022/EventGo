@@ -76,22 +76,25 @@ const SignUpScreen = ({navigation}: any) => {
   };
   const handleSignUp = async () => {
     if (validateForm()) {
-      // Xử lý đăng nhập
-      // console.log(values);
       setIsLoading(true);
       try {
         const res = await authenticationAPI.HandleAuthentication(
-          '/register',
+          '/verification',
           {
-            fullname: values.username,
+            // fullname: values.username,
             email: values.email,
-            password: values.password,
+            // password: values.password,
           },
 
           'post',
         );
-        dispatch(addAuth(res.data));
+      //   console.log(res.data.verificationCode)
+      //   dispatch(addAuth(res.data));
         setIsLoading(false);
+        navigation.navigate('VerificationScreen', {
+         code: res.data.verificationCode,
+         ...values,
+        })
       } catch (error) {
         console.log(error);
         setIsLoading(false);

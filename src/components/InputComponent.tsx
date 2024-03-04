@@ -47,7 +47,7 @@ const InputComponent = (props: Props) => {
       <View style={[globalStyles.inputContainer, styles]}>
         {affix ?? affix}
         <TextInput
-          style={[globalStyles.input,{backgroundColor: 'coral'}]}
+          style={[globalStyles.input,]}
           value={value}
           placeholder={placeHolder ?? ''}
           onChangeText={val => onChange(val)}

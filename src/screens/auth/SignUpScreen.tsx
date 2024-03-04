@@ -29,7 +29,7 @@ interface Errors {
 }
 
 const initValue = {
-  username: '',
+  fullname: '',
   email: '',
   password: '',
   confirmPass: '',
@@ -116,8 +116,8 @@ const SignUpScreen = ({navigation}: any) => {
           <SpaceComponent height={21} />
 
           <InputComponent
-            value={values.username}
-            onChange={val => handleChangeValue('username', val)}
+            value={values.fullname}
+            onChange={val => handleChangeValue('fullname', val)}
             placeHolder="Full Name"
             affix={<User color={appColors.gray2} />}
           />

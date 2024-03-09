@@ -25,5 +25,5 @@ export {
   DrawerCustom,
   CardComponent,
   EventItem,
-  AvataGroup
+  AvataGroup,
 };

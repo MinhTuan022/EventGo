@@ -20,7 +20,7 @@ const ShapeComponent = (props: Props) => {
           alignItems: 'center',
           width: size ?? 33,
           height: size ?? 33,
-         // padding: 7,
+          // padding: 7,
           backgroundColor: color ?? appColors.gray3,
           borderRadius: radius ?? 100,
         },

@@ -17,6 +17,8 @@ import {fontFamilies} from '../constants/fontFamilies';
 import {useDispatch} from 'react-redux';
 import {removeAuth} from '../redux/reducers/authReducer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { LoginManager } from 'react-native-fbsdk-next';
 
 const DrawerCustom = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -67,7 +69,9 @@ const DrawerCustom = ({navigation}: any) => {
   ];
 
   const handleLogOut = async () => {
-    dispatch(removeAuth({}));
+    await GoogleSignin.signOut();
+    await LoginManager.logOut();
+    dispatch(removeAuth());
     await AsyncStorage.clear();
   };
   return (

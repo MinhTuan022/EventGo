@@ -1,20 +1,45 @@
 import {View, Text} from 'react-native';
 import React from 'react';
-import {ButtonComponent, SectionComponent, SpaceComponent, TextComponent} from '.';
+import {
+  ButtonComponent,
+  SectionComponent,
+  SpaceComponent,
+  TextComponent,
+} from '.';
 import {appColors} from '../constants/appColors';
-import {Path, Rect, Svg} from 'react-native-svg';
-import { globalStyles } from '../styles/globalStyles';
+import {Path, Rect, Svg, SvgFromXml} from 'react-native-svg';
+import {globalStyles} from '../styles/globalStyles';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+
+GoogleSignin.configure({
+  webClientId:
+    '67131520038-lqf2ivrvijp5qgugo5vhqqcn76hbrsmm.apps.googleusercontent.com',
+});
 
 const SocialComponent = () => {
+  const handleLoginWithGoogle = async () => {
+    console.log('login');
+    try {
+      await GoogleSignin.hasPlayServices({
+        showPlayServicesUpdateDialog: true,
+      });
+      const userInfo = await GoogleSignin.signIn();
+
+      console.log(userInfo.user);
+    } catch (error) {console.log(error)}
+  };
+
   return (
-    <SectionComponent styles={{alignItems:'center'}}>
+    <SectionComponent styles={{alignItems: 'center'}}>
       <TextComponent
         text="OR"
         color={appColors.gray2}
         styles={{textAlign: 'center'}}
       />
       <SpaceComponent height={16} />
+      <ButtonComponent text='Logout' onPress={async () => {GoogleSignin.signOut()}} type='primary'/>
       <ButtonComponent
+        onPress={handleLoginWithGoogle}
         textColor={appColors.text}
         color="white"
         iconFlex="left"
@@ -41,9 +66,8 @@ const SocialComponent = () => {
           </Svg>
         }
       />
-      <SpaceComponent height={20}/>
+      <SpaceComponent height={20} />
       <ButtonComponent
-
         textColor={appColors.text}
         color="white"
         iconFlex="left"

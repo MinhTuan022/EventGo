@@ -1,22 +1,22 @@
-import {ArrowCircleRight, Lock1, Sms} from 'iconsax-react-native';
-import React, {useState} from 'react';
-import {Alert, Image, Switch} from 'react-native';
-import {
-  ButtonComponent,
-  ContainerComponent,
-  InputComponent,
-  RowComponent,
-  SectionComponent,
-  SocialComponent,
-  SpaceComponent,
-  TextComponent,
-} from '../../components';
-import {appColors} from '../../constants/appColors';
-import authenticationAPI from '../../apis/authApi';
-import {useDispatch} from 'react-redux';
-import {addAuth} from '../../redux/reducers/authReducer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ArrowCircleRight, Lock1, Sms } from 'iconsax-react-native';
+import React, { useState } from 'react';
+import { Image, Switch } from 'react-native';
+import { useDispatch } from 'react-redux';
+import authenticationAPI from '../../apis/authApi';
+import {
+   ButtonComponent,
+   ContainerComponent,
+   InputComponent,
+   RowComponent,
+   SectionComponent,
+   SocialComponent,
+   SpaceComponent,
+   TextComponent,
+} from '../../components';
+import { appColors } from '../../constants/appColors';
 import LoadingModal from '../../modals/LoadingModal';
+import { addAuth } from '../../redux/reducers/authReducer';
 
 interface Errors {
   email?: string;

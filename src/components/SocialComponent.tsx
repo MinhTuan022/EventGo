@@ -53,13 +53,13 @@ const SocialComponent = () => {
         data,
         'post',
       );
-      console.log(res);
+      console.log(res.name);
       dispatch(addAuth(res.data));
       setIsLoading(false);
       await AsyncStorage.setItem('auth', JSON.stringify(res.data));
     } catch (error) {
       console.log(error);
-
+setIsLoading(false)
 
 
     }
@@ -112,13 +112,7 @@ const SocialComponent = () => {
           styles={{textAlign: 'center'}}
         />
         <SpaceComponent height={16} />
-        <ButtonComponent
-          text="Logout"
-          onPress={async () => {
-            GoogleSignin.signOut();
-          }}
-          type="primary"
-        />
+        <ButtonComponent text='logout' onPress={() => GoogleSignin.signOut()}/>
         <ButtonComponent
           onPress={handleLoginWithGoogle}
           textColor={appColors.text}
@@ -148,7 +142,6 @@ const SocialComponent = () => {
           }
         />
         <SpaceComponent height={20} />
-        <LoginButton />
         <ButtonComponent
           onPress={handleLoginWithFaceBook}
           textColor={appColors.text}

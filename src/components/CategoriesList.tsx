@@ -1,4 +1,4 @@
-import {View, Text, FlatList} from 'react-native';
+import {View, Text, FlatList, TouchableOpacity} from 'react-native';
 import React from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
@@ -53,6 +53,7 @@ const CategoriesList = () => {
         showsHorizontalScrollIndicator={false}
         renderItem={({item}) => (
           <RowComponent
+            onPress={() => {}}
             styles={{
               paddingHorizontal: 20,
               paddingVertical: 10,

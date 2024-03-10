@@ -14,14 +14,15 @@ import {FlatList, Image, StatusBar, View} from 'react-native';
 import {ButtonComponent, RowComponent, ShapeComponent, TextComponent} from '.';
 import {appColors} from '../constants/appColors';
 import {fontFamilies} from '../constants/fontFamilies';
-import {useDispatch} from 'react-redux';
-import {removeAuth} from '../redux/reducers/authReducer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch, useSelector} from 'react-redux';
+import {authSelector, removeAuth} from '../redux/reducers/authReducer';
+import AsyncStorage, { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { LoginManager } from 'react-native-fbsdk-next';
 
 const DrawerCustom = ({navigation}: any) => {
   const dispatch = useDispatch();
+const user = useSelector(authSelector);
   const size = 20;
   const color = appColors.gray;
   const profileMenu = [
@@ -68,6 +69,9 @@ const DrawerCustom = ({navigation}: any) => {
     },
   ];
 
+ 
+//   console.log(user)
+
   const handleLogOut = async () => {
     await GoogleSignin.signOut();
     await LoginManager.logOut();
@@ -75,15 +79,16 @@ const DrawerCustom = ({navigation}: any) => {
     await AsyncStorage.clear();
   };
   return (
+    
     <View style={{paddingTop: StatusBar.currentHeight, paddingHorizontal: 20}}>
       <View>
         <Image
           style={{width: 45, height: 45, borderRadius: 100, marginBottom: 10}}
-          source={require('../assets/images/luffi.jpg')}
+          source={{uri: user.photo}}
         />
 
         <TextComponent
-          text="Nguyễn Minh Tuấn"
+          text={user.name}
           font={fontFamilies.medium}
           size={20}
         />

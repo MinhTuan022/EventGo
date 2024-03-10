@@ -30,9 +30,11 @@ const AppRouters = () => {
       if (res) {
         if (isJSONString(res)) {
           dispatch(addAuth(JSON.parse(res)));
+          console.log(res);
         }
       }
-      console.log(res)
+      
+      
     } catch (error) {
       if (error instanceof SyntaxError) {
         // Xử lý trường hợp parse JSON không thành công

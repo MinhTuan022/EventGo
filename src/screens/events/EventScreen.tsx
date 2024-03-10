@@ -3,7 +3,7 @@ import React from 'react'
 
 const EventScreen = () => {
   return (
-    <View>
+    <View style={{backgroundColor:'white', flex:1}}>
       <Text>EventScreen</Text>
     </View>
   )

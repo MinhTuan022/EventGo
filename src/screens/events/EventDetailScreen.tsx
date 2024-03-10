@@ -10,6 +10,7 @@ import {
 import React from 'react';
 import {
   AvataGroup,
+  ButtonComponent,
   CardComponent,
   ContainerComponent,
   RowComponent,
@@ -26,7 +27,10 @@ import {
 } from 'iconsax-react-native';
 import {appColors} from '../../constants/appColors';
 import {fontFamilies} from '../../constants/fontFamilies';
-import { BottomTabBar, useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import {
+  BottomTabBar,
+  useBottomTabBarHeight,
+} from '@react-navigation/bottom-tabs';
 
 const EventDetailScreen = ({navigation}: any) => {
   return (
@@ -42,7 +46,11 @@ const EventDetailScreen = ({navigation}: any) => {
           }}>
           <RowComponent styles={{justifyContent: 'space-between'}}>
             <RowComponent>
-              <ArrowLeft size={24} color="white" onPress={() => navigation.goBack()}/>
+              <ArrowLeft
+                size={24}
+                color="white"
+                onPress={() => navigation.goBack()}
+              />
               <SpaceComponent width={15} />
               <TextComponent text="Event Details" title color="white" />
             </RowComponent>
@@ -101,7 +109,9 @@ const EventDetailScreen = ({navigation}: any) => {
         <SpaceComponent height={20} />
         <RowComponent styles={{justifyContent: 'space-between'}}>
           <RowComponent>
-            <Image source={require('../../assets/images/luffi.jpg')} style={{width:48, height:48, borderRadius:12}}></Image>
+            <Image
+              source={require('../../assets/images/luffi.jpg')}
+              style={{width: 48, height: 48, borderRadius: 12}}></Image>
             <SpaceComponent width={10} />
             <View>
               <TextComponent
@@ -122,18 +132,32 @@ const EventDetailScreen = ({navigation}: any) => {
             <TextComponent text="Follow" color={appColors.primary} />
           </TouchableOpacity>
         </RowComponent>
-        <SpaceComponent height={20}/>
+        <SpaceComponent height={20} />
         <View>
           <TextComponent
             text="About Event"
             size={18}
             font={fontFamilies.medium}
           />
-          <SpaceComponent height={20}/>
-          <TextComponent maxLength={200} size={16} text="Join us for an electrifying night at the Music Concert, where music and energy intertwine to create an unforgettable experience! Featuring top-notch artists and chart-topping hits, the event promises to captivate audiences from around the globe. From vibrant pop melodies to pulsating rock anthems and mesmerizing EDM beats, the English Music Concert guarantees to deliver a night of unparalleled musicality and sheer delight" />
+          <SpaceComponent height={20} />
+          <TextComponent
+            maxLength={200}
+            size={16}
+            text="Join us for an electrifying night at the Music Concert, where music and energy intertwine to create an unforgettable experience! Featuring top-notch artists and chart-topping hits, the event promises to captivate audiences from around the globe. From vibrant pop melodies to pulsating rock anthems and mesmerizing EDM beats, the English Music Concert guarantees to deliver a night of unparalleled musicality and sheer delight"
+          />
         </View>
-        
       </ScrollView>
+      <View style={{justifyContent: 'center', alignItems: 'center', marginBottom:20}}>
+        <ButtonComponent
+          styles={{width: '70%',
+          right: 0,
+          left: 0,
+          padding: 12,}}
+          text="GET TICKET $120"
+          type="primary"
+          textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
+        />
+      </View>
     </View>
   );
 };

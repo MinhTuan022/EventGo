@@ -9,11 +9,13 @@ interface Props {
   children: ReactNode;
   size?: number;
   styles?: StyleProp<ViewStyle>;
+  onPress?: () => void;
 }
 const ShapeComponent = (props: Props) => {
-  const {radius, color, children, styles, size} = props;
+  const {radius, color, children, styles, size, onPress} = props;
   return (
     <TouchableOpacity
+      onPress={onPress}
       style={[
         {
           justifyContent: 'center',

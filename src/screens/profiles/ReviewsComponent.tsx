@@ -3,7 +3,7 @@ import React from 'react'
 
 const ReviewsComponent = () => {
   return (
-    <View>
+    <View style={{flex: 1, backgroundColor: 'white'}}>
       <Text>ReviewsComponent</Text>
     </View>
   )

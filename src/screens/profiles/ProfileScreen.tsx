@@ -1,23 +1,27 @@
-import {View, Text, StatusBar, Image} from 'react-native';
+import { ArrowLeft, Message, UserAdd } from 'iconsax-react-native';
 import React from 'react';
-import {
-  ButtonComponent,
-  RowComponent,
-  ShapeComponent,
-  SpaceComponent,
-  TextComponent,
-} from '../../components';
-import {ArrowLeft, Message, People, UserAdd} from 'iconsax-react-native';
+import { Image, StatusBar, View } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import {appColors} from '../../constants/appColors';
-import {fontFamilies} from '../../constants/fontFamilies';
+import {
+    ButtonComponent,
+    RowComponent,
+    SpaceComponent,
+    TextComponent
+} from '../../components';
+import { appColors } from '../../constants/appColors';
+import { fontFamilies } from '../../constants/fontFamilies';
 
 const ProfileScreen = () => {
   return (
-    <View style={{flex: 1,paddingTop: StatusBar.currentHeight}}>
+    <View
+      style={{
+        flex: 1,
+        paddingTop: StatusBar.currentHeight,
+        backgroundColor: 'white',
+      }}>
       <StatusBar barStyle="dark-content" />
       <SpaceComponent height={10} />
-      <View style={{paddingHorizontal: 26, flex:1}}>
+      <View style={{paddingHorizontal: 20, flex: 1}}>
         <RowComponent styles={{justifyContent: 'space-between'}}>
           <ArrowLeft size={24} color="black" />
           <Feather name="more-vertical" size={24} color="black" />
@@ -45,25 +49,28 @@ const ProfileScreen = () => {
             <TextComponent text="Followers" />
           </View>
         </RowComponent>
-        <SpaceComponent height={20}/>
-        <RowComponent styles={{justifyContent:'space-between'}}>
+        <SpaceComponent height={20} />
+        <RowComponent styles={{justifyContent: 'space-between'}}>
           <ButtonComponent
-             styles={{width: '48%'}}
+            styles={{width: '48%'}}
             text="Follow"
             type="primary"
             icon={<UserAdd size={24} color="white" />}
             iconFlex="left"></ButtonComponent>
           <ButtonComponent
-             styles={{width: '48%', backgroundColor: 'white'}}
+            styles={{
+              width: '48%',
+              backgroundColor: 'white',
+              borderColor: appColors.primary,
+              borderWidth: 1,
+            }}
             text="Massages"
             textColor={appColors.primary}
             type="primary"
             icon={<Message size={24} color={appColors.primary} />}
             iconFlex="left"></ButtonComponent>
         </RowComponent>
-        <View>
-         
-        </View>
+        <View></View>
       </View>
     </View>
   );

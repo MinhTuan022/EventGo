@@ -45,7 +45,7 @@ const TextComponent = (props: Props) => {
       {shouldTruncate && (
         <TouchableOpacity onPress={handlePress}>
           <Text style={{color: 'blue'}}>
-            {showFullText ? ' [See less]' : ' [See more]'}
+            {showFullText ? ' See Less' : ' See More'}
           </Text>
         </TouchableOpacity>
       )}

@@ -28,6 +28,7 @@ const TabNavigator = () => {
     <Tab.Navigator
       screenOptions={({route}) => ({
         headerShown: false,
+        
         tabBarStyle: {
           height: 54,
           justifyContent: 'center',

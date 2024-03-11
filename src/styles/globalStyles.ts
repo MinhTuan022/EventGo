@@ -23,11 +23,7 @@ export const globalStyles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignContent: 'center',
-    backgroundColor: appColors.white,
-    paddingHorizontal: 16,
     alignItems: 'center',
-    paddingVertical: 16,
-    minHeight: 56,
     flexDirection: 'row',
   },
 

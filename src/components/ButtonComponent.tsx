@@ -36,21 +36,26 @@ const ButtonComponent = (props: Props) => {
     textStyle,
     onPress,
     iconFlex,
-    disable
+    disable,
   } = props;
 
   return type === 'primary' ? (
     <TouchableOpacity
-    disabled={disable}
+      disabled={disable}
       onPress={onPress}
       style={[
         globalStyles.button,
         // globalStyles.shadow,
         {
-          backgroundColor: color ? color : disable ? appColors.gray2 : appColors.primary,
+          paddingHorizontal: 18,
+          paddingVertical: 18,
+          backgroundColor: color
+            ? color
+            : disable
+            ? appColors.gray2
+            : appColors.primary,
           width: '80%',
         },
-        {},
         styles,
       ]}>
       {icon && iconFlex === 'left' && icon}

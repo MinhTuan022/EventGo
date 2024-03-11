@@ -13,7 +13,7 @@ const RowContainer = (props: Props) => {
   return onPress ? (
     <TouchableOpacity
       onPress={onPress}
-      activeOpacity={0.9}
+      activeOpacity={0.5}
       style={[globalStyles.row, styles]}>
       {children}
     </TouchableOpacity>

@@ -29,6 +29,7 @@ const ProfileNavigator = () => {
           tabBarInactiveTintColor: appColors.gray2,
           tabBarPressColor:'white',
           
+          
         }}>
         <Tab.Screen name="About" component={AboutComponent} />
         <Tab.Screen name="Event" component={EventComponrnt} />

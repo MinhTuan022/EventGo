@@ -3,7 +3,7 @@ import React from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {appColors} from '../constants/appColors';
-import {RowComponent, TextComponent} from '.';
+import {RowComponent, SpaceComponent, TextComponent} from '.';
 import {fontFamilies} from '../constants/fontFamilies';
 
 const CategoriesList = () => {
@@ -45,7 +45,8 @@ const CategoriesList = () => {
     },
   ];
   return (
-    <View>
+    <View style={{position:'absolute',  bottom:-15}}>
+
       <FlatList
         style={{paddingHorizontal: 16}}
         horizontal

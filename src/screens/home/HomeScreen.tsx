@@ -1,7 +1,6 @@
-import {Filter, Notification, SearchNormal, Sort} from 'iconsax-react-native';
+import {Notification, SearchNormal, Sort} from 'iconsax-react-native';
 import React, {useState} from 'react';
 import {
-  Dimensions,
   FlatList,
   Image,
   ImageBackground,
@@ -11,26 +10,21 @@ import {
   View,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {useDispatch} from 'react-redux';
 import {
   ButtonComponent,
-  CardComponent,
-  ContainerComponent,
   EventItem,
-  InputComponent,
   RowComponent,
-  SectionComponent,
   ShapeComponent,
   SpaceComponent,
   TextComponent,
 } from '../../components';
+import CategoriesList from '../../components/CategoriesList';
 import {appColors} from '../../constants/appColors';
 import {fontFamilies} from '../../constants/fontFamilies';
-import {globalStyles} from '../../styles/globalStyles';
-import CategoriesList from '../../components/CategoriesList';
-import {useDispatch} from 'react-redux';
 import {removeAuth} from '../../redux/reducers/authReducer';
+import {globalStyles} from '../../styles/globalStyles';
 
 const HomeScreen = ({navigation}: any) => {
   const [search, setSearch] = useState('');
@@ -38,16 +32,18 @@ const HomeScreen = ({navigation}: any) => {
   return (
     <View style={[globalStyles.container, {backgroundColor: appColors.white2}]}>
       <StatusBar barStyle={'light-content'} />
+
+      {/* HeaderComponent */}
       <View
         style={{
           backgroundColor: appColors.purple,
-          height: 179,
+          height: '23%',
           borderBottomLeftRadius: 40,
           borderBottomRightRadius: 40,
           paddingTop: StatusBar.currentHeight,
           //  paddingHorizontal: 20,
         }}>
-        <View style={{paddingHorizontal: 20}}>
+        <View style={{paddingHorizontal: 20, flex: 1}}>
           <RowComponent>
             <TouchableOpacity onPress={() => navigation.openDrawer()}>
               <AntDesign name="menuunfold" size={25} color={appColors.white} />
@@ -71,7 +67,8 @@ const HomeScreen = ({navigation}: any) => {
               />
             </View>
 
-            <ShapeComponent>
+            <ShapeComponent
+              onPress={() => navigation.navigate('NotificationScreen')}>
               <View>
                 <Notification size={18} color="white" />
                 <View
@@ -87,47 +84,54 @@ const HomeScreen = ({navigation}: any) => {
               </View>
             </ShapeComponent>
           </RowComponent>
-          <SpaceComponent height={20} />
-          <RowComponent>
-            <RowComponent styles={{flex: 1}}>
-              <SearchNormal size={22} color="white" variant="TwoTone" />
-              <View
+          <TouchableOpacity onPress={() => navigation.navigate('SearchScreen')}>
+            <RowComponent styles={{marginTop: '4%'}}>
+              <RowComponent styles={{flex: 1}}>
+                <SearchNormal size={22} color="white" variant="TwoTone" />
+                <View
+                  style={{
+                    width: 1,
+                    height: 18,
+                    marginHorizontal: 12,
+                    backgroundColor: '#A29EF0',
+                  }}
+                />
+                <TextComponent
+                  flex={1}
+                  text="Search..."
+                  color={appColors.gray2}
+                  size={20}
+                />
+              </RowComponent>
+              <TouchableOpacity
+                onPress={() => {}}
                 style={{
-                  width: 1,
-                  height: 18,
-                  marginHorizontal: 12,
-                  backgroundColor: '#A29EF0',
-                }}
-              />
-              <TextComponent
-                flex={1}
-                text="Search..."
-                color={appColors.gray2}
-                size={20}
-              />
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  backgroundColor: appColors.gray3,
+                  borderRadius: 100,
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                }}>
+                <ShapeComponent
+                  styles={{width: 22, height: 22}}
+                  color="#A29EF0">
+                  <Sort size={17} color={appColors.primary} />
+                </ShapeComponent>
+                <SpaceComponent width={5} />
+                <TextComponent text="Filters" color="white" />
+              </TouchableOpacity>
             </RowComponent>
-            <TouchableOpacity
-              onPress={() => dispatch(removeAuth())}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                backgroundColor: appColors.gray3,
-                borderRadius: 100,
-                paddingHorizontal: 12,
-                paddingVertical: 8,
-              }}>
-              <ShapeComponent styles={{width: 22, height: 22}} color="#A29EF0">
-                <Sort size={17} color={appColors.primary} />
-              </ShapeComponent>
-              <SpaceComponent width={5} />
-              <TextComponent text="Filters" color="white" />
-            </TouchableOpacity>
-          </RowComponent>
-          <SpaceComponent height={35} />
+          </TouchableOpacity>
         </View>
+
         <CategoriesList />
       </View>
-      <ScrollView style={{flex: 1, marginTop: 40}}>
+
+      {/* Body */}
+      <ScrollView
+        style={{flex: 1, marginTop: 40}}
+        showsVerticalScrollIndicator={false}>
         <RowComponent
           styles={{
             // marginTop: 40,
@@ -145,10 +149,19 @@ const HomeScreen = ({navigation}: any) => {
             <EventItem key={index} item={item} type="cardhome" />
           )}
         />
-        <Image
-          style={{height: 130}}
-          source={require('../../assets/images/luffi.jpg')}
-        />
+        <View style={{paddingHorizontal: 16, paddingVertical: 20}}>
+          <View
+            style={{
+              paddingHorizontal: 16,
+              backgroundColor: '#D3FBFD',
+              borderRadius: 12,
+            }}>
+            <TextComponent text="Invite your friends" />
+            <TextComponent text="Invite your friends" />
+            <ButtonComponent text="Invite" type="primary" color="#00F8FF" />
+          </View>
+        </View>
+
         <RowComponent
           styles={{
             // marginTop: 40,

@@ -1,36 +1,29 @@
 import {
-  View,
-  Text,
-  ImageBackground,
-  StatusBar,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from 'react-native';
+    ArrowLeft,
+    Calendar,
+    Heart,
+    Location
+} from 'iconsax-react-native';
 import React from 'react';
 import {
-  AvataGroup,
-  ButtonComponent,
-  CardComponent,
-  ContainerComponent,
-  RowComponent,
-  ShapeComponent,
-  SpaceComponent,
-  TextComponent,
+    Image,
+    ImageBackground,
+    ScrollView,
+    StatusBar,
+    TouchableOpacity,
+    View
+} from 'react-native';
+import {
+    AvataGroup,
+    ButtonComponent,
+    CardComponent,
+    RowComponent,
+    ShapeComponent,
+    SpaceComponent,
+    TextComponent
 } from '../../components';
-import {
-  ArrowLeft,
-  Award,
-  Calendar,
-  Heart,
-  Location,
-} from 'iconsax-react-native';
-import {appColors} from '../../constants/appColors';
-import {fontFamilies} from '../../constants/fontFamilies';
-import {
-  BottomTabBar,
-  useBottomTabBarHeight,
-} from '@react-navigation/bottom-tabs';
+import { appColors } from '../../constants/appColors';
+import { fontFamilies } from '../../constants/fontFamilies';
 
 const EventDetailScreen = ({navigation}: any) => {
   return (

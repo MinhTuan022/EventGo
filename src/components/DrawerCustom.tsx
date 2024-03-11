@@ -88,7 +88,7 @@ const user = useSelector(authSelector);
         />
 
         <TextComponent
-          text={user.name}
+          text={user.name ? user.name : 'Hi'}
           font={fontFamilies.medium}
           size={20}
         />

@@ -13,7 +13,7 @@ interface Props {
 }
 const ShapeComponent = (props: Props) => {
   const {radius, color, children, styles, size, onPress} = props;
-  return (
+  return onPress ? (
     <TouchableOpacity
       onPress={onPress}
       style={[
@@ -30,6 +30,22 @@ const ShapeComponent = (props: Props) => {
       ]}>
       {children}
     </TouchableOpacity>
+  ) : (
+    <View
+      style={[
+        {
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: size ?? 33,
+          height: size ?? 33,
+          // padding: 7,
+          backgroundColor: color ?? appColors.gray3,
+          borderRadius: radius ?? 100,
+        },
+        styles,
+      ]}>
+      {children}
+    </View>
   );
 };
 

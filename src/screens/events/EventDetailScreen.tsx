@@ -1,32 +1,49 @@
-import {
-    ArrowLeft,
-    Calendar,
-    Heart,
-    Location
-} from 'iconsax-react-native';
+import {ArrowLeft, Calendar, Heart, Location} from 'iconsax-react-native';
 import React from 'react';
 import {
-    Image,
-    ImageBackground,
-    ScrollView,
-    StatusBar,
-    TouchableOpacity,
-    View
+  Image,
+  ImageBackground,
+  ScrollView,
+  Share,
+  StatusBar,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import {
-    AvataGroup,
-    ButtonComponent,
-    CardComponent,
-    RowComponent,
-    ShapeComponent,
-    SpaceComponent,
-    TextComponent
+  AvataGroup,
+  ButtonComponent,
+  CardComponent,
+  RowComponent,
+  ShapeComponent,
+  SpaceComponent,
+  TextComponent,
 } from '../../components';
-import { appColors } from '../../constants/appColors';
-import { fontFamilies } from '../../constants/fontFamilies';
-
+import {appColors} from '../../constants/appColors';
+import {fontFamilies} from '../../constants/fontFamilies';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const EventDetailScreen = ({navigation}: any) => {
+  const handleShare = async () => {
+    try {
+    
+      const result = await Share.share({
+        message: `Check out this event`, url:'jiji', title:'hfhf'
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log('Shared with activity type:', result.activityType);
+        } else {
+          console.log('Shared');
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log('Dismissed');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <View style={{backgroundColor: 'white', flex: 1}}>
       <StatusBar barStyle="light-content" />
@@ -40,17 +57,37 @@ const EventDetailScreen = ({navigation}: any) => {
           }}>
           <RowComponent styles={{justifyContent: 'space-between'}}>
             <RowComponent>
-              <ArrowLeft
-                size={24}
-                color="white"
-                onPress={() => navigation.goBack()}
-              />
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <ArrowLeft
+                  size={24}
+                  color="white"
+                />
+              </TouchableOpacity>
+
               <SpaceComponent width={15} />
               <TextComponent text="Event Details" title color="white" />
             </RowComponent>
-            <ShapeComponent radius={12} color={appColors.white3} size={36}>
-              <Heart size={22} color="white" variant="Bold" />
-            </ShapeComponent>
+            <RowComponent>
+              <ShapeComponent radius={12} color={appColors.white3} size={36}>
+                <MaterialIcons
+                  name="bookmark"
+                  size={20}
+                  color={appColors.white}
+                />
+              </ShapeComponent>
+              <SpaceComponent width={10} />
+              <ShapeComponent
+                radius={12}
+                color={appColors.white3}
+                size={36}
+                onPress={handleShare}>
+                <MaterialIcons
+                  name="ios-share"
+                  size={20}
+                  color={appColors.white}
+                />
+              </ShapeComponent>
+            </RowComponent>
           </RowComponent>
           <CardComponent styles={{borderRadius: 100, marginTop: 130}}>
             <RowComponent styles={{justifyContent: 'space-between'}}>
@@ -141,12 +178,14 @@ const EventDetailScreen = ({navigation}: any) => {
           />
         </View>
       </ScrollView>
-      <View style={{justifyContent: 'center', alignItems: 'center', paddingVertical:20}}>
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingVertical: 20,
+        }}>
         <ButtonComponent
-          styles={{width: '70%',
-          right: 0,
-          left: 0,
-          padding: 12,}}
+          styles={{width: '70%', right: 0, left: 0, padding: 12}}
           text="GET TICKET $120"
           type="primary"
           textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}

@@ -44,7 +44,7 @@ export const globalStyles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 15,
     alignItems: 'center',
-    width: '100%',
+    // width: '100%',
     marginTop: 19,
 
   },

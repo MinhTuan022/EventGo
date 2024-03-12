@@ -1,12 +1,21 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import {View, Text, StatusBar} from 'react-native';
+import React from 'react';
+import {globalStyles} from '../styles/globalStyles';
+import {
+  ContainerComponent,
+  InputComponent,
+  SectionComponent,
+  TextComponent,
+} from '../components';
 
 const AddNewScreen = () => {
   return (
-    <View>
-      <Text>AddNewScreen</Text>
-    </View>
-  )
-}
+    <ContainerComponent isScroll>
+      <SectionComponent>
+        <TextComponent text="hihih" />
+      </SectionComponent>
+    </ContainerComponent>
+  );
+};
 
-export default AddNewScreen
+export default AddNewScreen;

@@ -28,6 +28,7 @@ import {globalStyles} from '../../styles/globalStyles';
 import Geolocation from '@react-native-community/geolocation';
 import {SlideInRight} from 'react-native-reanimated';
 import axios from 'axios';
+import { AddressModel } from '../../models/AddressModel';
 
 const HomeScreen = ({navigation}: any) => {
   const [search, setSearch] = useState('');
@@ -35,7 +36,7 @@ const HomeScreen = ({navigation}: any) => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [error, setError] = useState(null);
-  const [currentLocation, setCurrentLocation] = useState("");
+  const [currentLocation, setCurrentLocation] = useState<AddressModel>();
   const API_KEY = 'z1iOem3CvM7AZ_dXCpGfefoyNKUM_eO0urd3SzlmeiM';
   useEffect(() => {
     // Lấy vị trí hiện tại của người dùng khi component được mount
@@ -58,8 +59,8 @@ const HomeScreen = ({navigation}: any) => {
 
       if (res && res.status === 200 && res.data) {
         const items = res.data.items;
-        console.log(items[0].address.city +", " + items[0].address.county)
-        setCurrentLocation(items[0].address.city +", " + items[0].address.county);
+        console.log(items[0])
+        setCurrentLocation(items[0]);
       }
     } catch (error) {
       console.log(error);
@@ -98,7 +99,7 @@ const HomeScreen = ({navigation}: any) => {
                 />
               </RowComponent>
               <TextComponent
-                text={currentLocation}
+                text={`${currentLocation?.address.city}, ${currentLocation?.address.countryCode}`}
                 color="white"
                 font={fontFamilies.medium}
               />

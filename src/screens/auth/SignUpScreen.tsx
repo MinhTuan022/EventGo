@@ -19,7 +19,7 @@ import {
 } from '../../components';
 import {appColors} from '../../constants/appColors';
 import authenticationAPI from '../../apis/authApi';
-import LoadingModal from '../../modals/LoadingModal';
+import LoadingModal from '../../components/modals/LoadingModal';
 import {addAuth} from '../../redux/reducers/authReducer';
 import {useDispatch} from 'react-redux';
 interface Errors {

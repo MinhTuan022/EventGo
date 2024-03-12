@@ -25,6 +25,7 @@ import {
 import { appColors } from '../../constants/appColors';
 import { fontFamilies } from '../../constants/fontFamilies';
 
+
 const EventDetailScreen = ({navigation}: any) => {
   return (
     <View style={{backgroundColor: 'white', flex: 1}}>
@@ -140,7 +141,7 @@ const EventDetailScreen = ({navigation}: any) => {
           />
         </View>
       </ScrollView>
-      <View style={{justifyContent: 'center', alignItems: 'center', marginBottom:20}}>
+      <View style={{justifyContent: 'center', alignItems: 'center', paddingVertical:20}}>
         <ButtonComponent
           styles={{width: '70%',
           right: 0,

@@ -14,7 +14,7 @@ import {
 } from '../../components';
 import {appColors} from '../../constants/appColors';
 import {fontFamilies} from '../../constants/fontFamilies';
-import LoadingModal from '../../modals/LoadingModal';
+import LoadingModal from '../../components/modals/LoadingModal';
 import {addAuth} from '../../redux/reducers/authReducer';
 
 const VerificationScreen = ({navigation, route}: any) => {

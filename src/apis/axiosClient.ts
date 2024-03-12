@@ -25,7 +25,7 @@ axiosClient.interceptors.response.use(
       return res.data;
     }
     throw new Error('Error');
-    return res;
+
   },
   error => {
     // console.log(`Error api ${JSON.stringify(error)}`);
@@ -36,6 +36,7 @@ axiosClient.interceptors.response.use(
       return Promise.reject({
         status,
         message: data.message || 'Có lỗi từ server',
+        stack: data.stack
       });
     } else if (error.request) {
       // Yêu cầu được gửi nhưng không nhận được phản hồi
@@ -46,6 +47,7 @@ axiosClient.interceptors.response.use(
     } else {
       // Có lỗi xảy ra khi thiết lập yêu cầu
       return Promise.reject({status: 500, message: error.message});
+      
     }
   },
 );

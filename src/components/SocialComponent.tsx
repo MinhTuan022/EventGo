@@ -20,7 +20,7 @@ import authenticationAPI from '../apis/authApi';
 import {useDispatch} from 'react-redux';
 import {addAuth} from '../redux/reducers/authReducer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import LoadingModal from '../modals/LoadingModal';
+import LoadingModal from './modals/LoadingModal';
 
 GoogleSignin.configure({
   webClientId:

@@ -14,7 +14,7 @@ import {
   TextComponent,
 } from '../../components';
 import {appColors} from '../../constants/appColors';
-import LodingModal from '../../modals/LoadingModal';
+import LodingModal from '../../components/modals/LoadingModal';
 import authenticationAPI from '../../apis/authApi';
 // import {validateForm} from '../../constants/validateForm';
 interface Errors {

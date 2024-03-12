@@ -11,7 +11,7 @@ import {
 import {ArrowCircleRight, ArrowLeft, Sms} from 'iconsax-react-native';
 import {appColors} from '../../constants/appColors';
 import authenticationAPI from '../../apis/authApi';
-import LoadingModal from '../../modals/LoadingModal';
+import LoadingModal from '../../components/modals/LoadingModal';
 
 const ForgotPasswordScreen = ({navigation}: any) => {
   const [email, setEmail] = useState('');

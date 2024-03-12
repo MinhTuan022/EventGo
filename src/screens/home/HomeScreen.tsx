@@ -1,5 +1,5 @@
 import {Notification, SearchNormal, Sort} from 'iconsax-react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
@@ -25,10 +25,47 @@ import {appColors} from '../../constants/appColors';
 import {fontFamilies} from '../../constants/fontFamilies';
 import {removeAuth} from '../../redux/reducers/authReducer';
 import {globalStyles} from '../../styles/globalStyles';
+import Geolocation from '@react-native-community/geolocation';
+import {SlideInRight} from 'react-native-reanimated';
+import axios from 'axios';
 
 const HomeScreen = ({navigation}: any) => {
   const [search, setSearch] = useState('');
   const dispatch = useDispatch();
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [error, setError] = useState(null);
+  const [currentLocation, setCurrentLocation] = useState("");
+  const API_KEY = 'z1iOem3CvM7AZ_dXCpGfefoyNKUM_eO0urd3SzlmeiM';
+  useEffect(() => {
+    // Lấy vị trí hiện tại của người dùng khi component được mount
+    Geolocation.getCurrentPosition(
+      (position: any) => {
+        // Lấy thông tin vị trí từ position
+        const {latitude, longitude} = position.coords;
+        // Cập nhật state với vị trí mới
+        reverseGeoCode(latitude, longitude)
+      },
+      (error: any) => console.log('Error getting location: ', error),
+      {},
+    );
+  }, []);
+  const reverseGeoCode = async (lat: number, long: number) => {
+    const api = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=vi-VN&apiKey=${API_KEY}`;
+
+    try {
+      const res = await axios(api);
+
+      if (res && res.status === 200 && res.data) {
+        const items = res.data.items;
+        console.log(items[0].address.city +", " + items[0].address.county)
+        setCurrentLocation(items[0].address.city +", " + items[0].address.county);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <View style={[globalStyles.container, {backgroundColor: appColors.white2}]}>
       <StatusBar barStyle={'light-content'} />
@@ -61,7 +98,7 @@ const HomeScreen = ({navigation}: any) => {
                 />
               </RowComponent>
               <TextComponent
-                text="New York, USA"
+                text={currentLocation}
                 color="white"
                 font={fontFamilies.medium}
               />

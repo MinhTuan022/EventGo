@@ -15,7 +15,7 @@ import {
    TextComponent,
 } from '../../components';
 import { appColors } from '../../constants/appColors';
-import LoadingModal from '../../modals/LoadingModal';
+import LoadingModal from '../../components/modals/LoadingModal';
 import { addAuth } from '../../redux/reducers/authReducer';
 
 interface Errors {

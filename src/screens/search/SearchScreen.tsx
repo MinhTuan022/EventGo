@@ -102,7 +102,7 @@ const SearchScreen = ({navigation}: any) => {
               borderTopStartRadius: 38,
             },
             wrapper: {
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)', 
             },
             draggableIcon: {
               backgroundColor: appColors.gray2,

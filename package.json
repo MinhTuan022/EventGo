@@ -24,6 +24,7 @@
     "query-string": "^8.2.0",
     "react": "18.2.0",
     "react-native": "0.73.3",
+    "react-native-date-picker": "^4.4.0",
     "react-native-fbsdk-next": "^12.1.4",
     "react-native-gesture-handler": "^2.14.1",
     "react-native-pager-view": "^6.2.3",

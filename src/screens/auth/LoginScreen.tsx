@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ArrowCircleRight, Lock1, Sms } from 'iconsax-react-native';
 import React, { useState } from 'react';
-import { Image, Switch } from 'react-native';
+import { Image, StyleSheet, Switch } from 'react-native';
 import { useDispatch } from 'react-redux';
 import authenticationAPI from '../../apis/authApi';
 import {
@@ -14,7 +14,7 @@ import {
    SpaceComponent,
    TextComponent,
 } from '../../components';
-import { appColors } from '../../constants/appColors';
+import { appColors } from '../../utils/constants/appColors';
 import LoadingModal from '../../components/modals/LoadingModal';
 import { addAuth } from '../../redux/reducers/authReducer';
 
@@ -96,7 +96,7 @@ const LoginScreen = ({navigation}: any) => {
           <TextComponent text="Sign in" title />
           <SpaceComponent height={3} />
           <InputComponent
-            styles={errors.email ? {borderColor: 'red'} : {}}
+            styles= { [localStyle.input, errors.email ? {borderColor: 'red'} : {}]}
             value={email}
             onChange={val => setEmail(val)}
             placeHolder="Email"
@@ -108,7 +108,7 @@ const LoginScreen = ({navigation}: any) => {
           />
 
           <InputComponent
-            styles={errors.password ? {borderColor: 'red'} : {}}
+            styles={[localStyle.input, errors.password ? {borderColor: 'red'} : {}]}
             value={password}
             onChange={val => setPassword(val)}
             placeHolder="Password"
@@ -170,5 +170,11 @@ const LoginScreen = ({navigation}: any) => {
     </>
   );
 };
+
+const localStyle = StyleSheet.create({
+    input : {
+        marginTop:19
+    }
+})
 
 export default LoginScreen;

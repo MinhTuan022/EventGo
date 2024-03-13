@@ -9,7 +9,7 @@ import {
   TextComponent,
 } from '../../components';
 import {ArrowCircleRight, ArrowLeft, Sms} from 'iconsax-react-native';
-import {appColors} from '../../constants/appColors';
+import {appColors} from '../../utils/constants/appColors';
 import authenticationAPI from '../../apis/authApi';
 import LoadingModal from '../../components/modals/LoadingModal';
 

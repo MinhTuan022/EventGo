@@ -7,8 +7,8 @@ import {
   SectionComponent,
   TextComponent,
 } from '../../components';
-import { appColors } from '../../constants/appColors';
-import { fontFamilies } from '../../constants/fontFamilies';
+import { appColors } from '../../utils/constants/appColors';
+import { fontFamilies } from '../../utils/constants/fontFamilies';
 
 const EventComponrnt = () => {
   return (

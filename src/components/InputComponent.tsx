@@ -10,7 +10,7 @@ import {
 import React, {ReactNode, useState} from 'react';
 import {Eye, EyeSlash} from 'iconsax-react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {appColors} from '../constants/appColors';
+import {appColors} from '../utils/constants/appColors';
 import {globalStyles} from '../styles/globalStyles';
 import {ContainerComponent, TextComponent} from '.';
 interface Props {
@@ -24,6 +24,7 @@ interface Props {
   type?: KeyboardType;
   validate?: ReactNode;
   styles?: StyleProp<ViewStyle>
+  label?: string
 //   onEnd?: () => void;
 }
 
@@ -39,15 +40,17 @@ const InputComponent = (props: Props) => {
     type,
     validate,
     styles,
+    label
    //  onEnd
   } = props;
   const [isShowPass, setIsShowPass] = useState(isPassword ?? false);
   return (
-    <ContainerComponent>
+    <View>
+       {label && <TextComponent text={label} styles={{paddingBottom:7}}/>}
       <View style={[globalStyles.inputContainer, styles]}>
         {affix ?? affix}
         <TextInput
-          style={[globalStyles.input,]}
+          style={[globalStyles.input, affix || suffix ? {paddingHorizontal:15} : {}]}
           value={value}
           placeholder={placeHolder ?? ''}
           onChangeText={val => onChange(val)}
@@ -78,7 +81,7 @@ const InputComponent = (props: Props) => {
       </View>
       {validate ? validate : <></>}
 
-    </ContainerComponent>
+    </View>
   );
 };
 

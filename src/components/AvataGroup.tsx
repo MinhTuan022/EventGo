@@ -1,8 +1,8 @@
 import {View, Text, Image} from 'react-native';
 import React from 'react';
 import {RowComponent, TextComponent} from '.';
-import { fontFamilies } from '../constants/fontFamilies';
-import { appColors } from '../constants/appColors';
+import { fontFamilies } from '../utils/constants/fontFamilies';
+import { appColors } from '../utils/constants/appColors';
 
 const AvataGroup = () => {
   return (

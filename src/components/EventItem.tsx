@@ -15,8 +15,8 @@ import {
   SpaceComponent,
   TextComponent,
 } from '.';
-import {appColors} from '../constants/appColors';
-import {fontFamilies} from '../constants/fontFamilies';
+import {appColors} from '../utils/constants/appColors';
+import {fontFamilies} from '../utils/constants/fontFamilies';
 
 interface Props {
   item: any;

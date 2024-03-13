@@ -7,8 +7,8 @@ import AboutComponent from '../screens/profiles/AboutComponent';
 import ReviewsComponent from '../screens/profiles/ReviewsComponent';
 import EventComponrnt from '../screens/profiles/EventComponrnt';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import { appColors } from '../constants/appColors';
-import { fontFamilies } from '../constants/fontFamilies';
+import { appColors } from '../utils/constants/appColors';
+import { fontFamilies } from '../utils/constants/fontFamilies';
 
 const ProfileNavigator = () => {
   const Stack = createNativeStackNavigator();

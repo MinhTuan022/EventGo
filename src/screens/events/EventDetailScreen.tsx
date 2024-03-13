@@ -18,8 +18,8 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {appColors} from '../../constants/appColors';
-import {fontFamilies} from '../../constants/fontFamilies';
+import {appColors} from '../../utils/constants/appColors';
+import {fontFamilies} from '../../utils/constants/fontFamilies';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const EventDetailScreen = ({navigation}: any) => {

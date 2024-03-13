@@ -1,7 +1,7 @@
 import {View, Text, TouchableOpacity, ViewStyle} from 'react-native';
 import React, {ReactNode} from 'react';
 import {StyleProp} from 'react-native';
-import {appColors} from '../constants/appColors';
+import {appColors} from '../utils/constants/appColors';
 
 interface Props {
   radius?: number;

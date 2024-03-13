@@ -1,6 +1,6 @@
 import axios from 'axios';
 import queryString from 'query-string';
-import { appInfo } from '../constants/appInfos';
+import { appInfo } from '../utils/constants/appInfos';
 
 const axiosClient = axios.create({
    baseURL: appInfo.BASE_URL,

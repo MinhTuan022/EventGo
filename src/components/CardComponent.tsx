@@ -2,7 +2,7 @@ import React, {ReactNode} from 'react';
 import {StyleProp, Text, TouchableOpacity, ViewStyle} from 'react-native';
 
 import {globalStyles} from '../styles/globalStyles';
-import {appColors} from '../constants/appColors';
+import {appColors} from '../utils/constants/appColors';
 
 interface Props {
   children: ReactNode;

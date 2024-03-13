@@ -1,6 +1,6 @@
 import {View, Text, StatusBar, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {appColors} from '../../../constants/appColors';
+import {appColors} from '../../../utils/constants/appColors';
 import {
   RowComponent,
   ShapeComponent,
@@ -9,7 +9,7 @@ import {
 } from '../../../components';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {fontFamilies} from '../../../constants/fontFamilies';
+import {fontFamilies} from '../../../utils/constants/fontFamilies';
 import {Notification, SearchNormal, Sort} from 'iconsax-react-native';
 import CategoriesList from '../../../components/CategoriesList';
 import {useDispatch} from 'react-redux';

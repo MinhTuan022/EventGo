@@ -12,8 +12,8 @@ import {
 import React from 'react';
 import {FlatList, Image, StatusBar, View} from 'react-native';
 import {ButtonComponent, RowComponent, ShapeComponent, TextComponent} from '.';
-import {appColors} from '../constants/appColors';
-import {fontFamilies} from '../constants/fontFamilies';
+import {appColors} from '../utils/constants/appColors';
+import {fontFamilies} from '../utils/constants/fontFamilies';
 import {useDispatch, useSelector} from 'react-redux';
 import {authSelector, removeAuth} from '../redux/reducers/authReducer';
 import AsyncStorage, { useAsyncStorage } from '@react-native-async-storage/async-storage';

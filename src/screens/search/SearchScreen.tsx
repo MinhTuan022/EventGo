@@ -29,8 +29,8 @@ import {
   SearchNormal,
   Sort,
 } from 'iconsax-react-native';
-import {appColors} from '../../constants/appColors';
-import {fontFamilies} from '../../constants/fontFamilies';
+import {appColors} from '../../utils/constants/appColors';
+import {fontFamilies} from '../../utils/constants/fontFamilies';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import CategoriesFilter from './components/CategoriesFilter';
 

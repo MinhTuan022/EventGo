@@ -13,7 +13,7 @@ import ExploerNavigator from './ExploreNavigator';
 import MapNavigator from './MapNavigator';
 import EventNavigator from './EventNavigator';
 import ProfileNavigator from './ProfileNavigator';
-import {appColors} from '../constants/appColors';
+import {appColors} from '../utils/constants/appColors';
 import {AddNewScreen} from '../screens';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {View} from 'react-native';

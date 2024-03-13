@@ -13,7 +13,7 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {appColors} from '../../constants/appColors';
+import {appColors} from '../../utils/constants/appColors';
 import LodingModal from '../../components/modals/LoadingModal';
 import authenticationAPI from '../../apis/authApi';
 // import {validateForm} from '../../constants/validateForm';

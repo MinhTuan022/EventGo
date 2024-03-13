@@ -17,7 +17,7 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {appColors} from '../../constants/appColors';
+import {appColors} from '../../utils/constants/appColors';
 import authenticationAPI from '../../apis/authApi';
 import LoadingModal from '../../components/modals/LoadingModal';
 import {addAuth} from '../../redux/reducers/authReducer';

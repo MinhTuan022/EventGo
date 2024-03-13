@@ -6,7 +6,7 @@ import {
   SpaceComponent,
   TextComponent,
 } from '.';
-import {appColors} from '../constants/appColors';
+import {appColors} from '../utils/constants/appColors';
 import {Path, Rect, Svg, SvgFromXml} from 'react-native-svg';
 import {globalStyles} from '../styles/globalStyles';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
@@ -59,9 +59,7 @@ const SocialComponent = () => {
       await AsyncStorage.setItem('auth', JSON.stringify(res.data));
     } catch (error) {
       console.log(error);
-setIsLoading(false)
-
-
+      setIsLoading(false);
     }
   };
 
@@ -98,8 +96,6 @@ setIsLoading(false)
       }
     } catch (error) {
       console.log(error);
-
-
     }
   };
 
@@ -112,7 +108,7 @@ setIsLoading(false)
           styles={{textAlign: 'center'}}
         />
         <SpaceComponent height={16} />
-        <ButtonComponent text='logout' onPress={() => GoogleSignin.signOut()}/>
+
         <ButtonComponent
           onPress={handleLoginWithGoogle}
           textColor={appColors.text}

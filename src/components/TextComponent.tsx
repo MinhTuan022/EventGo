@@ -1,8 +1,8 @@
 import {View, Text, StyleProp, TextStyle, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
-import {appColors} from '../constants/appColors';
+import {appColors} from '../utils/constants/appColors';
 import {globalStyles} from '../styles/globalStyles';
-import {fontFamilies} from '../constants/fontFamilies';
+import {fontFamilies} from '../utils/constants/fontFamilies';
 
 interface Props {
   text: string;

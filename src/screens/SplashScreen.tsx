@@ -6,9 +6,9 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import React from 'react';
-import {appInfo} from '../constants/appInfos';
+import {appInfo} from '../utils/constants/appInfos';
 import SpaceComponent from '../components/SpaceComponent';
-import {appColors} from '../constants/appColors';
+import {appColors} from '../utils/constants/appColors';
 
 const SplashScreen = () => {
   return (

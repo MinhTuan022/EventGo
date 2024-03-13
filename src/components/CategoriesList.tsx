@@ -2,9 +2,9 @@ import {View, Text, FlatList, TouchableOpacity} from 'react-native';
 import React from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import {appColors} from '../constants/appColors';
+import {appColors} from '../utils/constants/appColors';
 import {RowComponent, SpaceComponent, TextComponent} from '.';
-import {fontFamilies} from '../constants/fontFamilies';
+import {fontFamilies} from '../utils/constants/fontFamilies';
 
 const CategoriesList = () => {
   const size = 20;

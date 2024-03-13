@@ -21,8 +21,8 @@ import {
   TextComponent,
 } from '../../components';
 import CategoriesList from '../../components/CategoriesList';
-import {appColors} from '../../constants/appColors';
-import {fontFamilies} from '../../constants/fontFamilies';
+import {appColors} from '../../utils/constants/appColors';
+import {fontFamilies} from '../../utils/constants/fontFamilies';
 import {removeAuth} from '../../redux/reducers/authReducer';
 import {globalStyles} from '../../styles/globalStyles';
 import Geolocation from '@react-native-community/geolocation';

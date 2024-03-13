@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
-import {appColors} from '../constants/appColors';
-import {fontFamilies} from '../constants/fontFamilies';
+import {appColors} from '../utils/constants/appColors';
+import {fontFamilies} from '../utils/constants/fontFamilies';
 import { rgbaColor } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
 
 export const globalStyles = StyleSheet.create({
@@ -36,16 +36,19 @@ export const globalStyles = StyleSheet.create({
   },
 
   inputContainer: {
+    // backgroundColor:'red',
     borderRadius: 12,
     flexDirection: 'row',
     borderColor: appColors.gray2,
     borderWidth: 1,
     minHeight: 56,
+    // paddingVertical:14,
     justifyContent: 'center',
     paddingHorizontal: 15,
     alignItems: 'center',
-    // width: '100%',
-    marginTop: 19,
+    width: '100%',
+    marginBottom: 19,
+    
 
   },
 
@@ -53,9 +56,9 @@ export const globalStyles = StyleSheet.create({
     margin: 0,
     padding: 0,
     flex: 1,
-    paddingHorizontal: 14,
+    // paddingHorizontal: 14,
 
-    
+    // backgroundColor:'red',
   },
 
   row: {

@@ -11,8 +11,9 @@ import {
 import {ArrowCircleLeft, Location} from 'iconsax-react-native';
 import {appColors} from '../../utils/constants/appColors';
 import CategoriesList from '../../components/CategoriesList';
+import MapView from 'react-native-maps';
 
-const MapScreen = () => {
+const MapScreen = ({navigation}: any) => {
   return (
     <View
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
@@ -24,7 +25,7 @@ const MapScreen = () => {
               placeHolder="Find for food or resturent ..."
               onChange={() => {}}
               value=""
-              affix={<ArrowCircleLeft size={20} color="black" />}
+              affix={<ArrowCircleLeft onPress={() => navigation.goBack()} size={20} color="black" />}
             />
           </View>
           <SpaceComponent width={20} />
@@ -36,6 +37,13 @@ const MapScreen = () => {
       <SectionComponent>
         <CategoriesList />
       </SectionComponent>
+      {/* <MapView
+        initialRegion={{
+          latitude: 37.78825,
+          longitude: -122.4324,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}></MapView> */}
     </View>
   );
 };

@@ -4,6 +4,7 @@ import {
   StatusBar,
   StyleSheet,
   TouchableOpacity,
+  ProgressBarAndroidBase,
 } from 'react-native';
 import React, {useState} from 'react';
 import {globalStyles} from '../styles/globalStyles';
@@ -17,46 +18,72 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../components';
-import {Status} from 'iconsax-react-native';
+import {ArrowLeft, Status} from 'iconsax-react-native';
 import DatePicker from 'react-native-date-picker';
+import {fontFamilies} from '../utils/constants/fontFamilies';
+import {appColors} from '../utils/constants/appColors';
 
-const AddNewScreen = () => {
-  
-
+const AddNewScreen = ({navigation}: any) => {
   return (
-    <View
-      style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
-      <StatusBar barStyle={'dark-content'}></StatusBar>
-      <TextComponent
-        text="Add new event"
-        title
-        size={20}
-        styles={{paddingHorizontal: 16}}
-      />
-      <SectionComponent styles={{}}>
-        <InputComponent
-          onChange={() => {}}
-          value=""
-          placeHolder="Title"></InputComponent>
-        <InputComponent
-          onChange={() => {}}
-          value=""
-          placeHolder="Description"></InputComponent>
+    <>
+      <View
+        style={{
+          //   height: '10%',
+          paddingTop: StatusBar.currentHeight,
+          backgroundColor: 'white',
+          paddingHorizontal: 16,
+          paddingVertical: 20,
+        }}>
+        <RowComponent styles={{alignItems: 'center', justifyContent: 'center'}}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <ArrowLeft size={24} color="black" />
+          </TouchableOpacity>
 
-        <RowComponent styles={{justifyContent: 'space-between'}}>
-          <DateTimePicker label='Start at: ' mode='time'/>
-          <SpaceComponent width={16} />
-          <DateTimePicker label='End at: '/>
+          <View style={{flex: 1, alignItems: 'center'}}>
+            <TextComponent
+              text="1 of 4 Event Details"
+              title
+              size={22}
+              font={fontFamilies.bold}
+              styles={{flex: 1}}
+            />
+          </View>
         </RowComponent>
-        <InputComponent onChange={() => {}} value="" label="Date" />
-        <InputComponent onChange={() => {}} value="" label="Invited users" />
+      </View>
+      <View
+        style={{
+          height: 1,
+          backgroundColor: appColors.purple,
+          width: '25%',
+        }}></View>
+      <View style={[{flex: 1}]}>
+        <StatusBar barStyle={'dark-content'}></StatusBar>
 
-        <InputComponent onChange={() => {}} value="" label="Location" />
-        <SectionComponent styles={{alignItems: 'center'}}>
-          <ButtonComponent text="Submit" type="primary" />
+        <SectionComponent styles={{}}>
+          <InputComponent
+            onChange={() => {}}
+            value=""
+            placeHolder="Title"></InputComponent>
+          <InputComponent
+            onChange={() => {}}
+            value=""
+            placeHolder="Description"></InputComponent>
+
+          <RowComponent styles={{justifyContent: 'space-between'}}>
+            <DateTimePicker label="Start at: " mode="time" />
+            <SpaceComponent width={16} />
+            <DateTimePicker label="End at: " />
+          </RowComponent>
+          <InputComponent onChange={() => {}} value="" label="Date" />
+          <InputComponent onChange={() => {}} value="" label="Invited users" />
+
+          <InputComponent onChange={() => {}} value="" label="Location" />
+          <SectionComponent styles={{alignItems: 'center'}}>
+            <ButtonComponent text="Submit" type="primary" />
+          </SectionComponent>
         </SectionComponent>
-      </SectionComponent>
-    </View>
+      </View>
+    </>
   );
 };
 

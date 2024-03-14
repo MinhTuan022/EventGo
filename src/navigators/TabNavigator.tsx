@@ -90,9 +90,9 @@ const TabNavigator = () => {
           );
         },
       })}>
-      <Tab.Screen options={{}} name="Explore" component={ExploerNavigator} />
+      <Tab.Screen  name="Explore" component={ExploerNavigator} />
       <Tab.Screen name="Events" component={EventNavigator} />
-      <Tab.Screen name="Add" component={AddNewScreen} />
+      <Tab.Screen  name="Add" component={AddNewScreen} />
       <Tab.Screen name="Map" component={MapNavigator} />
       <Tab.Screen name="Profile" component={ProfileNavigator} />
     </Tab.Navigator>

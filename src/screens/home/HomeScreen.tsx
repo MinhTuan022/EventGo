@@ -28,7 +28,7 @@ import {globalStyles} from '../../styles/globalStyles';
 import Geolocation from '@react-native-community/geolocation';
 import {SlideInRight} from 'react-native-reanimated';
 import axios from 'axios';
-import { AddressModel } from '../../models/AddressModel';
+import {AddressModel} from '../../models/AddressModel';
 
 const HomeScreen = ({navigation}: any) => {
   const [search, setSearch] = useState('');
@@ -45,7 +45,7 @@ const HomeScreen = ({navigation}: any) => {
         // Lấy thông tin vị trí từ position
         const {latitude, longitude} = position.coords;
         // Cập nhật state với vị trí mới
-        reverseGeoCode(latitude, longitude)
+        reverseGeoCode(latitude, longitude);
       },
       (error: any) => console.log('Error getting location: ', error),
       {},
@@ -59,7 +59,7 @@ const HomeScreen = ({navigation}: any) => {
 
       if (res && res.status === 200 && res.data) {
         const items = res.data.items;
-        console.log(items[0])
+        console.log(items[0]);
         setCurrentLocation(items[0]);
       }
     } catch (error) {

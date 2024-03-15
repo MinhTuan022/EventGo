@@ -76,8 +76,9 @@ const ButtonComponent = (props: Props) => {
       <TextComponent
         text={text}
         color={
-          type === 'link' ? appColors.primary : appColors.text
-        }></TextComponent>
+          type === 'link' ? appColors.primary : appColors.text}
+        
+        styles={textStyle}></TextComponent>
     </TouchableOpacity>
   );
 };

@@ -69,8 +69,7 @@ const EventDetailScreen = ({navigation}: any) => {
             inputRange: [0, 1],
             outputRange: [0, 1],
           }),
-        }}>
-        </Animated.View>
+        }}></Animated.View>
       <RowComponent
         styles={{
           justifyContent: 'space-between',
@@ -81,13 +80,17 @@ const EventDetailScreen = ({navigation}: any) => {
           zIndex: 1,
         }}>
         <RowComponent styles={{}}>
-          <ShapeComponent radius={12} color={appColors.white} size={36} onPress={() => navigation.goBack()}>
+          <ShapeComponent
+            radius={12}
+            color={appColors.white}
+            size={36}
+            onPress={() => navigation.goBack()}>
             <ArrowLeft size={20} color="black" />
           </ShapeComponent>
         </RowComponent>
         <RowComponent>
           <ShapeComponent radius={12} color={appColors.white} size={36}>
-            <MaterialIcons name="bookmark" size={20} color={'black'} />
+            <Heart size={20} color={'red'} variant='Bold' />
           </ShapeComponent>
           <SpaceComponent width={10} />
           <ShapeComponent
@@ -206,8 +209,15 @@ const EventDetailScreen = ({navigation}: any) => {
               <TextComponent text="Follow" color={appColors.primary} />
             </TouchableOpacity>
           </RowComponent>
-          <SpaceComponent height={20} />
-          <View>
+        </SectionComponent>
+        <SectionComponent>
+          <View
+            style={{
+              backgroundColor: appColors.gray2,
+              width: '100%',
+              height: 0.4,
+            }}></View>
+          <View style={{paddingTop: 20}}>
             <TextComponent
               text="About Event"
               size={18}
@@ -215,30 +225,91 @@ const EventDetailScreen = ({navigation}: any) => {
             />
             <SpaceComponent height={20} />
             <TextComponent
-              maxLength={200}
+              maxLength={187}
               size={16}
               text="Join us for an electrifying night at the Music Concert, where music and energy intertwine to create an unforgettable experience! Featuring top-notch artists and chart-topping hits, the event promises to captivate audiences from around the globe. From vibrant pop melodies to pulsating rock anthems and mesmerizing EDM beats, the English Music Concert guarantees to deliver a night of unparalleled musicality and sheer delight"
             />
-            <TextComponent
-              maxLength={200}
-              size={16}
-              text="Join us for an electrifying night at the Music Concert, where music and energy intertwine to create an unforgettable experience! Featuring top-notch artists and chart-topping hits, the event promises to captivate audiences from around the globe. From vibrant pop melodies to pulsating rock anthems and mesmerizing EDM beats, the English Music Concert guarantees to deliver a night of unparalleled musicality and sheer delight"
-            />
-            <TextComponent
-              maxLength={200}
-              size={16}
-              text="Join us for an electrifying night at the Music Concert, where music and energy intertwine to create an unforgettable experience! Featuring top-notch artists and chart-topping hits, the event promises to captivate audiences from around the globe. From vibrant pop melodies to pulsating rock anthems and mesmerizing EDM beats, the English Music Concert guarantees to deliver a night of unparalleled musicality and sheer delight"
-            />
-            <TextComponent
-              maxLength={200}
-              size={16}
-              text="Join us for an electrifying night at the Music Concert, where music and energy intertwine to create an unforgettable experience! Featuring top-notch artists and chart-topping hits, the event promises to captivate audiences from around the globe. From vibrant pop melodies to pulsating rock anthems and mesmerizing EDM beats, the English Music Concert guarantees to deliver a night of unparalleled musicality and sheer delight"
-            />
-            <TextComponent
-              maxLength={200}
-              size={16}
-              text="Join us for an electrifying night at the Music Concert, where music and energy intertwine to create an unforgettable experience! Featuring top-notch artists and chart-topping hits, the event promises to captivate audiences from around the globe. From vibrant pop melodies to pulsating rock anthems and mesmerizing EDM beats, the English Music Concert guarantees to deliver a night of unparalleled musicality and sheer delight"
-            />
+          </View>
+        </SectionComponent>
+        <SectionComponent>
+          <View
+            style={{
+              backgroundColor: appColors.gray2,
+              width: '100%',
+              height: 0.4,
+            }}></View>
+          <View style={{paddingTop: 20}}>
+            <RowComponent styles={{justifyContent: 'space-between'}}>
+              <TextComponent text="Location" title size={20} />
+              <ButtonComponent
+                text="Show map"
+                type="link"
+                textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
+              />
+            </RowComponent>
+            <SpaceComponent height={10} />
+            <RowComponent>
+              <Location size={20} color="black" variant='Bold'/>
+              <SpaceComponent width={10} />
+              <View>
+                <TextComponent text="36 Guilde Street London, UK" font={fontFamilies.medium}/>
+                <TextComponent text="27 Via Tortona" />
+                <TextComponent text="20144 Milano" />
+              </View>
+            </RowComponent>
+          </View>
+        </SectionComponent>
+        <SectionComponent>
+          <View
+            style={{
+              backgroundColor: appColors.gray2,
+              width: '100%',
+              height: 0.4,
+            }}></View>
+          <View style={{paddingTop: 20}}>
+            <TextComponent text="More Event like this" title size={20} />
+            <TouchableOpacity style={{paddingVertical: 10}}>
+              <RowComponent>
+                <Image
+                  source={require('../../assets/images/event-img.png')}
+                  style={{width: 80, height: 80, borderRadius: 12}}
+                />
+                <View style={{flex: 1, marginLeft: 20}}>
+                  <TextComponent
+                    text="1ST MAY-SAT -2:00 PM"
+                    color={appColors.primary}
+                    size={12}
+                    font={fontFamilies.medium}
+                  />
+                  <TextComponent
+                    text="A virtual evening of smooth jazz"
+                    title
+                    size={19}
+                  />
+                </View>
+              </RowComponent>
+            </TouchableOpacity>
+            <TouchableOpacity style={{paddingVertical: 10}}>
+              <RowComponent>
+                <Image
+                  source={require('../../assets/images/event-img.png')}
+                  style={{width: 80, height: 80, borderRadius: 12}}
+                />
+                <View style={{flex: 1, marginLeft: 20}}>
+                  <TextComponent
+                    text="1ST MAY-SAT -2:00 PM"
+                    color={appColors.primary}
+                    size={12}
+                    font={fontFamilies.medium}
+                  />
+                  <TextComponent
+                    text="A virtual evening of smooth jazz"
+                    title
+                    size={19}
+                  />
+                </View>
+              </RowComponent>
+            </TouchableOpacity>
           </View>
         </SectionComponent>
       </ScrollView>

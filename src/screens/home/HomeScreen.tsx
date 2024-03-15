@@ -1,9 +1,9 @@
+import Geolocation from '@react-native-community/geolocation';
+import axios from 'axios';
 import {Notification, SearchNormal, Sort} from 'iconsax-react-native';
 import React, {useEffect, useState} from 'react';
 import {
   FlatList,
-  Image,
-  ImageBackground,
   ScrollView,
   StatusBar,
   TouchableOpacity,
@@ -21,18 +21,16 @@ import {
   TextComponent,
 } from '../../components';
 import CategoriesList from '../../components/CategoriesList';
+import {AddressModel} from '../../models/AddressModel';
+import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
-import {removeAuth} from '../../redux/reducers/authReducer';
-import {globalStyles} from '../../styles/globalStyles';
-import Geolocation from '@react-native-community/geolocation';
-import {SlideInRight} from 'react-native-reanimated';
-import axios from 'axios';
-import {AddressModel} from '../../models/AddressModel';
+import eventAPI from '../../apis/eventApi';
+import {EventModel} from '../../models/EventModel';
 
 const HomeScreen = ({navigation}: any) => {
-  const [search, setSearch] = useState('');
   const dispatch = useDispatch();
+  const [events, setEvents] = useState([]);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [error, setError] = useState(null);
@@ -51,6 +49,20 @@ const HomeScreen = ({navigation}: any) => {
       {},
     );
   }, []);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await eventAPI.HandleEvent('/');
+        setEvents(res.data);
+        console.log(events);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
   const reverseGeoCode = async (lat: number, long: number) => {
     const api = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=vi-VN&apiKey=${API_KEY}`;
 
@@ -59,7 +71,7 @@ const HomeScreen = ({navigation}: any) => {
 
       if (res && res.status === 200 && res.data) {
         const items = res.data.items;
-        console.log(items[0]);
+        // console.log(items[0]);
         setCurrentLocation(items[0]);
       }
     } catch (error) {
@@ -182,12 +194,16 @@ const HomeScreen = ({navigation}: any) => {
         <FlatList
           showsHorizontalScrollIndicator={false}
           horizontal
-          data={Array.from({length: 5})}
+          data={events}
           renderItem={({item, index}) => (
+
+
             <EventItem key={index} item={item} type="cardhome" />
           )}
         />
+
         <View style={{paddingHorizontal: 16, paddingVertical: 20}}>
+          {/* {console.log(item.title)} */}
           <View
             style={{
               paddingHorizontal: 16,
@@ -212,8 +228,8 @@ const HomeScreen = ({navigation}: any) => {
         <FlatList
           showsHorizontalScrollIndicator={false}
           horizontal
-          data={Array.from({length: 5})}
-          renderItem={({item, index}) => (
+          data={events}
+          renderItem={({index, item}) => (
             <EventItem key={index} item={item} type="cardhome" />
           )}
         />

@@ -5,7 +5,7 @@ import {
   GalleryFavorite,
   Location,
 } from 'iconsax-react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {Dimensions, ImageBackground} from 'react-native';
 import {
   AvataGroup,
@@ -17,6 +17,8 @@ import {
 } from '.';
 import {appColors} from '../utils/constants/appColors';
 import {fontFamilies} from '../utils/constants/fontFamilies';
+import { EventModel } from '../models/EventModel';
+import eventAPI from '../apis/eventApi';
 
 interface Props {
   item: any;
@@ -25,7 +27,9 @@ interface Props {
 
 const EventItem = (props: Props) => {
   const {item, type} = props;
+
   const navigation: any = useNavigation();
+
   return (
     <CardComponent
       styles={{
@@ -73,13 +77,13 @@ const EventItem = (props: Props) => {
             <ArchiveTick color="red" size={14} variant="Bold" />
           </ShapeComponent>
       </ImageBackground>
-      <TextComponent text="International Band Mu..." title size={18} />
+      <TextComponent text={item.title} title size={18} />
       <AvataGroup />
       <RowComponent>
         <Location size={16} color={appColors.gray2} variant="Bold" />
         <SpaceComponent width={5} />
         <TextComponent
-          text="36 Guild Street LonDon, UK"
+          text={item.location}
           color={appColors.gray2}
         />
       </RowComponent>

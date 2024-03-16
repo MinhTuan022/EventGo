@@ -1,33 +1,48 @@
-import {ArrowLeft, Calendar, Heart, Location} from 'iconsax-react-native';
-import React, {useRef, useState} from 'react';
+import { ArrowLeft, Calendar, Heart, Location } from 'iconsax-react-native';
+import React, { useRef } from 'react';
 import {
   Animated,
   Image,
-  ImageBackground,
   SafeAreaView,
   ScrollView,
   Share,
   StatusBar,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
-  AvataGroup,
   ButtonComponent,
-  CardComponent,
   RowComponent,
   SectionComponent,
   ShapeComponent,
   SpaceComponent,
-  TextComponent,
+  TextComponent
 } from '../../components';
-import {appColors} from '../../utils/constants/appColors';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {globalStyles} from '../../styles/globalStyles';
+import { globalStyles } from '../../styles/globalStyles';
+import { appColors } from '../../utils/constants/appColors';
+import { fontFamilies } from '../../utils/constants/fontFamilies';
+import { DateTime } from '../../utils/convertDateTime';
 
-const EventDetailScreen = ({navigation}: any) => {
+const EventDetailScreen = ({navigation, route}: any) => {
+  const {item}: {item: any} = route.params;
+  // console.log(DateTime.GetDate(item.startTime));
+
+  // const [eventDetail, setEventDetail] = useState<any>();
+
+  // useEffect(() => {
+  //   const hanldleEventDetail = async () => {
+  //     try {
+  //       const res = await eventAPI.HandleEvent(`/byId/${item._id}`);
+  //       setEventDetail(res.data);
+  //       // console.log(res)
+  //       // console.log(eventDetail);
+  //     } catch (error) {}
+  //   };
+
+  //   hanldleEventDetail();
+  //   console.log(eventDetail);
+  // }, []);
   const handleShare = async () => {
     try {
       const result = await Share.share({
@@ -51,7 +66,7 @@ const EventDetailScreen = ({navigation}: any) => {
   };
 
   const animatedValue = useRef(new Animated.Value(0)).current;
-
+  // console.log(item._id);
   return (
     <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
       <StatusBar barStyle="dark-content" />
@@ -90,7 +105,7 @@ const EventDetailScreen = ({navigation}: any) => {
         </RowComponent>
         <RowComponent>
           <ShapeComponent radius={12} color={appColors.white} size={36}>
-            <Heart size={20} color={'red'} variant='Bold' />
+            <Heart size={20} color={'red'} variant="Bold" />
           </ShapeComponent>
           <SpaceComponent width={10} />
           <ShapeComponent
@@ -102,15 +117,20 @@ const EventDetailScreen = ({navigation}: any) => {
           </ShapeComponent>
         </RowComponent>
       </RowComponent>
+
       <ScrollView
         onScroll={e => {
           animatedValue.setValue(e.nativeEvent.contentOffset.y);
         }}
         scrollEventThrottle={16}>
-        <Image
-          source={require('../../assets/images/bg-eventdt.png')}
-          style={{width: '100%'}}
-        />
+        <View style={{height: 200}}>
+          <Image
+            resizeMode="cover"
+            source={{uri: item.photoUrl}}
+            style={{height: '100%', width: '100%'}}
+          />
+        </View>
+
         <View
           style={{
             marginHorizontal: '12%',
@@ -132,7 +152,34 @@ const EventDetailScreen = ({navigation}: any) => {
                 },
               ]}>
               <RowComponent styles={{justifyContent: 'space-between'}}>
-                <AvataGroup />
+                <RowComponent styles={{marginVertical: 12}}>
+                  {Array.from({
+                    length:
+                      item.attendees.length > 3 ? 3 : item.attendees.length,
+                  }).map((it, index) => (
+                    <Image
+                      key={`img${index}`}
+                      source={{
+                        uri: item.attendees[index].photo
+                          ? item.attendees[index].photo
+                          : 'https://images.pexels.com/photos/20568187/pexels-photo-20568187/free-photo-of-l-nh-tuy-t-th-i-trang-nh-ng-ng-i.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                      }}
+                      style={{
+                        width: 24,
+                        height: 24,
+                        borderRadius: 100,
+                        marginLeft: index > 0 ? -8 : 0,
+                      }}
+                    />
+                  ))}
+
+                  <TextComponent
+                    styles={{marginLeft: 10}}
+                    color={appColors.primary}
+                    font={fontFamilies.medium}
+                    text={`${item.attendees.length} Going`}
+                  />
+                </RowComponent>
                 <TouchableOpacity
                   style={{
                     backgroundColor: appColors.primary,
@@ -148,11 +195,7 @@ const EventDetailScreen = ({navigation}: any) => {
         </View>
         <SectionComponent>
           <SpaceComponent height={30} />
-          <TextComponent
-            text="International Band Music Concert"
-            size={35}
-            title
-          />
+          <TextComponent text={item.title} size={30} title />
           <SpaceComponent height={20} />
           <RowComponent>
             <ShapeComponent color={appColors.purple2} size={48} radius={12}>
@@ -161,11 +204,17 @@ const EventDetailScreen = ({navigation}: any) => {
             <SpaceComponent width={10} />
             <View>
               <TextComponent
-                text="14 December, 2021"
+                text={DateTime.GetDate(item.startTime)}
                 font={fontFamilies.medium}
                 size={16}
               />
-              <TextComponent text="Tuesday, 4:00 PM - 9:00 PM" size={12} />
+              {/* <TextComponent text="Tuesday, 4:00 PM - 9:00 PM" size={12} /> */}
+              <TextComponent
+                text={`${DateTime.GetTime(item.startTime)} - ${DateTime.GetTime(
+                  item.endTime,
+                )}`}
+                size={12}
+              />
             </View>
           </RowComponent>
           <SpaceComponent height={20} />
@@ -176,23 +225,27 @@ const EventDetailScreen = ({navigation}: any) => {
             <SpaceComponent width={10} />
             <View>
               <TextComponent
-                text="Gala Convention Center"
+                text={item.location}
                 font={fontFamilies.medium}
                 size={16}
               />
-              <TextComponent text="36 Guild Street London, UK" size={12} />
+              <TextComponent text={item.location} size={12} />
             </View>
           </RowComponent>
           <SpaceComponent height={20} />
           <RowComponent styles={{justifyContent: 'space-between'}}>
             <RowComponent>
               <Image
-                source={require('../../assets/images/luffi.jpg')}
+                source={{
+                  uri: item.organizer.photo
+                    ? item.organizer.photo
+                    : 'https://images.pexels.com/photos/1825012/pexels-photo-1825012.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                }}
                 style={{width: 48, height: 48, borderRadius: 12}}></Image>
               <SpaceComponent width={10} />
               <View>
                 <TextComponent
-                  text="Minh Tuấn"
+                  text={item.organizer.name}
                   font={fontFamilies.medium}
                   size={16}
                 />
@@ -224,11 +277,7 @@ const EventDetailScreen = ({navigation}: any) => {
               font={fontFamilies.medium}
             />
             <SpaceComponent height={20} />
-            <TextComponent
-              maxLength={187}
-              size={16}
-              text="Join us for an electrifying night at the Music Concert, where music and energy intertwine to create an unforgettable experience! Featuring top-notch artists and chart-topping hits, the event promises to captivate audiences from around the globe. From vibrant pop melodies to pulsating rock anthems and mesmerizing EDM beats, the English Music Concert guarantees to deliver a night of unparalleled musicality and sheer delight"
-            />
+            <TextComponent maxLength={187} size={16} text={item.description} />
           </View>
         </SectionComponent>
         <SectionComponent>
@@ -249,10 +298,13 @@ const EventDetailScreen = ({navigation}: any) => {
             </RowComponent>
             <SpaceComponent height={10} />
             <RowComponent>
-              <Location size={20} color="black" variant='Bold'/>
+              <Location size={20} color="black" variant="Bold" />
               <SpaceComponent width={10} />
               <View>
-                <TextComponent text="36 Guilde Street London, UK" font={fontFamilies.medium}/>
+                <TextComponent
+                  text="36 Guilde Street London, UK"
+                  font={fontFamilies.medium}
+                />
                 <TextComponent text="27 Via Tortona" />
                 <TextComponent text="20144 Milano" />
               </View>
@@ -313,6 +365,7 @@ const EventDetailScreen = ({navigation}: any) => {
           </View>
         </SectionComponent>
       </ScrollView>
+
       <View
         style={{
           justifyContent: 'center',

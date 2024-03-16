@@ -18,8 +18,8 @@ interface Props {
 const TextComponent = (props: Props) => {
   const {text, color, size, flex, font, styles, title, maxLength} = props;
   const [showFullText, setShowFullText] = useState(false);
-  const shouldTruncate = maxLength ?? text.length > Number(maxLength);
-  const truncatedText = showFullText ? text : text.slice(0, maxLength);
+  const shouldTruncate = maxLength && text && text.length > Number(maxLength) ;
+  const truncatedText = showFullText && text ? text : String(text).slice(0, maxLength);
 
   const handlePress = () => {
     setShowFullText(!showFullText);

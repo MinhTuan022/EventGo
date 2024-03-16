@@ -16,13 +16,15 @@ import {appColors} from '../utils/constants/appColors';
 import {fontFamilies} from '../utils/constants/fontFamilies';
 import {useDispatch, useSelector} from 'react-redux';
 import {authSelector, removeAuth} from '../redux/reducers/authReducer';
-import AsyncStorage, { useAsyncStorage } from '@react-native-async-storage/async-storage';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { LoginManager } from 'react-native-fbsdk-next';
+import AsyncStorage, {
+  useAsyncStorage,
+} from '@react-native-async-storage/async-storage';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {LoginManager} from 'react-native-fbsdk-next';
 
 const DrawerCustom = ({navigation}: any) => {
   const dispatch = useDispatch();
-const user = useSelector(authSelector);
+  const user = useSelector(authSelector);
   const size = 20;
   const color = appColors.gray;
   const profileMenu = [
@@ -69,8 +71,7 @@ const user = useSelector(authSelector);
     },
   ];
 
- 
-//   console.log(user)
+  //   console.log(user)
 
   const handleLogOut = async () => {
     await GoogleSignin.signOut();
@@ -79,19 +80,18 @@ const user = useSelector(authSelector);
     await AsyncStorage.clear();
   };
   return (
-    
     <View style={{paddingTop: StatusBar.currentHeight, paddingHorizontal: 20}}>
       <View>
         <Image
           style={{width: 45, height: 45, borderRadius: 100, marginBottom: 10}}
-          source={{uri: user.photo}}
+          source={{
+            uri: user.photo
+              ? user.photo
+              : 'https://images.pexels.com/photos/20568187/pexels-photo-20568187/free-photo-of-l-nh-tuy-t-th-i-trang-nh-ng-ng-i.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+          }}
         />
 
-        <TextComponent
-          text={user.name ? user.name : 'Hi'}
-          font={fontFamilies.medium}
-          size={20}
-        />
+        <TextComponent text={user.name} font={fontFamilies.medium} size={20} />
       </View>
       <FlatList
         style={{marginVertical: 30}}

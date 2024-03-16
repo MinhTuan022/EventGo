@@ -1,7 +1,7 @@
 import {View, Text} from 'react-native';
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {ProfileScreen} from '../screens';
+import {MyProfileScreen, ProfileScreen} from '../screens';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import AboutComponent from '../screens/profiles/AboutComponent';
 import ReviewsComponent from '../screens/profiles/ReviewsComponent';
@@ -19,7 +19,7 @@ const ProfileNavigator = () => {
     //    <Stack.Screen name='ProfileScreen' component={ProfileScreen}/>
     //  </Stack.Navigator>
     <>
-      <ProfileScreen />
+      <MyProfileScreen />
       <Tab.Navigator
         screenOptions={{
           tabBarStyle: {shadowColor: 'white'},

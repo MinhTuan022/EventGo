@@ -5,8 +5,8 @@ import {
   GalleryFavorite,
   Location,
 } from 'iconsax-react-native';
-import React, { useEffect, useState } from 'react';
-import {Dimensions, ImageBackground} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Dimensions, Image, ImageBackground} from 'react-native';
 import {
   AvataGroup,
   CardComponent,
@@ -17,8 +17,9 @@ import {
 } from '.';
 import {appColors} from '../utils/constants/appColors';
 import {fontFamilies} from '../utils/constants/fontFamilies';
-import { EventModel } from '../models/EventModel';
+import {EventModel} from '../models/EventModel';
 import eventAPI from '../apis/eventApi';
+import {DateTime} from '../utils/convertDateTime';
 
 interface Props {
   item: any;
@@ -35,7 +36,7 @@ const EventItem = (props: Props) => {
       styles={{
         width: Dimensions.get('window').width * 0.6,
       }}
-      onPress={() => navigation.navigate('EventDetail')}>
+      onPress={() => navigation.navigate('EventDetail', {item})}>
       <ImageBackground
         imageStyle={{padding: 10, resizeMode: 'cover', borderRadius: 12}}
         style={{
@@ -45,47 +46,71 @@ const EventItem = (props: Props) => {
           flexDirection: 'row',
           marginBottom: 16,
         }}
-        source={require('../assets/images/event-img.png')}>
-          <CardComponent
-            styles={{
-              alignItems: 'center',
-              width: 45,
-              height: 45,
-              justifyContent: 'center',
-              paddingHorizontal: 0,
-              paddingVertical: 0
-            }}>
-            <TextComponent
-              text="10"
-              size={18}
-              font={fontFamilies.medium}
-              color="red"
-            />
-            <TextComponent
-              text="June"
-              size={11}
-              font={fontFamilies.medium}
-              color="red"
-            />
-          </CardComponent>
-          
-          <ShapeComponent
-            radius={10}
-            size={30}
-            color="white"
-            styles={{margin: 12,}}>
-            <ArchiveTick color="red" size={14} variant="Bold" />
-          </ShapeComponent>
+        source={{uri: item.photoUrl ?? item.photoUrl}}>
+        <CardComponent
+          styles={{
+            alignItems: 'center',
+            width: 45,
+            height: 45,
+            justifyContent: 'center',
+            paddingHorizontal: 0,
+            paddingVertical: 0,
+          }}>
+          <TextComponent
+            text={DateTime.GetOnlyDate(item.startTime)}
+            size={18}
+            font={fontFamilies.medium}
+            color="red"
+          />
+          <TextComponent
+            text={DateTime.GetOnlyMonth(item.startTime)}
+            size={11}
+            font={fontFamilies.medium}
+            color="red"
+          />
+        </CardComponent>
+
+        <ShapeComponent
+          radius={10}
+          size={30}
+          color="white"
+          styles={{margin: 12}}>
+          <ArchiveTick color="red" size={14} variant="Bold" />
+        </ShapeComponent>
       </ImageBackground>
       <TextComponent text={item.title} title size={18} />
-      <AvataGroup />
+      {/* <AvataGroup /> */}
+      <RowComponent styles={{marginVertical: 12}}>
+        {Array.from({
+          length: item.attendees.length > 3 ? 3 : item.attendees.length,
+        }).map((ite, index) => (
+          <Image
+            key={`img${index}`}
+            source={{
+              uri: item.attendees[index].photo
+                ? item.attendees[index].photo
+                : 'https://images.pexels.com/photos/20568187/pexels-photo-20568187/free-photo-of-l-nh-tuy-t-th-i-trang-nh-ng-ng-i.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+            }}
+            style={{
+              width: 24,
+              height: 24,
+              borderRadius: 100,
+              marginLeft: index > 0 ? -8 : 0,
+            }}
+          />
+        ))}
+
+        <TextComponent
+          styles={{marginLeft: 10}}
+          color={appColors.primary}
+          font={fontFamilies.medium}
+          text={`${item.attendees.length} Going`}
+        />
+      </RowComponent>
       <RowComponent>
         <Location size={16} color={appColors.gray2} variant="Bold" />
         <SpaceComponent width={5} />
-        <TextComponent
-          text={item.location}
-          color={appColors.gray2}
-        />
+        <TextComponent text={item.location} color={appColors.gray2} />
       </RowComponent>
     </CardComponent>
   );

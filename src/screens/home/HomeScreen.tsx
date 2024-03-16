@@ -31,9 +31,6 @@ import {EventModel} from '../../models/EventModel';
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
   const [events, setEvents] = useState([]);
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
-  const [error, setError] = useState(null);
   const [currentLocation, setCurrentLocation] = useState<AddressModel>();
   const API_KEY = 'z1iOem3CvM7AZ_dXCpGfefoyNKUM_eO0urd3SzlmeiM';
   useEffect(() => {
@@ -55,7 +52,7 @@ const HomeScreen = ({navigation}: any) => {
       try {
         const res = await eventAPI.HandleEvent('/');
         setEvents(res.data);
-        console.log(events);
+        // console.log(events);
       } catch (error) {
         console.error('Error fetching events:', error);
       }
@@ -201,21 +198,6 @@ const HomeScreen = ({navigation}: any) => {
             <EventItem key={index} item={item} type="cardhome" />
           )}
         />
-
-        <View style={{paddingHorizontal: 16, paddingVertical: 20}}>
-          {/* {console.log(item.title)} */}
-          <View
-            style={{
-              paddingHorizontal: 16,
-              backgroundColor: '#D3FBFD',
-              borderRadius: 12,
-            }}>
-            <TextComponent text="Invite your friends" />
-            <TextComponent text="Invite your friends" />
-            <ButtonComponent text="Invite" type="primary" color="#00F8FF" />
-          </View>
-        </View>
-
         <RowComponent
           styles={{
             // marginTop: 40,

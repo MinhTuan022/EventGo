@@ -18,7 +18,7 @@ import LoadingModal from '../../components/modals/LoadingModal';
 import {addAuth} from '../../redux/reducers/authReducer';
 
 const VerificationScreen = ({navigation, route}: any) => {
-  const {code, email, password, fullname, isForgotPass} = route.params;
+  const {code, email, password, name, isForgotPass} = route.params;
   const dispatch = useDispatch();
   const [currentCode, setCurrentCode] = useState(code);
   const [verificationCode, setVerificationCode] = useState('');
@@ -87,7 +87,7 @@ const VerificationScreen = ({navigation, route}: any) => {
       const data = {
         email,
         password,
-        fullname: fullname ?? '',
+        name: name ? name : '',
       };
       try {
         const res = await authenticationAPI.HandleAuthentication(
@@ -97,7 +97,7 @@ const VerificationScreen = ({navigation, route}: any) => {
         );
         //   console.log(res.data.verificationCode)
         dispatch(addAuth(res.data));
-        //   console.log(res.data);
+          // console.log(res.data);
         await AsyncStorage.setItem('auth', JSON.stringify(res.data));
         setIsLoading(false);
       } catch (error) {

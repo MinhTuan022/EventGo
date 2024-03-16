@@ -11,6 +11,7 @@ import MapScreen from './map/MapScreen';
 import ProfileScreen from './profiles/ProfileScreen';
 import NotificationScreen from './NotificationScreen';
 import SearchScreen from './search/SearchScreen';
+import MyProfileScreen from './profiles/MyProfileScreen';
 
 export {
   HomeScreen,
@@ -25,5 +26,6 @@ export {
   AddNewScreen,
   EventDetailScreen,
   NotificationScreen,
-  SearchScreen
+  SearchScreen,
+  MyProfileScreen
 };

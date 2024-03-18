@@ -14,13 +14,14 @@ import MapNavigator from './MapNavigator';
 import EventNavigator from './EventNavigator';
 import ProfileNavigator from './ProfileNavigator';
 import {appColors} from '../utils/constants/appColors';
-import {AddNewScreen} from '../screens';
+import {AddNewScreen, MyProfileScreen} from '../screens';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {View} from 'react-native';
 import {TextComponent} from '../components';
 import {globalStyles} from '../styles/globalStyles';
 
 const TabNavigator = () => {
+  // const isUser = true
   const Tab = createBottomTabNavigator();
 
   return (
@@ -94,7 +95,7 @@ const TabNavigator = () => {
       <Tab.Screen name="Events" component={EventNavigator} />
       <Tab.Screen  name="Add" component={AddNewScreen} />
       <Tab.Screen name="Map" component={MapNavigator} />
-      <Tab.Screen name="Profile" component={ProfileNavigator} />
+      <Tab.Screen name="Profile" component={MyProfileScreen} />
     </Tab.Navigator>
   );
 };

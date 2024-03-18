@@ -1,25 +1,26 @@
-import {View, Text, Image, ScrollView, FlatList} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {globalStyles} from '../../styles/globalStyles';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Image, View } from 'react-native';
+import { useSelector } from 'react-redux';
+import userAPI from '../../apis/userApi';
 import {
   CardComponent,
   RowComponent,
   SectionComponent,
   TextComponent,
 } from '../../components';
-import {appColors} from '../../utils/constants/appColors';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
-import {useSelector} from 'react-redux';
-import {authSelector} from '../../redux/reducers/authReducer';
-import userAPI from '../../apis/userApi';
+import { authSelector } from '../../redux/reducers/authReducer';
+import { globalStyles } from '../../styles/globalStyles';
+import { appColors } from '../../utils/constants/appColors';
+import { fontFamilies } from '../../utils/constants/fontFamilies';
 
-const EventComponrnt = () => {
+const EventComponrnt = ({route}: any) => {
+  
   const user = useSelector(authSelector);
   const [eventUser, setEventUser] = useState<any>();
   // console.log(user)
   const userId = user.id;
   useEffect(() => {
-    console.log(user.id);
+    // console.log(user.id);
     const hanndleUserEvent = async () => {
       try {
         const res = await userAPI.HandleUser(`/${userId}`);
@@ -37,27 +38,6 @@ const EventComponrnt = () => {
     <View style={globalStyles.container}>
       <SectionComponent>
         
-          {/* <CardComponent>
-            <RowComponent>
-              <Image
-                source={require('../../assets/images/luffi.jpg')}
-                style={{width: 60, height: 80, borderRadius: 12}}
-              />
-              <View style={{flex: 1, marginLeft: 20}}>
-                <TextComponent
-                  text="1ST MAY-SAT -2:00 PM"
-                  color={appColors.primary}
-                  size={12}
-                  font={fontFamilies.medium}
-                />
-                <TextComponent
-                  text="A virtual evening of smooth jazz"
-                  title
-                  size={19}
-                />
-              </View>
-            </RowComponent>
-          </CardComponent> */}
 
 
           <FlatList

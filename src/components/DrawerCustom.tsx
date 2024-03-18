@@ -25,6 +25,7 @@ import {LoginManager} from 'react-native-fbsdk-next';
 const DrawerCustom = ({navigation}: any) => {
   const dispatch = useDispatch();
   const user = useSelector(authSelector);
+  // console.log("hii",user)
   const size = 20;
   const color = appColors.gray;
   const profileMenu = [

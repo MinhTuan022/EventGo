@@ -234,7 +234,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
           </RowComponent>
           <SpaceComponent height={20} />
           <RowComponent styles={{justifyContent: 'space-between'}}>
-            <RowComponent>
+            <RowComponent onPress={() => {navigation.navigate("ProfileNavigator", {profileData: item.organizer})}}>
               <Image
                 source={{
                   uri: item.organizer.photo

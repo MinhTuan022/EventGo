@@ -1,21 +1,19 @@
-import {ArrowLeft, Edit, Message, UserAdd} from 'iconsax-react-native';
-import React, {useEffect, useState} from 'react';
-import {Image, StatusBar, TouchableOpacity, View} from 'react-native';
+import { Edit, Message, UserAdd } from 'iconsax-react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, StatusBar, View } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
+import { useSelector } from 'react-redux';
+import userAPI from '../../apis/userApi';
 import {
   ButtonComponent,
   RowComponent,
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {appColors} from '../../utils/constants/appColors';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
-import {useSelector} from 'react-redux';
-import {authSelector} from '../../redux/reducers/authReducer';
-import userAPI from '../../apis/userApi';
-import {profileSelector} from '../../redux/reducers/profileReducer';
-import {UserModel} from '../../models/UserModel';
-import {useRoute} from '@react-navigation/native';
+import { profileSelector } from '../../redux/reducers/profileReducer';
+import { appColors } from '../../utils/constants/appColors';
+import { fontFamilies } from '../../utils/constants/fontFamilies';
+
 
 const ProfileScreen = () => {
   const profile = useSelector(profileSelector);
@@ -95,7 +93,14 @@ const ProfileScreen = () => {
           </View>
         </RowComponent>
         <SpaceComponent height={20} />
-        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <RowComponent styles={{justifyContent: 'space-between'}}>
+          <ButtonComponent
+            styles={{width: '48%'}}
+            text="Follow"
+            type="primary"
+            icon={<UserAdd size={24} color="white" />}
+            iconFlex="left"
+          />
           <ButtonComponent
             styles={{
               width: '48%',
@@ -103,13 +108,13 @@ const ProfileScreen = () => {
               borderColor: appColors.primary,
               borderWidth: 1,
             }}
-            text="Edit Profile"
+            text="Massages"
             textColor={appColors.primary}
             type="primary"
-            icon={<Edit size={24} color={appColors.primary} />}
+            icon={<Message size={24} color={appColors.primary} />}
             iconFlex="left"
           />
-        </View>
+        </RowComponent>
       </View>
     </View>
   );

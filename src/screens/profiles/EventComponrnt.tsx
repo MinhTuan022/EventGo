@@ -1,49 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FlatList, Image, View } from 'react-native';
-import { useSelector } from 'react-redux';
-import userAPI from '../../apis/userApi';
 import {
   CardComponent,
   RowComponent,
   SectionComponent,
   TextComponent,
 } from '../../components';
-import { authSelector } from '../../redux/reducers/authReducer';
 import { globalStyles } from '../../styles/globalStyles';
 import { appColors } from '../../utils/constants/appColors';
 import { fontFamilies } from '../../utils/constants/fontFamilies';
 
-const EventComponrnt = ({route}: any) => {
-  
-  const user = useSelector(authSelector);
-  const [eventUser, setEventUser] = useState<any>();
-  // console.log(user)
-  const userId = user.id;
-  useEffect(() => {
-    // console.log(user.id);
-    const hanndleUserEvent = async () => {
-      try {
-        const res = await userAPI.HandleUser(`/${userId}`);
-        setEventUser(res.data.events);
-        // console.log(eventUser.length);
-        // console.log(eventDetail);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    hanndleUserEvent();
-  }, [userId]);
+const EventComponrnt = ({navigation, route}: any) => {
+  const events = route.params
+  const dataArray:any = Object.values(events);
+  console.log(route.params)
+  // const user = useSelector(authSelector);
+  // const [eventUser, setEventUser] = useState<any>();
+  // // console.log(user)
+  // const userId = user.id;
+  // useEffect(() => {
+  //   // console.log(user.id);
+  //   const hanndleUserEvent = async () => {
+  //     try {
+  //       const res = await userAPI.HandleUser(`/${userId}`);
+  //       setEventUser(res.data.events);
+  //       // console.log(eventUser.length);
+  //       console.log(eventUser);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   hanndleUserEvent();
+  // }, [userId]);
 
   return (
     <View style={globalStyles.container}>
       <SectionComponent>
-        
-
-
           <FlatList
-            data={eventUser}
+            data={dataArray}
             renderItem={({item, index}) => (
-              <CardComponent key={index}>
+              <CardComponent key={index} onPress={() => navigation.navigate("EventDetail", {item})}>
                 <RowComponent>
                   <Image
                     source={{uri: item.photoUrl}}

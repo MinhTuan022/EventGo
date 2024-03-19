@@ -1,4 +1,4 @@
-import {ArrowLeft, Message, UserAdd} from 'iconsax-react-native';
+import {ArrowLeft, Edit, Message, UserAdd} from 'iconsax-react-native';
 import React from 'react';
 import {Image, StatusBar, TouchableOpacity, View} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
@@ -25,7 +25,7 @@ const MyProfileScreen = ({route}:any) => {
       <SpaceComponent height={10} />
       <View style={{paddingHorizontal: 20}}>
         <RowComponent styles={{justifyContent: 'space-between'}}>
-          {/* <ArrowLeft size={24} color="black" /> */}
+          <ArrowLeft size={24} color="black" />
           <View></View>
           <Feather name="more-vertical" size={24} color="black" />
         </RowComponent>
@@ -53,14 +53,7 @@ const MyProfileScreen = ({route}:any) => {
           </View>
         </RowComponent>
         <SpaceComponent height={20} />
-        <RowComponent styles={{justifyContent: 'space-between'}}>
-          <ButtonComponent
-            styles={{width: '48%'}}
-            text="Follow"
-            type="primary"
-            icon={<UserAdd size={24} color="white" />}
-            iconFlex="left"
-          />
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
           <ButtonComponent
             styles={{
               width: '48%',
@@ -68,13 +61,13 @@ const MyProfileScreen = ({route}:any) => {
               borderColor: appColors.primary,
               borderWidth: 1,
             }}
-            text="Massages"
+            text="Edit Profile"
             textColor={appColors.primary}
             type="primary"
-            icon={<Message size={24} color={appColors.primary} />}
+            icon={<Edit size={24} color={appColors.primary} />}
             iconFlex="left"
           />
-        </RowComponent>
+        </View>
       </View>
     </View>
   );

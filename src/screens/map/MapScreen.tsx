@@ -11,8 +11,11 @@ import {
 import {ArrowCircleLeft, Location} from 'iconsax-react-native';
 import {appColors} from '../../utils/constants/appColors';
 import CategoriesList from '../../components/CategoriesList';
-import MapView from 'react-native-maps';
+// import MapView from 'react-native-maps';
+import Mapbox from '@rnmapbox/maps';
 
+const token:string = "pk.eyJ1IjoidHVhbmh5MjAyNCIsImEiOiJjbHR6enJrMnMwNWgyMmttcXV1bmllZWx1In0._QHVjgvwYlqrW5rW2b9JDw";
+Mapbox.setAccessToken(token)
 const MapScreen = ({navigation}: any) => {
   return (
     <View
@@ -44,6 +47,8 @@ const MapScreen = ({navigation}: any) => {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}></MapView> */}
+
+        <Mapbox.MapView style={{flex:1}}></Mapbox.MapView>
     </View>
   );
 };

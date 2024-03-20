@@ -17,7 +17,7 @@ import {appColors} from '../utils/constants/appColors';
 import {fontFamilies} from '../utils/constants/fontFamilies';
 
 const ProfileNavigator = ({route}: any) => {
-  // const [userData, setUserData] = useState<any>();
+  // const [userData, setUserData] = useState();
   const [events, setEvents] = useState([]);
   const [photo, setPhoto] = useState(
     'https://th.bing.com/th/id/OIG2.nyMz4YbxVu_XrMJ1mvcS?w=1024&h=1024&rs=1&pid=ImgDetMain',
@@ -31,7 +31,7 @@ const ProfileNavigator = ({route}: any) => {
   useEffect(() => {
     const hanndleUserEvent = async () => {
       try {
-        const res = await userAPI.HandleUser(`/${profileId}`);
+        const res = await userAPI.HandleUser(`/userId?userId=${profileId}`);
         // setUserData(res.data);
         // console.log(userData)
         setEvents(res.data.events);

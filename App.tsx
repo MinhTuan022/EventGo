@@ -9,6 +9,9 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Provider} from 'react-redux';
 import store from './src/redux/store';
 
+
+
+
 const App = () => {
 //   const [isShowSplash, setisShowSplash] = useState(true);
 
@@ -19,6 +22,7 @@ const App = () => {
 
 //     return () => clearTimeout(timeout);
 //   }, []);
+
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>

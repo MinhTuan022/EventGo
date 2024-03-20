@@ -19,6 +19,7 @@
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
     "@reduxjs/toolkit": "^2.2.1",
+    "@rnmapbox/maps": "^10.1.19",
     "axios": "^1.6.7",
     "iconsax-react-native": "^0.0.8",
     "query-string": "^8.2.0",

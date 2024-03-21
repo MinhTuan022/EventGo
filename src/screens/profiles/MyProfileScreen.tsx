@@ -20,15 +20,14 @@ const MyProfileScreen = ({route}:any) => {
         flex: 1,
         paddingTop: StatusBar.currentHeight,
         backgroundColor: 'white',
+        paddingVertical:20
       }}>
       <StatusBar barStyle="dark-content" />
       <SpaceComponent height={10} />
       <View style={{paddingHorizontal: 20}}>
-        <RowComponent styles={{justifyContent: 'space-between'}}>
-          <ArrowLeft size={24} color="black" />
-          <View></View>
-          <Feather name="more-vertical" size={24} color="black" />
-        </RowComponent>
+        <View style={{alignItems:'center'}}>
+          <TextComponent text='MyProfile' title size={20} font={fontFamilies.bold}/>
+        </View>
         <SpaceComponent height={40} />
         <View style={{alignItems: 'center', justifyContent: 'center'}}>
           <Image

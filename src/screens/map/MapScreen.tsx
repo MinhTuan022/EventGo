@@ -1,54 +1,69 @@
-import {View, Text, StatusBar} from 'react-native';
+import Mapbox from '@rnmapbox/maps';
+import {Location} from 'iconsax-react-native';
 import React from 'react';
-import {globalStyles} from '../../styles/globalStyles';
+import {StatusBar, View} from 'react-native';
 import {
-  InputComponent,
   RowComponent,
   SectionComponent,
   ShapeComponent,
   SpaceComponent,
+  TextComponent,
 } from '../../components';
-import {ArrowCircleLeft, Location} from 'iconsax-react-native';
+import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
-import CategoriesList from '../../components/CategoriesList';
-// import MapView from 'react-native-maps';
-import Mapbox from '@rnmapbox/maps';
 
-const token:string = "pk.eyJ1IjoidHVhbmh5MjAyNCIsImEiOiJjbHR6enJrMnMwNWgyMmttcXV1bmllZWx1In0._QHVjgvwYlqrW5rW2b9JDw";
-Mapbox.setAccessToken(token)
 const MapScreen = ({navigation}: any) => {
-  return (
-    <View
-      style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
-      <SectionComponent styles={{}}>
-        <RowComponent styles={{}}>
-          <View style={{flex: 1}}>
-            <InputComponent
-              styles={{marginBottom: 0}}
-              placeHolder="Find for food or resturent ..."
-              onChange={() => {}}
-              value=""
-              affix={<ArrowCircleLeft onPress={() => navigation.goBack()} size={20} color="black" />}
-            />
-          </View>
-          <SpaceComponent width={20} />
-          <ShapeComponent radius={12} size={60} color={appColors.gray2}>
-            <Location size={25} color="black" />
-          </ShapeComponent>
-        </RowComponent>
-      </SectionComponent>
-      <SectionComponent>
-        <CategoriesList />
-      </SectionComponent>
-      {/* <MapView
-        initialRegion={{
-          latitude: 37.78825,
-          longitude: -122.4324,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}></MapView> */}
+  const userLocation = [105.76552, 21.0109]; // Giả sử đây là vị trí người dùng
+  const radius = 500;
 
-        <Mapbox.MapView style={{flex:1}}></Mapbox.MapView>
+  return (
+    <View style={[globalStyles.container, {}]}>
+      <StatusBar barStyle={'dark-content'} />
+      <Mapbox.MapView style={{flex: 1}} logoEnabled={false}>
+        <Mapbox.Camera
+          zoomLevel={15}
+          followUserLocation
+          animationMode="flyTo"
+          minZoomLevel={10}
+        />
+        <Mapbox.UserLocation visible={true} />
+        <Mapbox.MarkerView coordinate={[105.7655, 21.0109]}>
+          <View
+            style={{
+              backgroundColor: appColors.purple2,
+              padding: 5,
+              borderRadius: 5,
+            }}>
+            {/* <TextComponent text="hihih" /> */}
+          </View>
+        </Mapbox.MarkerView>
+      </Mapbox.MapView>
+      <View
+        style={{
+          position: 'absolute',
+          width: '100%',
+          marginTop: Number(StatusBar.currentHeight) + 20,
+        }}>
+        <SectionComponent
+          styles={{
+            borderRadius: 30,
+            marginHorizontal: 20,
+            backgroundColor: 'white',
+          }}>
+          <RowComponent styles={{}}>
+            <View style={{flex: 1}}>
+              <TextComponent text="Location" />
+            </View>
+            <SpaceComponent width={20} />
+            <ShapeComponent radius={12} size={50} color={appColors.purple2}>
+              <Location size={25} color="black" />
+            </ShapeComponent>
+          </RowComponent>
+        </SectionComponent>
+        {/* <SectionComponent>
+          <CategoriesList />
+        </SectionComponent> */}
+      </View>
     </View>
   );
 };

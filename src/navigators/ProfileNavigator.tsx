@@ -1,7 +1,7 @@
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {ArrowLeft, Edit, Message, UserAdd} from 'iconsax-react-native';
 import React, {useEffect, useState} from 'react';
-import {Image, StatusBar, View} from 'react-native';
+import {Image, StatusBar, TouchableOpacity, View} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import userAPI from '../apis/userApi';
 import {
@@ -15,8 +15,10 @@ import EventComponrnt from '../screens/profiles/EventComponrnt';
 import ReviewsComponent from '../screens/profiles/ReviewsComponent';
 import {appColors} from '../utils/constants/appColors';
 import {fontFamilies} from '../utils/constants/fontFamilies';
+import {authSelector} from '../redux/reducers/authReducer';
+import {useSelector} from 'react-redux';
 
-const ProfileNavigator = ({route}: any) => {
+const ProfileNavigator = ({route, navigation}: any) => {
   // const [userData, setUserData] = useState();
   const [events, setEvents] = useState([]);
   const [photo, setPhoto] = useState(
@@ -27,7 +29,8 @@ const ProfileNavigator = ({route}: any) => {
   const [followers, setFollowers] = useState('');
 
   const profileId = route.params.profileData._id;
-
+  const userId = useSelector(authSelector).id;
+  // console.log(user.id)
   useEffect(() => {
     const hanndleUserEvent = async () => {
       try {
@@ -54,15 +57,18 @@ const ProfileNavigator = ({route}: any) => {
     <>
       <View
         style={{
-          flex: 1,
+          // flex: 1,
           paddingTop: StatusBar.currentHeight,
           backgroundColor: 'white',
+          paddingVertical: 20,
         }}>
         <StatusBar barStyle="dark-content" />
         <SpaceComponent height={10} />
         <View style={{paddingHorizontal: 20}}>
           <RowComponent styles={{justifyContent: 'space-between'}}>
-            <ArrowLeft size={24} color="black" />
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <ArrowLeft size={24} color="black" />
+            </TouchableOpacity>
             <View></View>
             <Feather name="more-vertical" size={24} color="black" />
           </RowComponent>
@@ -102,6 +108,7 @@ const ProfileNavigator = ({route}: any) => {
             </View>
           </RowComponent>
           <SpaceComponent height={20} />
+
           <RowComponent styles={{justifyContent: 'space-between'}}>
             <ButtonComponent
               styles={{width: '48%'}}
@@ -126,10 +133,11 @@ const ProfileNavigator = ({route}: any) => {
           </RowComponent>
         </View>
       </View>
+
       <Tab.Navigator
         screenOptions={{
           tabBarStyle: {shadowColor: 'white'},
-          tabBarIndicatorStyle: {width: 60, marginLeft: 37},
+          // tabBarIndicatorStyle: {width: 60, marginLeft: 37},
           tabBarLabelStyle: {fontSize: 16, fontFamily: fontFamilies.medium},
           tabBarActiveTintColor: appColors.primary,
           tabBarInactiveTintColor: appColors.gray2,

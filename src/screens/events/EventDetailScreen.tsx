@@ -1,8 +1,9 @@
-import { ArrowLeft, Calendar, Heart, Location } from 'iconsax-react-native';
-import React, { useRef } from 'react';
+import {ArrowLeft, Calendar, Heart, Location} from 'iconsax-react-native';
+import React, {useRef, useState} from 'react';
 import {
   Animated,
   Image,
+  Linking,
   SafeAreaView,
   ScrollView,
   Share,
@@ -17,15 +18,20 @@ import {
   SectionComponent,
   ShapeComponent,
   SpaceComponent,
-  TextComponent
+  TextComponent,
 } from '../../components';
-import { globalStyles } from '../../styles/globalStyles';
-import { appColors } from '../../utils/constants/appColors';
-import { fontFamilies } from '../../utils/constants/fontFamilies';
-import { DateTime } from '../../utils/convertDateTime';
+import {globalStyles} from '../../styles/globalStyles';
+import {appColors} from '../../utils/constants/appColors';
+import {fontFamilies} from '../../utils/constants/fontFamilies';
+import {DateTime} from '../../utils/convertDateTime';
+import {useSelector} from 'react-redux';
+import {authSelector} from '../../redux/reducers/authReducer';
+import Mapbox from '@rnmapbox/maps';
 
 const EventDetailScreen = ({navigation, route}: any) => {
   const {item}: {item: any} = route.params;
+  const userId = useSelector(authSelector).id;
+  const [showMap, setShowMap] = useState(false);
   // console.log(DateTime.GetDate(item.startTime));
 
   // const [eventDetail, setEventDetail] = useState<any>();
@@ -65,6 +71,18 @@ const EventDetailScreen = ({navigation, route}: any) => {
     }
   };
 
+  const handleShowMap = () => {
+    if (showMap === false) {
+      setShowMap(true);
+    } else {
+      setShowMap(false);
+    }
+  };
+
+  const openMap = () => {
+    const url = `https://www.google.com/maps/search/?api=1&query=105,21`;
+    Linking.openURL(url);
+  };
   const animatedValue = useRef(new Animated.Value(0)).current;
   // console.log(item._id);
   return (
@@ -234,7 +252,18 @@ const EventDetailScreen = ({navigation, route}: any) => {
           </RowComponent>
           <SpaceComponent height={20} />
           <RowComponent styles={{justifyContent: 'space-between'}}>
-            <RowComponent onPress={() => {navigation.navigate("ProfileNavigator", {profileData: item.organizer})}}>
+            <RowComponent
+              onPress={
+                userId !== item.organizer._id
+                  ? () => {
+                      navigation.navigate('ProfileNavigator', {
+                        profileData: item.organizer,
+                      });
+                    }
+                  : () => {
+                      navigation.navigate('Profile');
+                    }
+              }>
               <Image
                 source={{
                   uri: item.organizer.photo
@@ -252,15 +281,23 @@ const EventDetailScreen = ({navigation, route}: any) => {
                 <TextComponent text="Organizer" size={12} />
               </View>
             </RowComponent>
-            <TouchableOpacity
-              style={{
-                backgroundColor: appColors.purple2,
-                paddingHorizontal: 18,
-                paddingVertical: 8,
-                borderRadius: 12,
-              }}>
-              <TextComponent text="Follow" color={appColors.primary} />
-            </TouchableOpacity>
+            {userId !== item.organizer._id ? (
+              <TouchableOpacity
+                style={{
+                  backgroundColor: appColors.purple2,
+                  paddingHorizontal: 18,
+                  paddingVertical: 8,
+                  borderRadius: 12,
+                }}>
+                <TextComponent text="Follow" color={appColors.primary} />
+              </TouchableOpacity>
+            ) : (
+              <TextComponent
+                text="You"
+                font={fontFamilies.semiBold}
+                color={appColors.gray2}
+              />
+            )}
           </RowComponent>
         </SectionComponent>
         <SectionComponent>
@@ -287,15 +324,17 @@ const EventDetailScreen = ({navigation, route}: any) => {
               width: '100%',
               height: 0.4,
             }}></View>
-          <View style={{paddingTop: 20}}>
+          <View style={{paddingTop: 20, flex: 1}}>
             <RowComponent styles={{justifyContent: 'space-between'}}>
               <TextComponent text="Location" title size={20} />
               <ButtonComponent
-                text="Show map"
+                onPress={handleShowMap}
+                text= {!showMap ?  "Show map" : "Hide map"}
                 type="link"
                 textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
               />
             </RowComponent>
+
             <SpaceComponent height={10} />
             <RowComponent>
               <Location size={20} color="black" variant="Bold" />
@@ -309,6 +348,36 @@ const EventDetailScreen = ({navigation, route}: any) => {
                 <TextComponent text="20144 Milano" />
               </View>
             </RowComponent>
+            {showMap ? (
+              <TouchableOpacity
+                onPress={openMap}
+                style={{
+                  width: '100%',
+                  paddingTop: 20,
+                  height: 230,
+                  borderRadius: 12,
+                }}>
+                <Mapbox.MapView
+                  
+                  zoomEnabled={false}
+                  style={{flex: 1,}}
+                  attributionEnabled={false}
+                  logoEnabled={false}>
+                  <Mapbox.Camera
+                  animationMode='flyTo'
+                    zoomLevel={14}
+                    centerCoordinate={[105.7655, 21.0109]}
+                  />
+                  <Mapbox.MarkerView coordinate={[105.7655, 21.0109]}>
+                    <View style={{}}>
+                      <Location size={30} color="red" variant="Bold" />
+                    </View>
+                  </Mapbox.MarkerView>
+                </Mapbox.MapView>
+              </TouchableOpacity>
+            ) : (
+              <></>
+            )}
           </View>
         </SectionComponent>
         <SectionComponent>

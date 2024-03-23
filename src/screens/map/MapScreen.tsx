@@ -1,7 +1,7 @@
 import Mapbox from '@rnmapbox/maps';
-import {Location} from 'iconsax-react-native';
+import { Location } from 'iconsax-react-native';
 import React from 'react';
-import {StatusBar, View} from 'react-native';
+import { StatusBar, View } from 'react-native';
 import {
   RowComponent,
   SectionComponent,
@@ -9,8 +9,8 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {globalStyles} from '../../styles/globalStyles';
-import {appColors} from '../../utils/constants/appColors';
+import { globalStyles } from '../../styles/globalStyles';
+import { appColors } from '../../utils/constants/appColors';
 
 const MapScreen = ({navigation}: any) => {
   const userLocation = [105.76552, 21.0109]; // Giả sử đây là vị trí người dùng

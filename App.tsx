@@ -17,17 +17,6 @@ Mapbox.setAccessToken(token);
 
 
 const App = () => {
-//   const [isShowSplash, setisShowSplash] = useState(true);
-
-//   useEffect(() => {
-//     const timeout = setTimeout(() => {
-//       setisShowSplash(false);
-//     }, 1500);
-
-//     return () => clearTimeout(timeout);
-//   }, []);
-
-
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <Provider store={store}>

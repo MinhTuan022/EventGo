@@ -1,14 +1,14 @@
 import React from 'react';
-import {FlatList, Image, View} from 'react-native';
+import { FlatList, Image, View } from 'react-native';
 import {
   CardComponent,
   RowComponent,
   SectionComponent,
   TextComponent,
 } from '../../components';
-import {globalStyles} from '../../styles/globalStyles';
-import {appColors} from '../../utils/constants/appColors';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
+import { globalStyles } from '../../styles/globalStyles';
+import { appColors } from '../../utils/constants/appColors';
+import { fontFamilies } from '../../utils/constants/fontFamilies';
 
 const EventComponrnt = ({navigation, route}: any) => {
   const events = route.params;

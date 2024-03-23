@@ -1,7 +1,7 @@
-import {View, Text, ScrollView} from 'react-native';
 import React from 'react';
-import {globalStyles} from '../../styles/globalStyles';
-import {SectionComponent, TextComponent} from '../../components';
+import { ScrollView, View } from 'react-native';
+import { SectionComponent, TextComponent } from '../../components';
+import { globalStyles } from '../../styles/globalStyles';
 
 const AboutComponent = () => {
   return (

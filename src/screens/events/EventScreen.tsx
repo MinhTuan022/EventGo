@@ -1,16 +1,15 @@
-import {View, Text, StatusBar} from 'react-native';
+import { ArrowCircleRight } from 'iconsax-react-native';
 import React from 'react';
-import {globalStyles} from '../../styles/globalStyles';
+import { Image, StatusBar, View } from 'react-native';
+import Feather from 'react-native-vector-icons/Feather';
 import {
   ButtonComponent,
   RowComponent,
   SectionComponent,
   TextComponent,
 } from '../../components';
-import Feather from 'react-native-vector-icons/Feather';
-import {ArrowCircleRight} from 'iconsax-react-native';
-import {Image} from 'react-native';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
+import { globalStyles } from '../../styles/globalStyles';
+import { fontFamilies } from '../../utils/constants/fontFamilies';
 
 const EventScreen = () => {
   return (

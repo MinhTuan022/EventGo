@@ -1,4 +1,4 @@
-import { Edit, Message, UserAdd } from 'iconsax-react-native';
+import { Message, UserAdd } from 'iconsax-react-native';
 import React, { useEffect, useState } from 'react';
 import { Image, StatusBar, View } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';

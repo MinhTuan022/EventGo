@@ -1,21 +1,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ArrowCircleRight, ArrowLeft} from 'iconsax-react-native';
-import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, TextInput, View} from 'react-native';
-import {useDispatch} from 'react-redux';
+import { ArrowCircleRight, ArrowLeft } from 'iconsax-react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
+import { useDispatch } from 'react-redux';
 import authenticationAPI from '../../apis/authApi';
 import {
   ButtonComponent,
-  ContainerComponent,
   RowComponent,
   SectionComponent,
   SpaceComponent,
-  TextComponent,
+  TextComponent
 } from '../../components';
-import {appColors} from '../../utils/constants/appColors';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
 import LoadingModal from '../../components/modals/LoadingModal';
-import {addAuth} from '../../redux/reducers/authReducer';
+import { addAuth } from '../../redux/reducers/authReducer';
+import { appColors } from '../../utils/constants/appColors';
+import { fontFamilies } from '../../utils/constants/fontFamilies';
 
 const VerificationScreen = ({navigation, route}: any) => {
   const {code, email, password, name, isForgotPass} = route.params;

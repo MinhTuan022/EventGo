@@ -5,18 +5,18 @@ import { Image, StyleSheet, Switch } from 'react-native';
 import { useDispatch } from 'react-redux';
 import authenticationAPI from '../../apis/authApi';
 import {
-   ButtonComponent,
-   ContainerComponent,
-   InputComponent,
-   RowComponent,
-   SectionComponent,
-   SocialComponent,
-   SpaceComponent,
-   TextComponent,
+  ButtonComponent,
+  ContainerComponent,
+  InputComponent,
+  RowComponent,
+  SectionComponent,
+  SocialComponent,
+  SpaceComponent,
+  TextComponent,
 } from '../../components';
-import { appColors } from '../../utils/constants/appColors';
 import LoadingModal from '../../components/modals/LoadingModal';
 import { addAuth } from '../../redux/reducers/authReducer';
+import { appColors } from '../../utils/constants/appColors';
 
 interface Errors {
   email?: string;

@@ -1,5 +1,6 @@
-import {ArrowLeft, Calendar, Heart, Location} from 'iconsax-react-native';
-import React, {useRef, useState} from 'react';
+import Mapbox from '@rnmapbox/maps';
+import { ArrowLeft, Calendar, Heart, Location } from 'iconsax-react-native';
+import React, { useRef, useState } from 'react';
 import {
   Animated,
   Image,
@@ -12,6 +13,7 @@ import {
   View,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { useSelector } from 'react-redux';
 import {
   ButtonComponent,
   RowComponent,
@@ -20,13 +22,11 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {globalStyles} from '../../styles/globalStyles';
-import {appColors} from '../../utils/constants/appColors';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
-import {DateTime} from '../../utils/convertDateTime';
-import {useSelector} from 'react-redux';
-import {authSelector} from '../../redux/reducers/authReducer';
-import Mapbox from '@rnmapbox/maps';
+import { authSelector } from '../../redux/reducers/authReducer';
+import { globalStyles } from '../../styles/globalStyles';
+import { appColors } from '../../utils/constants/appColors';
+import { fontFamilies } from '../../utils/constants/fontFamilies';
+import { DateTime } from '../../utils/convertDateTime';
 
 const EventDetailScreen = ({navigation, route}: any) => {
   const {item}: {item: any} = route.params;

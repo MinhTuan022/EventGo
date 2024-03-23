@@ -6,7 +6,9 @@ import {
   Sms,
   User,
 } from 'iconsax-react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import authenticationAPI from '../../apis/authApi';
 import {
   ButtonComponent,
   ContainerComponent,
@@ -17,11 +19,8 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {appColors} from '../../utils/constants/appColors';
-import authenticationAPI from '../../apis/authApi';
 import LoadingModal from '../../components/modals/LoadingModal';
-import {addAuth} from '../../redux/reducers/authReducer';
-import {useDispatch} from 'react-redux';
+import { appColors } from '../../utils/constants/appColors';
 interface Errors {
   email?: string;
   password?: string;

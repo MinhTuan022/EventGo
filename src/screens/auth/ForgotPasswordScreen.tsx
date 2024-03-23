@@ -1,5 +1,6 @@
-import {View, Text} from 'react-native';
-import React, {useState} from 'react';
+import { ArrowCircleRight, ArrowLeft, Sms } from 'iconsax-react-native';
+import React, { useState } from 'react';
+import authenticationAPI from '../../apis/authApi';
 import {
   ButtonComponent,
   ContainerComponent,
@@ -8,10 +9,8 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {ArrowCircleRight, ArrowLeft, Sms} from 'iconsax-react-native';
-import {appColors} from '../../utils/constants/appColors';
-import authenticationAPI from '../../apis/authApi';
 import LoadingModal from '../../components/modals/LoadingModal';
+import { appColors } from '../../utils/constants/appColors';
 
 const ForgotPasswordScreen = ({navigation}: any) => {
   const [email, setEmail] = useState('');

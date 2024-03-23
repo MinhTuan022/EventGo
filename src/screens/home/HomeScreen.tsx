@@ -1,7 +1,7 @@
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
-import {Notification, SearchNormal, Sort} from 'iconsax-react-native';
-import React, {useEffect, useState} from 'react';
+import { Notification, SearchNormal, Sort } from 'iconsax-react-native';
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   ScrollView,
@@ -11,22 +11,20 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
+import eventAPI from '../../apis/eventApi';
 import {
-  ButtonComponent,
   EventItem,
   RowComponent,
   ShapeComponent,
   SpaceComponent,
-  TextComponent,
+  TextComponent
 } from '../../components';
 import CategoriesList from '../../components/CategoriesList';
-import {AddressModel} from '../../models/AddressModel';
-import {globalStyles} from '../../styles/globalStyles';
-import {appColors} from '../../utils/constants/appColors';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
-import eventAPI from '../../apis/eventApi';
-import {EventModel} from '../../models/EventModel';
+import { AddressModel } from '../../models/AddressModel';
+import { globalStyles } from '../../styles/globalStyles';
+import { appColors } from '../../utils/constants/appColors';
+import { fontFamilies } from '../../utils/constants/fontFamilies';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();

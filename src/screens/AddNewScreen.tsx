@@ -1,36 +1,24 @@
+import React, { useState } from 'react';
 import {
-  View,
-  Text,
+  Image,
   StatusBar,
   StyleSheet,
   TouchableOpacity,
-  ProgressBarAndroidBase,
-  Image,
+  View
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {globalStyles} from '../styles/globalStyles';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import {
-  ButtonComponent,
-  ContainerComponent,
   DateTimePicker,
   InputComponent,
   RowComponent,
   SectionComponent,
   SpaceComponent,
-  TextComponent,
+  TextComponent
 } from '../components';
-import {
-  ArrowLeft,
-  SearchNormal,
-  SearchNormal1,
-  Status,
-} from 'iconsax-react-native';
-import DatePicker from 'react-native-date-picker';
-import {fontFamilies} from '../utils/constants/fontFamilies';
-import {appColors} from '../utils/constants/appColors';
 import ChoiceLocation from '../components/ChoiceLocation';
-import AddEventModal from '../components/modals/AddEventModal';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import { globalStyles } from '../styles/globalStyles';
+import { appColors } from '../utils/constants/appColors';
+import { fontFamilies } from '../utils/constants/fontFamilies';
 
 const AddNewScreen = ({navigation}: any) => {
   const [showModal, setShowModal] = useState(true);

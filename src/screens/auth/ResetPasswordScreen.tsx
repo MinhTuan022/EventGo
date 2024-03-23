@@ -4,7 +4,8 @@ import {
   Lock1,
   PasswordCheck,
 } from 'iconsax-react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import authenticationAPI from '../../apis/authApi';
 import {
   ButtonComponent,
   ContainerComponent,
@@ -13,9 +14,8 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {appColors} from '../../utils/constants/appColors';
 import LodingModal from '../../components/modals/LoadingModal';
-import authenticationAPI from '../../apis/authApi';
+import { appColors } from '../../utils/constants/appColors';
 // import {validateForm} from '../../constants/validateForm';
 interface Errors {
   password?: string;

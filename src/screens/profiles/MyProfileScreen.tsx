@@ -1,15 +1,14 @@
-import {ArrowLeft, Edit, Message, UserAdd} from 'iconsax-react-native';
+import { Edit } from 'iconsax-react-native';
 import React from 'react';
-import {Image, StatusBar, TouchableOpacity, View} from 'react-native';
-import Feather from 'react-native-vector-icons/Feather';
+import { Image, StatusBar, View } from 'react-native';
 import {
   ButtonComponent,
   RowComponent,
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {appColors} from '../../utils/constants/appColors';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
+import { appColors } from '../../utils/constants/appColors';
+import { fontFamilies } from '../../utils/constants/fontFamilies';
 
 const MyProfileScreen = ({route}:any) => {
   // const {o} = route.params;

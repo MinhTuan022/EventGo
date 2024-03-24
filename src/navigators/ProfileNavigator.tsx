@@ -1,55 +1,24 @@
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {ArrowLeft, Edit, Message, UserAdd} from 'iconsax-react-native';
-import React, {useEffect, useState} from 'react';
-import {Image, StatusBar, TouchableOpacity, View} from 'react-native';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { ArrowLeft, Message, UserAdd } from 'iconsax-react-native';
+import React from 'react';
+import { Image, StatusBar, TouchableOpacity, View } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import userAPI from '../apis/userApi';
 import {
   ButtonComponent,
   RowComponent,
   SpaceComponent,
   TextComponent,
 } from '../components';
+import { UserModel } from '../models/UserModel';
 import AboutComponent from '../screens/profiles/AboutComponent';
 import EventComponrnt from '../screens/profiles/EventComponrnt';
 import ReviewsComponent from '../screens/profiles/ReviewsComponent';
-import {appColors} from '../utils/constants/appColors';
-import {fontFamilies} from '../utils/constants/fontFamilies';
-import {authSelector} from '../redux/reducers/authReducer';
-import {useSelector} from 'react-redux';
+import { appColors } from '../utils/constants/appColors';
+import { fontFamilies } from '../utils/constants/fontFamilies';
 
 const ProfileNavigator = ({route, navigation}: any) => {
-  // const [userData, setUserData] = useState();
-  const [events, setEvents] = useState([]);
-  const [photo, setPhoto] = useState(
-    'https://th.bing.com/th/id/OIG2.nyMz4YbxVu_XrMJ1mvcS?w=1024&h=1024&rs=1&pid=ImgDetMain',
-  );
-  const [name, setName] = useState('');
-  const [following, setFollowing] = useState('');
-  const [followers, setFollowers] = useState('');
-
-  const profileId = route.params.profileData._id;
-  const userId = useSelector(authSelector).id;
-  // console.log(user.id)
-  useEffect(() => {
-    const hanndleUserEvent = async () => {
-      try {
-        const res = await userAPI.HandleUser(`/userId?userId=${profileId}`);
-        // setUserData(res.data);
-        // console.log(userData)
-        setEvents(res.data.events);
-        // console.log(res.data.events);
-        // console.log(res.data.events)
-        setPhoto(res.data.photo);
-        setName(res.data.name);
-        setFollowing(res.data.following.length);
-        setFollowers(res.data.followers.length);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    hanndleUserEvent();
-  }, [profileId]);
+  const {profileData}: {profileData: UserModel} = route.params
+  // console.log(profileData)
 
   const Tab = createMaterialTopTabNavigator();
 
@@ -77,19 +46,19 @@ const ProfileNavigator = ({route, navigation}: any) => {
             <Image
               source={{
                 uri:
-                  photo ??
+                  profileData.photo ??
                   'https://th.bing.com/th/id/OIG2.nyMz4YbxVu_XrMJ1mvcS?w=1024&h=1024&rs=1&pid=ImgDetMain',
               }}
               style={{borderRadius: 100, width: 96, height: 96}}
             />
             <SpaceComponent height={20} />
-            <TextComponent text={name} title />
+            <TextComponent text={profileData.name} title />
           </View>
           <SpaceComponent height={20} />
           <RowComponent styles={{justifyContent: 'center'}}>
             <View style={{alignItems: 'center', paddingHorizontal: 30}}>
               <TextComponent
-                text={following}
+                text={String(profileData.following.length)}
                 font={fontFamilies.medium}
                 size={16}
               />
@@ -100,7 +69,7 @@ const ProfileNavigator = ({route, navigation}: any) => {
             />
             <View style={{alignItems: 'center', paddingHorizontal: 30}}>
               <TextComponent
-                text={followers}
+                text={String(profileData.followers.length)}
                 font={fontFamilies.medium}
                 size={16}
               />
@@ -147,7 +116,7 @@ const ProfileNavigator = ({route, navigation}: any) => {
         <Tab.Screen
           name="Event"
           component={EventComponrnt}
-          initialParams={events}
+          initialParams={profileData.events}
         />
         <Tab.Screen name="Reviews" component={ReviewsComponent} />
       </Tab.Navigator>

@@ -25,9 +25,11 @@ import { AddressModel } from '../../models/AddressModel';
 import { globalStyles } from '../../styles/globalStyles';
 import { appColors } from '../../utils/constants/appColors';
 import { fontFamilies } from '../../utils/constants/fontFamilies';
+import categoryAPI from '../../apis/categoryApi';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
+  const [categories, setCategories] = useState([]);
   const [events, setEvents] = useState([]);
   const [currentLocation, setCurrentLocation] = useState<AddressModel>();
   const API_KEY = 'z1iOem3CvM7AZ_dXCpGfefoyNKUM_eO0urd3SzlmeiM';
@@ -74,6 +76,16 @@ const HomeScreen = ({navigation}: any) => {
     }
   };
 
+  const getCategories = async() => {
+    const api = ``
+      try {
+        const res = await categoryAPI.HandleCategory("/list")
+        setCategories(res.data)
+
+      } catch (error) {
+        console.log(error)
+      }
+  } 
   return (
     <View style={[globalStyles.container, {backgroundColor: appColors.white2}]}>
       <StatusBar barStyle={'light-content'} />

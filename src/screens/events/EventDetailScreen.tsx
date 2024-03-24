@@ -1,6 +1,6 @@
 import Mapbox from '@rnmapbox/maps';
-import { ArrowLeft, Calendar, Heart, Location } from 'iconsax-react-native';
-import React, { useRef, useState } from 'react';
+import {ArrowLeft, Calendar, Heart, Location} from 'iconsax-react-native';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Animated,
   Image,
@@ -13,7 +13,7 @@ import {
   View,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import {
   ButtonComponent,
   RowComponent,
@@ -22,16 +22,19 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import { authSelector } from '../../redux/reducers/authReducer';
-import { globalStyles } from '../../styles/globalStyles';
-import { appColors } from '../../utils/constants/appColors';
-import { fontFamilies } from '../../utils/constants/fontFamilies';
-import { DateTime } from '../../utils/convertDateTime';
+import {authSelector} from '../../redux/reducers/authReducer';
+import {globalStyles} from '../../styles/globalStyles';
+import {appColors} from '../../utils/constants/appColors';
+import {fontFamilies} from '../../utils/constants/fontFamilies';
+import {DateTime} from '../../utils/convertDateTime';
+import userAPI from '../../apis/userApi';
+import { UserModel } from '../../models/UserModel';
 
 const EventDetailScreen = ({navigation, route}: any) => {
   const {item}: {item: any} = route.params;
   const userId = useSelector(authSelector).id;
   const [showMap, setShowMap] = useState(false);
+  const [profile, setProfile] = useState<UserModel>();
   // console.log(DateTime.GetDate(item.startTime));
 
   // const [eventDetail, setEventDetail] = useState<any>();
@@ -49,6 +52,24 @@ const EventDetailScreen = ({navigation, route}: any) => {
   //   hanldleEventDetail();
   //   console.log(eventDetail);
   // }, []);
+  useEffect(() => {
+    if(item){
+      
+      handleProfile(item.organizer);
+    }
+    
+  }, [item]);
+  const handleProfile = async (id: string) => {
+    try {
+      const res = await userAPI.HandleUser(
+        `/userId?userId=${id}`,
+      );
+      setProfile(res.data);
+      // console.log(res)
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleShare = async () => {
     try {
       const result = await Share.share({
@@ -251,13 +272,14 @@ const EventDetailScreen = ({navigation, route}: any) => {
             </View>
           </RowComponent>
           <SpaceComponent height={20} />
+          {profile &&
           <RowComponent styles={{justifyContent: 'space-between'}}>
             <RowComponent
               onPress={
-                userId !== item.organizer._id
+                userId !== item.organizer
                   ? () => {
                       navigation.navigate('ProfileNavigator', {
-                        profileData: item.organizer,
+                        profileData: profile,
                       });
                     }
                   : () => {
@@ -266,22 +288,22 @@ const EventDetailScreen = ({navigation, route}: any) => {
               }>
               <Image
                 source={{
-                  uri: item.organizer.photo
-                    ? item.organizer.photo
+                  uri: profile.photo
+                    ? profile.photo
                     : 'https://images.pexels.com/photos/1825012/pexels-photo-1825012.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
                 }}
                 style={{width: 48, height: 48, borderRadius: 12}}></Image>
               <SpaceComponent width={10} />
               <View>
                 <TextComponent
-                  text={item.organizer.name}
+                  text={profile.name}
                   font={fontFamilies.medium}
                   size={16}
                 />
                 <TextComponent text="Organizer" size={12} />
               </View>
             </RowComponent>
-            {userId !== item.organizer._id ? (
+            {userId !== item.organizer ? (
               <TouchableOpacity
                 style={{
                   backgroundColor: appColors.purple2,
@@ -298,7 +320,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
                 color={appColors.gray2}
               />
             )}
-          </RowComponent>
+          </RowComponent>}
         </SectionComponent>
         <SectionComponent>
           <View
@@ -329,7 +351,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
               <TextComponent text="Location" title size={20} />
               <ButtonComponent
                 onPress={handleShowMap}
-                text= {!showMap ?  "Show map" : "Hide map"}
+                text={!showMap ? 'Show map' : 'Hide map'}
                 type="link"
                 textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
               />
@@ -341,7 +363,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
               <SpaceComponent width={10} />
               <View>
                 <TextComponent
-                  text="36 Guilde Street London, UK"
+                  text={item.location}
                   font={fontFamilies.medium}
                 />
                 <TextComponent text="27 Via Tortona" />
@@ -358,13 +380,12 @@ const EventDetailScreen = ({navigation, route}: any) => {
                   borderRadius: 12,
                 }}>
                 <Mapbox.MapView
-                  
                   zoomEnabled={false}
-                  style={{flex: 1,}}
+                  style={{flex: 1}}
                   attributionEnabled={false}
                   logoEnabled={false}>
                   <Mapbox.Camera
-                  animationMode='flyTo'
+                    animationMode="flyTo"
                     zoomLevel={14}
                     centerCoordinate={[105.7655, 21.0109]}
                   />

@@ -1,6 +1,6 @@
 import Mapbox from '@rnmapbox/maps';
-import { ArrowLeft, Calendar, Heart, Location } from 'iconsax-react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import {ArrowLeft, Calendar, Heart, Location} from 'iconsax-react-native';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Animated,
   Image,
@@ -13,7 +13,7 @@ import {
   View,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import userAPI from '../../apis/userApi';
 import {
   ButtonComponent,
@@ -23,11 +23,12 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import { authSelector } from '../../redux/reducers/authReducer';
-import { globalStyles } from '../../styles/globalStyles';
-import { appColors } from '../../utils/constants/appColors';
-import { fontFamilies } from '../../utils/constants/fontFamilies';
-import { DateTime } from '../../utils/convertDateTime';
+import {authSelector} from '../../redux/reducers/authReducer';
+import {globalStyles} from '../../styles/globalStyles';
+import {appColors} from '../../utils/constants/appColors';
+import {fontFamilies} from '../../utils/constants/fontFamilies';
+import {DateTime} from '../../utils/convertDateTime';
+import {useFocusEffect} from '@react-navigation/native';
 
 const EventDetailScreen = ({navigation, route}: any) => {
   const {item}: {item: any} = route.params;
@@ -37,23 +38,38 @@ const EventDetailScreen = ({navigation, route}: any) => {
   const [targetUserId, setTargetUserId] = useState(item.organizer._id);
   // const [userGoing, setUserGoing] = useState([]);
 
+  // useEffect(() => {
+  //   const checkFollowing = async () => {
+  //     try {
+  //       const res = await userAPI.HandleUser(
+  //         `/check-following?userId=${userId}&targetUserId=${targetUserId}`,
+  //       );
+  //       setisFollowing(res.data);
+  //       console.log(res);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
 
-  useEffect(() => {
-    const checkFollowing = async () => {
-      try {
-        const res = await userAPI.HandleUser(
-          `/check-following?userId=${userId}&targetUserId=${targetUserId}`,
-        );
-        setisFollowing(res.data);
-        console.log(res);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  //   checkFollowing();
+  // }, [userId, targetUserId]);
+  useFocusEffect(
+    React.useCallback(() => {
+      const checkFollowing = async () => {
+        try {
+          const res = await userAPI.HandleUser(
+            `/check-following?userId=${userId}&targetUserId=${targetUserId}`,
+          );
+          setisFollowing(res.data);
+          console.log(res);
+        } catch (error) {
+          console.log(error);
+        }
+      };
 
-    checkFollowing();
-  }, [userId, targetUserId]);
-  
+      checkFollowing();
+    }, [userId, targetUserId]),
+  );
 
   const handleFollow = async () => {
     try {

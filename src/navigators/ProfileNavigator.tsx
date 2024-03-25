@@ -1,7 +1,7 @@
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { ArrowLeft, Message, UserAdd } from 'iconsax-react-native';
-import React, { useEffect, useState } from 'react';
-import { Image, StatusBar, TouchableOpacity, View } from 'react-native';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {ArrowLeft, Message, UserAdd} from 'iconsax-react-native';
+import React, {useEffect, useState} from 'react';
+import {Image, StatusBar, TouchableOpacity, View} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import {
   ButtonComponent,
@@ -9,34 +9,84 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../components';
-import { UserModel } from '../models/UserModel';
+import {UserModel} from '../models/UserModel';
 import AboutComponent from '../screens/profiles/AboutComponent';
 import EventComponrnt from '../screens/profiles/EventComponrnt';
 import ReviewsComponent from '../screens/profiles/ReviewsComponent';
-import { appColors } from '../utils/constants/appColors';
-import { fontFamilies } from '../utils/constants/fontFamilies';
+import {appColors} from '../utils/constants/appColors';
+import {fontFamilies} from '../utils/constants/fontFamilies';
 import userAPI from '../apis/userApi';
+import {useSelector} from 'react-redux';
+import {authSelector} from '../redux/reducers/authReducer';
 
 const ProfileNavigator = ({route, navigation}: any) => {
+  const {profiledata} = route.params;
+  const [followers, setFollowers] = useState('');
+  const [userId, setUserId] = useState(useSelector(authSelector).id);
+  const [targetUserId, setTargetUserId] = useState(profiledata._id);
+  const [isFollowing, setisFollowing] = useState(false);
   const [profile, setProfile] = useState<any>();
-  const {profiledata} = route.params
-  const  profileId = profiledata._id
+
+  const profileId = profiledata._id;
 
   useEffect(() => {
-    if (profileId) {
-      getProfile(profileId);
+    const checkFollowing = async () => {
+      try {
+        const res = await userAPI.HandleUser(
+          `/check-following?userId=${userId}&targetUserId=${targetUserId}`,
+        );
+        setisFollowing(res.data);
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    checkFollowing();
+  }, [userId, targetUserId]);
+  useEffect(() => {
+    if (targetUserId) {
+      getProfile(targetUserId);
+      // getFollowers(targetUserId);
     }
-  }, [profileId]);
+  }, [targetUserId]);
 
   const getProfile = async (id: string) => {
     try {
       const res = await userAPI.HandleUser(`/userId?userId=${id}`);
       setProfile(res.data);
-      // console.log(res)
+      setFollowers(String(res.data.followers.length));
+      // console.log(res.data.followers.length + 2)
     } catch (error) {
       console.log(error);
     }
   };
+  // const getFollowers = async (id: string) => {
+  //   try {
+  //     const res = await userAPI.HandleUser(`/followers?targetUserId=${id}`);
+  //     setFollowers(res.data);
+  //     console.log(res.data)
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  const handleFollow = async () => {
+    try {
+      // const targetUserId = item.organizer;
+      const res = await userAPI.HandleUser(
+        '/follow',
+        {userId, targetUserId},
+        'post',
+      );
+
+      setisFollowing(!isFollowing);
+      setFollowers(res.data.followers);
+      console.log(followers);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const Tab = createMaterialTopTabNavigator();
 
   return (
@@ -69,13 +119,13 @@ const ProfileNavigator = ({route, navigation}: any) => {
               style={{borderRadius: 100, width: 96, height: 96}}
             />
             <SpaceComponent height={20} />
-            <TextComponent text={profiledata? profiledata.name :''} title />
+            <TextComponent text={profiledata ? profiledata.name : ''} title />
           </View>
           <SpaceComponent height={20} />
           <RowComponent styles={{justifyContent: 'center'}}>
             <View style={{alignItems: 'center', paddingHorizontal: 30}}>
               <TextComponent
-                text={profile ? String(profile.following.length): ''}
+                text={profile ? String(profile.following.length) : ''}
                 font={fontFamilies.medium}
                 size={16}
               />
@@ -86,7 +136,7 @@ const ProfileNavigator = ({route, navigation}: any) => {
             />
             <View style={{alignItems: 'center', paddingHorizontal: 30}}>
               <TextComponent
-                text={profile ? String(profile.followers.length) : ''}
+                text={followers}
                 font={fontFamilies.medium}
                 size={16}
               />
@@ -97,8 +147,9 @@ const ProfileNavigator = ({route, navigation}: any) => {
 
           <RowComponent styles={{justifyContent: 'space-between'}}>
             <ButtonComponent
+              onPress={handleFollow}
               styles={{width: '48%'}}
-              text="Follow"
+              text={!isFollowing ? 'Follow' : 'Following'}
               type="primary"
               icon={<UserAdd size={24} color="white" />}
               iconFlex="left"
@@ -133,7 +184,7 @@ const ProfileNavigator = ({route, navigation}: any) => {
         <Tab.Screen
           name="Event"
           component={EventComponrnt}
-          initialParams={profile? profile.events : {}}
+          initialParams={profile ? profile.events : {}}
         />
         <Tab.Screen name="Reviews" component={ReviewsComponent} />
       </Tab.Navigator>

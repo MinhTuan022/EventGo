@@ -13,25 +13,6 @@ import { fontFamilies } from '../../utils/constants/fontFamilies';
 const EventComponrnt = ({navigation, route}: any) => {
   const events = route.params;
   const dataArray: any = Object.values(events);
-  console.log(dataArray);
-  // const user = useSelector(authSelector);
-  // const [eventUser, setEventUser] = useState<any>();
-  // // console.log(user)
-  // const userId = user.id;
-  // useEffect(() => {
-  //   // console.log(user.id);
-  //   const hanndleUserEvent = async () => {
-  //     try {
-  //       const res = await userAPI.HandleUser(`/${userId}`);
-  //       setEventUser(res.data.events);
-  //       // console.log(eventUser.length);
-  //       console.log(eventUser);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   hanndleUserEvent();
-  // }, [userId]);
 
   return (
     <View style={globalStyles.container}>

@@ -1,6 +1,6 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { ArrowLeft, Message, UserAdd } from 'iconsax-react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StatusBar, TouchableOpacity, View } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import {
@@ -15,11 +15,28 @@ import EventComponrnt from '../screens/profiles/EventComponrnt';
 import ReviewsComponent from '../screens/profiles/ReviewsComponent';
 import { appColors } from '../utils/constants/appColors';
 import { fontFamilies } from '../utils/constants/fontFamilies';
+import userAPI from '../apis/userApi';
 
 const ProfileNavigator = ({route, navigation}: any) => {
-  const {profileData}: {profileData: UserModel} = route.params
-  // console.log(profileData)
+  const [profile, setProfile] = useState<any>();
+  const {profiledata} = route.params
+  const  profileId = profiledata._id
 
+  useEffect(() => {
+    if (profileId) {
+      getProfile(profileId);
+    }
+  }, [profileId]);
+
+  const getProfile = async (id: string) => {
+    try {
+      const res = await userAPI.HandleUser(`/userId?userId=${id}`);
+      setProfile(res.data);
+      // console.log(res)
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const Tab = createMaterialTopTabNavigator();
 
   return (
@@ -46,19 +63,19 @@ const ProfileNavigator = ({route, navigation}: any) => {
             <Image
               source={{
                 uri:
-                  profileData.photo ??
+                  profiledata.photo ??
                   'https://th.bing.com/th/id/OIG2.nyMz4YbxVu_XrMJ1mvcS?w=1024&h=1024&rs=1&pid=ImgDetMain',
               }}
               style={{borderRadius: 100, width: 96, height: 96}}
             />
             <SpaceComponent height={20} />
-            <TextComponent text={profileData.name} title />
+            <TextComponent text={profiledata? profiledata.name :''} title />
           </View>
           <SpaceComponent height={20} />
           <RowComponent styles={{justifyContent: 'center'}}>
             <View style={{alignItems: 'center', paddingHorizontal: 30}}>
               <TextComponent
-                text={String(profileData.following.length)}
+                text={profile ? String(profile.following.length): ''}
                 font={fontFamilies.medium}
                 size={16}
               />
@@ -69,7 +86,7 @@ const ProfileNavigator = ({route, navigation}: any) => {
             />
             <View style={{alignItems: 'center', paddingHorizontal: 30}}>
               <TextComponent
-                text={String(profileData.followers.length)}
+                text={profile ? String(profile.followers.length) : ''}
                 font={fontFamilies.medium}
                 size={16}
               />
@@ -116,7 +133,7 @@ const ProfileNavigator = ({route, navigation}: any) => {
         <Tab.Screen
           name="Event"
           component={EventComponrnt}
-          initialParams={profileData.events}
+          initialParams={profile? profile.events : {}}
         />
         <Tab.Screen name="Reviews" component={ReviewsComponent} />
       </Tab.Navigator>

@@ -1,6 +1,6 @@
 import Mapbox from '@rnmapbox/maps';
-import {ArrowLeft, Calendar, Heart, Location} from 'iconsax-react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import { ArrowLeft, Calendar, Heart, Location } from 'iconsax-react-native';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Image,
@@ -13,7 +13,8 @@ import {
   View,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
+import userAPI from '../../apis/userApi';
 import {
   ButtonComponent,
   RowComponent,
@@ -22,50 +23,48 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {authSelector} from '../../redux/reducers/authReducer';
-import {globalStyles} from '../../styles/globalStyles';
-import {appColors} from '../../utils/constants/appColors';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
-import {DateTime} from '../../utils/convertDateTime';
-import userAPI from '../../apis/userApi';
-import { UserModel } from '../../models/UserModel';
+import { authSelector } from '../../redux/reducers/authReducer';
+import { globalStyles } from '../../styles/globalStyles';
+import { appColors } from '../../utils/constants/appColors';
+import { fontFamilies } from '../../utils/constants/fontFamilies';
+import { DateTime } from '../../utils/convertDateTime';
 
 const EventDetailScreen = ({navigation, route}: any) => {
   const {item}: {item: any} = route.params;
-  const userId = useSelector(authSelector).id;
   const [showMap, setShowMap] = useState(false);
-  const [profile, setProfile] = useState<UserModel>();
-  // console.log(DateTime.GetDate(item.startTime));
+  const [isFollowing, setisFollowing] = useState(false);
+  const [userId, setUserId] = useState(useSelector(authSelector).id);
+  const [targetUserId, setTargetUserId] = useState(item.organizer._id);
+  // const [userGoing, setUserGoing] = useState([]);
 
-  // const [eventDetail, setEventDetail] = useState<any>();
 
-  // useEffect(() => {
-  //   const hanldleEventDetail = async () => {
-  //     try {
-  //       const res = await eventAPI.HandleEvent(`/byId/${item._id}`);
-  //       setEventDetail(res.data);
-  //       // console.log(res)
-  //       // console.log(eventDetail);
-  //     } catch (error) {}
-  //   };
-
-  //   hanldleEventDetail();
-  //   console.log(eventDetail);
-  // }, []);
   useEffect(() => {
-    if(item){
-      
-      handleProfile(item.organizer);
-    }
-    
-  }, [item]);
-  const handleProfile = async (id: string) => {
+    const checkFollowing = async () => {
+      try {
+        const res = await userAPI.HandleUser(
+          `/check-following?userId=${userId}&targetUserId=${targetUserId}`,
+        );
+        setisFollowing(res.data);
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    checkFollowing();
+  }, [userId, targetUserId]);
+  
+
+  const handleFollow = async () => {
     try {
+      // const targetUserId = item.organizer;
       const res = await userAPI.HandleUser(
-        `/userId?userId=${id}`,
+        '/follow',
+        {userId, targetUserId},
+        'post',
       );
-      setProfile(res.data);
-      // console.log(res)
+      console.log(res);
+      setisFollowing(!isFollowing);
     } catch (error) {
       console.log(error);
     }
@@ -191,7 +190,13 @@ const EventDetailScreen = ({navigation, route}: any) => {
                 },
               ]}>
               <RowComponent styles={{justifyContent: 'space-between'}}>
-                <RowComponent styles={{marginVertical: 12}}>
+                <RowComponent
+                  styles={{marginVertical: 12}}
+                  onPress={() =>
+                    navigation.navigate('GoingScreen', {
+                      attendees: item.attendees,
+                    })
+                  }>
                   {Array.from({
                     length:
                       item.attendees.length > 3 ? 3 : item.attendees.length,
@@ -199,7 +204,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
                     <Image
                       key={`img${index}`}
                       source={{
-                        uri: item.attendees[index].photo
+                        uri: item.attendees
                           ? item.attendees[index].photo
                           : 'https://images.pexels.com/photos/20568187/pexels-photo-20568187/free-photo-of-l-nh-tuy-t-th-i-trang-nh-ng-ng-i.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
                       }}
@@ -272,55 +277,61 @@ const EventDetailScreen = ({navigation, route}: any) => {
             </View>
           </RowComponent>
           <SpaceComponent height={20} />
-          {profile &&
-          <RowComponent styles={{justifyContent: 'space-between'}}>
-            <RowComponent
-              onPress={
-                userId !== item.organizer
-                  ? () => {
-                      navigation.navigate('ProfileNavigator', {
-                        profileData: profile,
-                      });
-                    }
-                  : () => {
-                      navigation.navigate('Profile');
-                    }
-              }>
-              <Image
-                source={{
-                  uri: profile.photo
-                    ? profile.photo
-                    : 'https://images.pexels.com/photos/1825012/pexels-photo-1825012.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                }}
-                style={{width: 48, height: 48, borderRadius: 12}}></Image>
-              <SpaceComponent width={10} />
-              <View>
+          {item && (
+            <RowComponent styles={{justifyContent: 'space-between'}}>
+              <RowComponent
+                onPress={
+                  userId !== item.organizer._id
+                    ? () => {
+                        navigation.navigate('ProfileNavigator', {
+                          profiledata: item.organizer,
+                        });
+                      }
+                    : () => {
+                        navigation.navigate('Profile');
+                      }
+                }>
+                <Image
+                  source={{
+                    uri: item.organizer.photo
+                      ? item.organizer.photo
+                      : 'https://images.pexels.com/photos/1825012/pexels-photo-1825012.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                  }}
+                  style={{width: 48, height: 48, borderRadius: 12}}></Image>
+                <SpaceComponent width={10} />
+                <View>
+                  <TextComponent
+                    text={item.organizer.name}
+                    font={fontFamilies.medium}
+                    size={16}
+                  />
+                  <TextComponent text="Organizer" size={12} />
+                </View>
+              </RowComponent>
+              {userId !== item.organizer._id ? (
+                <TouchableOpacity
+                  onPress={handleFollow}
+                  style={{
+                    backgroundColor: appColors.purple2,
+                    paddingHorizontal: 18,
+                    paddingVertical: 8,
+                    borderRadius: 12,
+                  }}>
+                  {isFollowing ? (
+                    <TextComponent text="Following" color={appColors.primary} />
+                  ) : (
+                    <TextComponent text="Follow" color={appColors.primary} />
+                  )}
+                </TouchableOpacity>
+              ) : (
                 <TextComponent
-                  text={profile.name}
-                  font={fontFamilies.medium}
-                  size={16}
+                  text="You"
+                  font={fontFamilies.semiBold}
+                  color={appColors.gray2}
                 />
-                <TextComponent text="Organizer" size={12} />
-              </View>
+              )}
             </RowComponent>
-            {userId !== item.organizer ? (
-              <TouchableOpacity
-                style={{
-                  backgroundColor: appColors.purple2,
-                  paddingHorizontal: 18,
-                  paddingVertical: 8,
-                  borderRadius: 12,
-                }}>
-                <TextComponent text="Follow" color={appColors.primary} />
-              </TouchableOpacity>
-            ) : (
-              <TextComponent
-                text="You"
-                font={fontFamilies.semiBold}
-                color={appColors.gray2}
-              />
-            )}
-          </RowComponent>}
+          )}
         </SectionComponent>
         <SectionComponent>
           <View

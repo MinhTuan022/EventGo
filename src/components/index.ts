@@ -5,6 +5,7 @@ import ContainerComponent from './ContainerComponent';
 import DateTimePicker from './DateTimePicker';
 import DrawerCustom from './DrawerCustom';
 import EventItem from './EventItem';
+import FollowList from './FollowList';
 import InputComponent from './InputComponent';
 import RowComponent from './RowComponent';
 import SectionComponent from './SectionComponent';
@@ -27,5 +28,6 @@ export {
   CardComponent,
   EventItem,
   AvataGroup,
-  DateTimePicker
+  DateTimePicker,
+  FollowList
 };

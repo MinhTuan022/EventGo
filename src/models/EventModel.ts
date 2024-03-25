@@ -4,12 +4,12 @@ export interface EventModel {
   _id: string
   attendees: any[]
   description: string
-  endTime: string
+  endTime: Date
   images: any[]
   photoUrl:string
   location: string
   organizer: string
-  startTime: string
+  startTime: Date
   tickets: any[]
   title: string
 }

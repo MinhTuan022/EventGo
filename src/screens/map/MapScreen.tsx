@@ -1,7 +1,7 @@
 import Mapbox from '@rnmapbox/maps';
-import { Location } from 'iconsax-react-native';
-import React from 'react';
-import { StatusBar, View } from 'react-native';
+import {Location} from 'iconsax-react-native';
+import React, {useEffect, useState} from 'react';
+import {StatusBar, View} from 'react-native';
 import {
   RowComponent,
   SectionComponent,
@@ -9,13 +9,38 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import { globalStyles } from '../../styles/globalStyles';
-import { appColors } from '../../utils/constants/appColors';
+import {globalStyles} from '../../styles/globalStyles';
+import {appColors} from '../../utils/constants/appColors';
+import eventAPI from '../../apis/eventApi';
+import Geolocation from '@react-native-community/geolocation';
+import {EventModel} from '../../models/EventModel';
 
 const MapScreen = ({navigation}: any) => {
-  const userLocation = [105.76552, 21.0109]; // Giả sử đây là vị trí người dùng
-  const radius = 500;
+  const [events, setEvents] = useState([]);
+  // const [location, setLocation] = useState({latitude: 0, longitude: 0});
+  useEffect(() => {
+    Geolocation.getCurrentPosition(
+      (position: any) => {
+        const {latitude, longitude} = position.coords;
+        getEvents(latitude, longitude)
 
+      },
+      (error: any) => console.log('Error getting location: ', error),
+      {},
+    );
+  }, []);
+
+  const getEvents = async (lat: number, long: number, distance?: number) => {
+    const api = `/?lat=${lat}&long=${long}&distance=${distance ? distance : 5}`;
+    try {
+      const res = await eventAPI.HandleEvent(api);
+      setEvents(res.data);
+
+      // console.log(events);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  };
   return (
     <View style={[globalStyles.container, {}]}>
       <StatusBar barStyle={'dark-content'} />
@@ -27,16 +52,25 @@ const MapScreen = ({navigation}: any) => {
           minZoomLevel={10}
         />
         <Mapbox.UserLocation visible={true} />
-        <Mapbox.MarkerView coordinate={[105.7655, 21.0109]}>
-          <View
-            style={{
-              backgroundColor: appColors.purple2,
-              padding: 5,
-              borderRadius: 5,
-            }}>
-            {/* <TextComponent text="hihih" /> */}
-          </View>
-        </Mapbox.MarkerView>
+
+        {events.map((item: EventModel, index: any) => (
+          <Mapbox.MarkerView
+            id={`hgg${index}`}
+            key={index}
+            coordinate={[
+              item.position.coordinates[1],
+              item.position.coordinates[0],
+            ]}>
+            <View
+              style={{
+                backgroundColor: appColors.purple2,
+                padding: 5,
+                borderRadius: 5,
+              }}>
+              <TextComponent text={item.title} />
+            </View>
+          </Mapbox.MarkerView>
+        ))}
       </Mapbox.MapView>
       <View
         style={{
@@ -60,9 +94,6 @@ const MapScreen = ({navigation}: any) => {
             </ShapeComponent>
           </RowComponent>
         </SectionComponent>
-        {/* <SectionComponent>
-          <CategoriesList />
-        </SectionComponent> */}
       </View>
     </View>
   );

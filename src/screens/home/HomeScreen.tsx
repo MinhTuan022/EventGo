@@ -1,7 +1,7 @@
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
-import { Notification, SearchNormal, Sort } from 'iconsax-react-native';
-import React, { useEffect, useState } from 'react';
+import {Notification, SearchNormal, Sort} from 'iconsax-react-native';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   ScrollView,
@@ -11,28 +11,31 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { useDispatch } from 'react-redux';
+import {useDispatch} from 'react-redux';
 import eventAPI from '../../apis/eventApi';
 import {
   EventItem,
   RowComponent,
   ShapeComponent,
   SpaceComponent,
-  TextComponent
+  TextComponent,
 } from '../../components';
 import CategoriesList from '../../components/CategoriesList';
-import { AddressModel } from '../../models/AddressModel';
-import { globalStyles } from '../../styles/globalStyles';
-import { appColors } from '../../utils/constants/appColors';
-import { fontFamilies } from '../../utils/constants/fontFamilies';
+import {AddressModel} from '../../models/AddressModel';
+import {globalStyles} from '../../styles/globalStyles';
+import {appColors} from '../../utils/constants/appColors';
+import {fontFamilies} from '../../utils/constants/fontFamilies';
 import categoryAPI from '../../apis/categoryApi';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
   const [categories, setCategories] = useState([]);
-  const [events, setEvents] = useState([]);
+  const [eventUpcoming, setEventUpcoming] = useState([]);
+  const [eventNear, setEventNear] = useState([]);
   const [currentLocation, setCurrentLocation] = useState<AddressModel>();
+  const [currentTime, setCurrentTime] = useState(new Date());
   const API_KEY = 'z1iOem3CvM7AZ_dXCpGfefoyNKUM_eO0urd3SzlmeiM';
+  const limit = 5
   useEffect(() => {
     // Lấy vị trí hiện tại của người dùng khi component được mount
     Geolocation.getCurrentPosition(
@@ -48,18 +51,29 @@ const HomeScreen = ({navigation}: any) => {
   }, []);
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const res = await eventAPI.HandleEvent('/');
-        setEvents(res.data);
-        // console.log(events);
-      } catch (error) {
-        console.error('Error fetching events:', error);
+    fetchEvents(currentLocation?.position.lat, currentLocation?.position.lng);
+  }, [currentLocation]);
+  const fetchEvents = async (
+    lat?: number,
+    long?: number,
+    distance?: number,
+  ) => {
+    const api =
+      lat && long 
+        ? `/?limit=${limit}&date=${currentTime}&lat=${lat}&long=${long}&distance=${distance ? distance : 5}`
+        : `/?limit=${limit}&date=${currentTime}`;
+    try {
+      const res = await eventAPI.HandleEvent(api);
+      if (res && res.data && lat && long) {
+        setEventNear(res.data);
+      } else {
+        setEventUpcoming(res.data);
       }
-    };
-
-    fetchEvents();
-  }, []);
+      // console.log(events);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  };
   const reverseGeoCode = async (lat: number, long: number) => {
     const api = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=vi-VN&apiKey=${API_KEY}`;
 
@@ -76,16 +90,14 @@ const HomeScreen = ({navigation}: any) => {
     }
   };
 
-  const getCategories = async() => {
-    const api = ``
-      try {
-        const res = await categoryAPI.HandleCategory("/list")
-        setCategories(res.data)
-
-      } catch (error) {
-        console.log(error)
-      }
-  } 
+  const getCategories = async () => {
+    try {
+      const res = await categoryAPI.HandleCategory('/list');
+      setCategories(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <View style={[globalStyles.container, {backgroundColor: appColors.white2}]}>
       <StatusBar barStyle={'light-content'} />
@@ -201,10 +213,8 @@ const HomeScreen = ({navigation}: any) => {
         <FlatList
           showsHorizontalScrollIndicator={false}
           horizontal
-          data={events}
+          data={eventUpcoming}
           renderItem={({item, index}) => (
-
-
             <EventItem key={index} item={item} type="cardhome" />
           )}
         />
@@ -220,7 +230,7 @@ const HomeScreen = ({navigation}: any) => {
         <FlatList
           showsHorizontalScrollIndicator={false}
           horizontal
-          data={events}
+          data={eventNear}
           renderItem={({index, item}) => (
             <EventItem key={index} item={item} type="cardhome" />
           )}

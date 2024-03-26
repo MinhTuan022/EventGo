@@ -34,6 +34,7 @@ const LocationModal = (props: Props) => {
 
         <Mapbox.MapView style={{flex: 1}} scaleBarEnabled={false} onPress={handleMapPress}>
           <Mapbox.Camera zoomLevel={16} followUserLocation minZoomLevel={10}/>
+          <Mapbox.UserLocation visible={true}/>
           {selectedLocation && (
           <Mapbox.PointAnnotation
             children={<Entypo name='location-pin' size={30} color="red"  />}

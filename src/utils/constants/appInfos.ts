@@ -20,4 +20,8 @@ export const appInfo ={
     'November',
     'December',
   ],
+
+
+  API_KEY_REVGEOCODE: "z1iOem3CvM7AZ_dXCpGfefoyNKUM_eO0urd3SzlmeiM"
+
 }

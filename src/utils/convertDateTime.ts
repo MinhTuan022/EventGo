@@ -10,6 +10,14 @@ export class DateTime {
       date.getMinutes(),
     )} ${am_pm}`;
   };
+
+  static GetTime24h = (num: Date) => {
+    const date = new Date(num);
+
+    return `${numberToString(date.getHours())}:${numberToString(
+      date.getMinutes(),
+    )}`;
+  };
   static GetDate = (num: Date) => {
     const date = new Date(num);
 

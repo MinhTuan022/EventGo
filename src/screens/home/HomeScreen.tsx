@@ -16,6 +16,7 @@ import eventAPI from '../../apis/eventApi';
 import {
   EventItem,
   RowComponent,
+  SectionComponent,
   ShapeComponent,
   SpaceComponent,
   TextComponent,
@@ -26,6 +27,7 @@ import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import categoryAPI from '../../apis/categoryApi';
+import { appInfo } from '../../utils/constants/appInfos';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -34,7 +36,6 @@ const HomeScreen = ({navigation}: any) => {
   const [eventNear, setEventNear] = useState([]);
   const [currentLocation, setCurrentLocation] = useState<AddressModel>();
   const [currentTime, setCurrentTime] = useState(new Date());
-  const API_KEY = 'z1iOem3CvM7AZ_dXCpGfefoyNKUM_eO0urd3SzlmeiM';
   const limit = 5
   useEffect(() => {
     // Lấy vị trí hiện tại của người dùng khi component được mount
@@ -75,7 +76,7 @@ const HomeScreen = ({navigation}: any) => {
     }
   };
   const reverseGeoCode = async (lat: number, long: number) => {
-    const api = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=vi-VN&apiKey=${API_KEY}`;
+    const api = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=vi-VN&apiKey=${appInfo.API_KEY_REVGEOCODE}`;
 
     try {
       const res = await axios(api);
@@ -210,12 +211,13 @@ const HomeScreen = ({navigation}: any) => {
           <TextComponent text="Upcomming Events" title />
           <TextComponent text="See All" />
         </RowComponent>
+        
         <FlatList
           showsHorizontalScrollIndicator={false}
           horizontal
           data={eventUpcoming}
           renderItem={({item, index}) => (
-            <EventItem key={index} item={item} type="cardhome" />
+            <EventItem key={index} item={item} type="card" />
           )}
         />
         <RowComponent
@@ -227,12 +229,14 @@ const HomeScreen = ({navigation}: any) => {
           <TextComponent text="NearBy" title />
           <TextComponent text="See All" />
         </RowComponent>
+        
+
         <FlatList
           showsHorizontalScrollIndicator={false}
           horizontal
           data={eventNear}
           renderItem={({index, item}) => (
-            <EventItem key={index} item={item} type="cardhome" />
+            <EventItem key={index} item={item} type="card" />
           )}
         />
       </ScrollView>

@@ -6,8 +6,8 @@ export interface EventModel {
   location: string
   images: any[]
   photoUrl: string
-  startTime: string
-  endTime: string
+  startTime: Date
+  endTime: Date
   organizer: Organizer
   category: string
   attendees: any[]

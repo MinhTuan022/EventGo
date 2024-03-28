@@ -489,7 +489,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
           alignItems: 'center',
           paddingVertical: 20,
         }}>
-        <ButtonComponent
+        <ButtonComponent onPress={() => navigation.navigate('OrderTickets')}
           styles={{width: '70%', padding: 12}}
           text="GET TICKET $120"
           type="primary"

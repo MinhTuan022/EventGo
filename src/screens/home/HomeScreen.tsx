@@ -28,6 +28,7 @@ import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import categoryAPI from '../../apis/categoryApi';
 import { appInfo } from '../../utils/constants/appInfos';
+import {WebView} from 'react-native-webview';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -229,7 +230,7 @@ const HomeScreen = ({navigation}: any) => {
           <TextComponent text="NearBy" title />
           <TextComponent text="See All" />
         </RowComponent>
-        
+
 
         <FlatList
           showsHorizontalScrollIndicator={false}
@@ -240,6 +241,8 @@ const HomeScreen = ({navigation}: any) => {
           )}
         />
       </ScrollView>
+      {/* <WebView source={{ uri: 'https://reactnative.dev/' }}/> */}
+
     </View>
   );
 };

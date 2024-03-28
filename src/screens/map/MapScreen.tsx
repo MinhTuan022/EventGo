@@ -34,7 +34,7 @@ const MapScreen = ({navigation}: any) => {
   const [events, setEvents] = useState([]);
   const [currentLocation, setCurrentLocation] = useState<AddressModel>();
   const [location, setLocation] = useState({latitude: 0, longitude: 0});
-  const [textInputValue, setTextInputValue] = useState('');
+  const [textInputValue, setTextInputValue] = useState('5');
   const [distance, setDistance] = useState('5');
   const [isEditDistance, setisEditDistance] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);

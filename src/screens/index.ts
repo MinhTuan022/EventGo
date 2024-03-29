@@ -14,6 +14,7 @@ import SearchScreen from './search/SearchScreen';
 import MyProfileScreen from './profiles/MyProfileScreen';
 import GoingScreen from './events/GoingScreen';
 import OrderTickets from './events/OrderTickets';
+import OrderDetail from './events/OrderDetail';
 
 export {
   HomeScreen,
@@ -31,5 +32,6 @@ export {
   SearchScreen,
   MyProfileScreen,
   GoingScreen,
-  OrderTickets
+  OrderTickets,
+  OrderDetail
 };

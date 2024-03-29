@@ -29,6 +29,7 @@ import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import {DateTime} from '../../utils/convertDateTime';
 import {useFocusEffect} from '@react-navigation/native';
+import { convertToUSD } from '../../utils/convertToUSD';
 
 const EventDetailScreen = ({navigation, route}: any) => {
   const {item}: {item: any} = route.params;
@@ -489,9 +490,9 @@ const EventDetailScreen = ({navigation, route}: any) => {
           alignItems: 'center',
           paddingVertical: 20,
         }}>
-        <ButtonComponent onPress={() => navigation.navigate('OrderTickets')}
+        <ButtonComponent onPress={() => navigation.navigate('OrderTickets', item)}
           styles={{width: '70%', padding: 12}}
-          text="GET TICKET $120"
+          text={`GET TICKET ${convertToUSD(item.ticketPrice)} $`}
           type="primary"
           textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
         />

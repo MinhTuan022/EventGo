@@ -1,75 +1,53 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StatusBar,
-  Modal,
-  Linking,
-} from 'react-native';
+import {Add, ArrowLeft, Key, Minus} from 'iconsax-react-native';
 import React, {useEffect, useState} from 'react';
+import {StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {
   ButtonComponent,
   RowComponent,
   SectionComponent,
+  ShapeComponent,
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {ArrowLeft} from 'iconsax-react-native';
 import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
-import WebView from 'react-native-webview';
-import paypalApi from '../../apis/paypalApi';
+import App from '../../../App';
+import {convertToUSD} from '../../utils/convertToUSD';
 
-const OrderTickets = () => {
-  const [showModal, setShowModal] = useState(false);
-  const [paypalUrl, setPaypalUrl] = useState('');
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const [ticketInfo, setTicketInfo] = useState<any>({});
-  const handlePaypal = async () => {
-    try {
-      const res = await paypalApi.HandlePaypal('/', {ff: 'd'}, 'post');
-      console.log(res);
-      if (res.data) {
-        setPaypalUrl(res.data);
-        setShowModal(true);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+const OrderTickets = ({navigation, route}: any) => {
+  const item = route.params;
+
+  const [quantity, setQuantity] = useState(1);
+  const [selectedType, setSelectedType] = useState(0);
+  const [ticketType, setTicketType] = useState(
+    item.ticketTypes.length > 0 ? item.ticketTypes[0].typeTicket : 'Free',
+  );
+  const [ticketPrice, setTicketPrice] = useState(
+    item.ticketTypes.length > 0 ? item.ticketTypes[0].price : 0,
+  );
+  // useEffect(() => {
+  //   console.log(ticketType);
+  //   console.log(ticketPrice);
+  // }, [ticketType, ticketPrice]);
+  const newItem = {...item, quantity: quantity, ticketPrice: ticketPrice, totalPrice: ticketPrice * quantity};
+  // console.log(newItem.quantity);
+  const handleType = (index: any, typeTicket: any, ticketPrice: any) => {
+    setSelectedType(index);
+    setTicketPrice(ticketPrice);
+    setTicketType(typeTicket);
+  };
+  const increaseQuantity = () => {
+    setQuantity(quantity + 1);
   };
 
-  const handleResponse = (navState:any) =>{
-    const {url} = navState
-      if(url.includes("http://192.168.1.106:3001/paypal/success")){
-          setShowModal(false)
-          setPaymentSuccess(true)
-          setTicketInfo({
-            
-            ticketType: "VIP",
-            numberOfTickets: 2,
-            totalPrice: 100 // or any other relevant info
-          });
-          // console.log(data)
-      }
-  }
-  useEffect(() =>{
-    console.log(showModal)
-  },[showModal])
+  const decreaseQuantity = () => {
+    if (quantity > 0) {
+      setQuantity(quantity - 1);
+    }
+  };
   return (
-    <>
-     {paymentSuccess && ticketInfo ? (
-        // Hiển thị thông tin vé nếu thanh toán thành công và có thông tin vé
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text>Ticket Type: {ticketInfo.ticketType}</Text>
-          <Text>Number of Tickets: {ticketInfo.numberOfTickets}</Text>
-          <Text>Total Price: ${ticketInfo.totalPrice}</Text>
-        </View>
-      ) : (
     <View style={globalStyles.container}>
-      <Modal visible={showModal}>
-        <WebView source={{uri: paypalUrl}}  onNavigationStateChange={handleResponse}/>
-      </Modal>
       <View
         style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
         <SectionComponent>
@@ -85,34 +63,71 @@ const OrderTickets = () => {
           </RowComponent>
         </SectionComponent>
 
+        {item.ticketTypes.length > 0 && (
+          <SectionComponent>
+            <RowComponent styles={{justifyContent: 'center'}}>
+              {item.ticketTypes.map((type: any, index: any) => (
+                <TouchableOpacity
+                  onPress={() => handleType(index, type.typeTicket, type.price)}
+                  style={[
+                    localStyle.touchableOpacity,
+                    selectedType === index &&
+                      localStyle.selectedTouchableOpacity,
+                  ]}
+                  key={index}>
+                  <TextComponent
+                    text={type.typeTicket}
+                    color={
+                      selectedType === index
+                        ? appColors.primary
+                        : appColors.gray2
+                    }
+                    font={fontFamilies.medium}
+                  />
+                </TouchableOpacity>
+              ))}
+            </RowComponent>
+          </SectionComponent>
+        )}
         <SectionComponent>
           <TextComponent text="Choice number of tickets" title size={22} />
           <RowComponent
-            styles={{alignItems: 'center', justifyContent: 'center'}}>
-            <TouchableOpacity
-              style={{
-                paddingHorizontal: 15,
-                paddingVertical: 3,
-                borderWidth: 1,
+            styles={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingTop: 20,
+            }}>
+            <ShapeComponent
+              onPress={decreaseQuantity}
+              radius={12}
+              color="white"
+              styles={{
                 borderColor: appColors.gray2,
-                borderRadius: 12,
-              }}>
-              <TextComponent text="-" size={30} />
-            </TouchableOpacity>
-            <SpaceComponent width={15} />
-            <TextComponent text="1" size={22} font={fontFamilies.medium} />
-            <SpaceComponent width={15} />
+                borderWidth: 1,
+                marginHorizontal: 30,
+              }}
+              size={45}>
+              <Minus size={22} color="black" />
+            </ShapeComponent>
 
-            <TouchableOpacity
-              style={{
-                paddingHorizontal: 15,
-                paddingVertical: 3,
-                borderWidth: 1,
+            <TextComponent
+              text={String(quantity)}
+              size={22}
+              font={fontFamilies.medium}
+            />
+
+            <ShapeComponent
+              onPress={increaseQuantity}
+              radius={12}
+              color="white"
+              styles={{
                 borderColor: appColors.gray2,
-                borderRadius: 12,
-              }}>
-              <TextComponent text="+" size={30} />
-            </TouchableOpacity>
+                borderWidth: 1,
+                marginHorizontal: 30,
+              }}
+              size={45}>
+              <Add size={22} color="black" />
+            </ShapeComponent>
           </RowComponent>
         </SectionComponent>
       </View>
@@ -123,17 +138,30 @@ const OrderTickets = () => {
           paddingVertical: 20,
         }}>
         <ButtonComponent
-          onPress={handlePaypal}
+          disable={quantity === 0 ? true : false}
+          onPress={() => navigation.navigate('OrderDetail', newItem)}
           styles={{width: '70%', padding: 12}}
-          text="Check Out"
+          text={`Continue - ${convertToUSD(ticketPrice * quantity)} $`}
           type="primary"
           textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
         />
       </View>
-    </View>)}
-    </>
-    
+    </View>
   );
 };
-
+const localStyle = StyleSheet.create({
+  touchableOpacity: {
+    flex: 1,
+    paddingVertical: 7,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    borderBottomColor: appColors.gray2,
+    borderBottomWidth: 1,
+  },
+  selectedTouchableOpacity: {
+    color: 'blue',
+    borderBottomColor: 'blue', // Màu của border khi được chọn
+    borderBottomWidth: 2, // Độ dày của border khi được chọn
+  },
+});
 export default OrderTickets;

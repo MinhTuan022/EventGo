@@ -11,6 +11,7 @@ import {
   AvataGroup,
   CardComponent,
   RowComponent,
+  SectionComponent,
   ShapeComponent,
   SpaceComponent,
   TextComponent,
@@ -24,10 +25,11 @@ import {DateTime} from '../utils/convertDateTime';
 interface Props {
   item: EventModel;
   type: 'card' | 'list';
+  disible?: boolean
 }
 
 const EventItem = (props: Props) => {
-  const {item, type} = props;
+  const {item, type, disible} = props;
 
   const navigation: any = useNavigation();
 
@@ -39,7 +41,8 @@ const EventItem = (props: Props) => {
             ? Dimensions.get('window').width * 0.6
             : Dimensions.get('window').width * 0.93,
       }}
-      onPress={() => navigation.navigate('EventDetail', {item})}>
+      
+       onPress={!disible ? () => navigation.navigate('EventDetail', {item}) : undefined}>
       {type === 'card' ? (
         <>
           <ImageBackground
@@ -127,24 +130,33 @@ const EventItem = (props: Props) => {
             <View
               style={{
                 flex: 1,
-                height: '100%',
-                justifyContent: 'space-around',
                 marginLeft: 10,
               }}>
-              <TextComponent text={item.title} title size={18} />
-              <TextComponent
-                text={`${DateTime.GetDateNotYear(
-                  item.startTime,
-                )} - ${DateTime.GetTime24h(
-                  item.startTime,
-                )} - ${DateTime.GetTime24h(item.endTime)} `}
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'space-around',
 
-                color={appColors.primary} font={fontFamilies.medium}
-              />
-              <RowComponent>
-                <Location size={16} color={appColors.primary} variant="Bold" />
-                <TextComponent text={item.location} />
-              </RowComponent>
+                }}>
+                <TextComponent text={item.title} title size={18} />
+                <TextComponent
+                  text={`${DateTime.GetDateNotYear(
+                    item.startTime,
+                  )} - ${DateTime.GetTime24h(
+                    item.startTime,
+                  )} - ${DateTime.GetTime24h(item.endTime)} `}
+                  color={appColors.primary}
+                  font={fontFamilies.medium}
+                />
+                <RowComponent>
+                  <Location
+                    size={16}
+                    color={appColors.primary}
+                    variant="Bold"
+                  />
+                  <TextComponent text={item.location} />
+                </RowComponent>
+              </View>
             </View>
           </RowComponent>
         </>

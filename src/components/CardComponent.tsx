@@ -1,5 +1,5 @@
 import React, {ReactNode} from 'react';
-import {StyleProp, Text, TouchableOpacity, ViewStyle} from 'react-native';
+import {StyleProp, Text, TouchableOpacity, View, ViewStyle} from 'react-native';
 
 import {globalStyles} from '../styles/globalStyles';
 import {appColors} from '../utils/constants/appColors';
@@ -8,21 +8,34 @@ interface Props {
   children: ReactNode;
   bgColor?: string;
   styles?: StyleProp<ViewStyle>;
-  onPress? : () => void
+  onPress?: () => void;
 }
 const CardComponent = (props: Props) => {
   const {children, bgColor, styles, onPress} = props;
   return (
-    <TouchableOpacity onPress={onPress}
-      style={[
-        globalStyles.card,
-        globalStyles.shadow,
-        {backgroundColor: bgColor ?? appColors.white},
-        styles,
-      ]}>
-      {/* <Text>CardComponent</Text> */}
-      {children}
-    </TouchableOpacity>
+    <>
+      {onPress ? (
+        <TouchableOpacity
+          onPress={onPress}
+          style={[
+            globalStyles.card,
+            globalStyles.shadow,
+            {backgroundColor: bgColor ?? appColors.white},
+            styles,
+          ]}>
+          {children}
+        </TouchableOpacity>
+      ) : (
+        <View style={[
+          globalStyles.card,
+          globalStyles.shadow,
+          {backgroundColor: bgColor ?? appColors.white},
+          styles,
+        ]}>
+          {children}
+        </View>
+      )}
+    </>
   );
 };
 

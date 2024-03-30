@@ -492,7 +492,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
         }}>
         <ButtonComponent onPress={() => navigation.navigate('OrderTickets', item)}
           styles={{width: '70%', padding: 12}}
-          text={`GET TICKET ${convertToUSD(item.ticketPrice)} $`}
+          text={`GET TICKET`}
           type="primary"
           textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
         />

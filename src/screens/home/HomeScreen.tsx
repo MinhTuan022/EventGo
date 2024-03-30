@@ -27,8 +27,9 @@ import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import categoryAPI from '../../apis/categoryApi';
-import { appInfo } from '../../utils/constants/appInfos';
+import {appInfo} from '../../utils/constants/appInfos';
 import {WebView} from 'react-native-webview';
+import {useFocusEffect} from '@react-navigation/native';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -37,7 +38,7 @@ const HomeScreen = ({navigation}: any) => {
   const [eventNear, setEventNear] = useState([]);
   const [currentLocation, setCurrentLocation] = useState<AddressModel>();
   const [currentTime, setCurrentTime] = useState(new Date());
-  const limit = 5
+  const limit = 5;
   useEffect(() => {
     // Lấy vị trí hiện tại của người dùng khi component được mount
     Geolocation.getCurrentPosition(
@@ -51,18 +52,25 @@ const HomeScreen = ({navigation}: any) => {
       {},
     );
   }, []);
-
-  useEffect(() => {
-    fetchEvents(currentLocation?.position.lat, currentLocation?.position.lng);
-  }, [currentLocation]);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchEvents();
+      fetchEvents(currentLocation?.position.lat, currentLocation?.position.lng);
+    }, [currentLocation]),
+  );
+  // useEffect(() => {
+  //   fetchEvents(currentLocation?.position.lat, currentLocation?.position.lng);
+  // }, [currentLocation]);
   const fetchEvents = async (
     lat?: number,
     long?: number,
     distance?: number,
   ) => {
     const api =
-      lat && long 
-        ? `/?limit=${limit}&date=${currentTime}&lat=${lat}&long=${long}&distance=${distance ? distance : 5}`
+      lat && long
+        ? `/?limit=${limit}&date=${currentTime}&lat=${lat}&long=${long}&distance=${
+            distance ? distance : 5
+          }`
         : `/?limit=${limit}&date=${currentTime}`;
     try {
       const res = await eventAPI.HandleEvent(api);
@@ -212,7 +220,7 @@ const HomeScreen = ({navigation}: any) => {
           <TextComponent text="Upcomming Events" title />
           <TextComponent text="See All" />
         </RowComponent>
-        
+
         <FlatList
           showsHorizontalScrollIndicator={false}
           horizontal
@@ -231,7 +239,6 @@ const HomeScreen = ({navigation}: any) => {
           <TextComponent text="See All" />
         </RowComponent>
 
-
         <FlatList
           showsHorizontalScrollIndicator={false}
           horizontal
@@ -242,7 +249,6 @@ const HomeScreen = ({navigation}: any) => {
         />
       </ScrollView>
       {/* <WebView source={{ uri: 'https://reactnative.dev/' }}/> */}
-
     </View>
   );
 };

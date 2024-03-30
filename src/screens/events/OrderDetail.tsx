@@ -26,16 +26,28 @@ import {ArrowLeft, Location} from 'iconsax-react-native';
 import {appColors} from '../../utils/constants/appColors';
 import {DateTime} from '../../utils/convertDateTime';
 import {convertToUSD} from '../../utils/convertToUSD';
+import {Style} from '@rnmapbox/maps';
+import ticketAPI from '../../apis/ticketApi';
+import {useSelector} from 'react-redux';
+import {authSelector} from '../../redux/reducers/authReducer';
 
-const OrderDetail = ({route}: any) => {
+const OrderDetail = ({route, navigation}: any) => {
   const eventData = route.params;
-  // console.log(eventData);
+  console.log(eventData);
+  const user = useSelector(authSelector);
   const ticketPrice = convertToUSD(eventData.ticketPrice);
-  console.log(ticketPrice);
+
+  const data = {
+    eventId: eventData._id,
+    userId: user.id,
+    quantity: eventData.quantity,
+    totalPrice: ticketPrice *eventData.quantity,
+    status: 'CONFIRMED',
+  }
+  console.log(data)
   const [showModal, setShowModal] = useState(false);
   const [paypalUrl, setPaypalUrl] = useState('');
   const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const [ticketInfo, setTicketInfo] = useState<any>({});
   const [paymentMethod, setPaymentMethod] = useState('');
 
   const handlePaymentMethodChange = (method: any) => {
@@ -61,10 +73,24 @@ const OrderDetail = ({route}: any) => {
       console.log(error);
     }
   };
+  const handleTicket = async () => {
+    try {
+      const res = await ticketAPI.HandleTicket(
+        '/',
+        data,
+        'post',
+      );
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleResponse = (navState: any) => {
     const {url} = navState;
     if (url.includes('http://192.168.1.106:3001/paypal/success')) {
+      handleTicket();
+
       setShowModal(false);
       setPaymentSuccess(true);
       // setTicketInfo({
@@ -72,142 +98,187 @@ const OrderDetail = ({route}: any) => {
       //   numberOfTickets: 2,
       //   totalPrice: 100, // or any other relevant info
       // });
-      console.log("hihi")
+      console.log('hihi');
     } else if (url.includes('http://192.168.1.106:3001/paypal/cancel')) {
       setShowModal(false);
     }
   };
-  // useEffect(() => {
-  //   console.log(showModal);
-  // }, [showModal]);
+
   return (
     <>
-      {paymentSuccess  && (
-        // Hiển thị thông tin vé nếu thanh toán thành công và có thông tin vé
-        <Modal style={{flex:1, justifyContent: 'center', alignItems: 'center'}} transparent={true}>
-          <Text>Ticket Type:</Text>
-        </Modal>
-      ) }
-        <View
-          style={[
-            globalStyles.container,
-            {paddingTop: StatusBar.currentHeight},
-          ]}>
-          <Modal visible={showModal}>
-            <WebView
-              source={{uri: paypalUrl}}
-              onNavigationStateChange={handleResponse}
-            />
-          </Modal>
-          <View style={globalStyles.container}>
-            <SectionComponent>
-              <RowComponent>
-                <TouchableOpacity>
-                  <ArrowLeft size={20} color="black" />
-                </TouchableOpacity>
-                <TextComponent
-                  text="Order Detail"
-                  size={22}
-                  font={fontFamilies.medium}
-                />
-              </RowComponent>
-            </SectionComponent>
-            <EventItem item={eventData} type="list" disible={true} />
-            <SectionComponent>
-              <TextComponent title text="Order Summary" size={20} />
-              <SpaceComponent height={10} />
-              <RowComponent
-                styles={{justifyContent: 'space-between', paddingBottom: 10}}>
-                <TextComponent text="Ticket Price" size={16} />
-                <TextComponent
-                  text={`$${convertToUSD(eventData.ticketPrice)}`}
-                  size={16}
-                />
-              </RowComponent>
-              <RowComponent
-                styles={{justifyContent: 'space-between', paddingBottom: 10}}>
-                <TextComponent text="Quantity" size={16} />
-                <TextComponent text={eventData.quantity} size={16} />
-              </RowComponent>
-              <RowComponent styles={{justifyContent: 'space-between'}}>
-                <TextComponent text="Fees" size={16} />
-                <TextComponent text="$0.00" size={16} />
-              </RowComponent>
-            </SectionComponent>
-            <View
-              style={{
-                height: 1,
-                backgroundColor: appColors.gray2,
-                marginHorizontal: 16,
-              }}
-            />
-            <SectionComponent>
-              <RowComponent styles={{justifyContent: 'space-between'}}>
-                <TextComponent
-                  text="Total"
-                  size={18}
-                  font={fontFamilies.medium}
-                />
-                <TextComponent
-                  text={`$${convertToUSD(
-                    eventData.ticketPrice * eventData.quantity,
-                  )}`}
-                  size={18}
-                  font={fontFamilies.medium}
-                />
-              </RowComponent>
-            </SectionComponent>
-
-            <SectionComponent>
-              <TextComponent text="Payment Method" title size={20} />
-              <RowComponent
-                styles={{paddingTop: 15}}
-                onPress={() => handlePaymentMethodChange('paypal')}>
-                <RowComponent styles={{flex: 1}}>
-                  <ShapeComponent radius={12} color={appColors.gray2}>
-                    <TextComponent text="d" />
-                  </ShapeComponent>
-                  <SpaceComponent width={15} />
-                  <TextComponent text="Paypal" size={16} />
-                </RowComponent>
-                <Radio selected={paymentMethod === 'paypal'} />
-              </RowComponent>
-              <RowComponent
-                styles={{paddingTop: 15}}
-                onPress={() => handlePaymentMethodChange('momo')}>
-                <RowComponent styles={{flex: 1}}>
-                  <ShapeComponent radius={12} color={appColors.gray2}>
-                    <TextComponent text="d" />
-                  </ShapeComponent>
-                  <SpaceComponent width={15} />
-                  <TextComponent text="Momo" size={16} />
-                </RowComponent>
-                <Radio selected={paymentMethod === 'momo'} />
-              </RowComponent>
-            </SectionComponent>
-          </View>
-
+      {paymentSuccess && (
+        <Modal transparent={true}>
+          <StatusBar backgroundColor="rgba(0, 0, 0, 0.5)" translucent={true} />
           <View
             style={{
+              flex: 1,
               justifyContent: 'center',
               alignItems: 'center',
-              paddingVertical: 20,
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
             }}>
-            <ButtonComponent
-              onPress={
-                paymentMethod === 'paypal'
-                  ? handlePaypal
-                  : () => {
-                      console.log('first');
-                    }
-              }
-              styles={{width: '70%', padding: 12}}
-              text="Checkout"
-              type="primary"
-              textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
-            />
+            <View
+              style={{
+                backgroundColor: appColors.white,
+                width: '80%',
+                height: '60%',
+                borderRadius: 50,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <TextComponent
+                text="Congratulations"
+                color={appColors.primary}
+                title
+                size={20}
+              />
+              <View
+                style={{
+                  paddingHorizontal: 30,
+                  paddingVertical: 20,
+                  alignItems: 'center',
+                }}>
+                <TextComponent
+                  text="You have successfully placed an order for National Music Festival. "
+                  size={16}
+                />
+                <TextComponent text="Enjoy the event!" size={16} />
+              </View>
+              <ButtonComponent
+                text="View E-Ticket"
+                type="primary"
+                styles={{marginVertical: 10}}
+              />
+              <ButtonComponent
+                text="Go Home"
+                type="primary"
+                onPress={() => navigation.navigate('Main')}
+                color={appColors.purple2}
+                textColor={appColors.primary}
+              />
+            </View>
           </View>
+        </Modal>
+      )}
+      <View
+        style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
+        <Modal visible={showModal}>
+          <WebView
+            source={{uri: paypalUrl}}
+            onNavigationStateChange={handleResponse}
+          />
+        </Modal>
+        <View style={globalStyles.container}>
+          <SectionComponent>
+            <RowComponent>
+              <TouchableOpacity>
+                <ArrowLeft size={20} color="black" />
+              </TouchableOpacity>
+              <TextComponent
+                text="Order Detail"
+                size={22}
+                font={fontFamilies.medium}
+              />
+            </RowComponent>
+          </SectionComponent>
+          <EventItem item={eventData} type="list" disible={true} />
+          <SectionComponent>
+            <TextComponent title text="Order Summary" size={20} />
+            <SpaceComponent height={10} />
+            <RowComponent
+              styles={{justifyContent: 'space-between', paddingBottom: 10}}>
+              <TextComponent text="Ticket Price" size={16} />
+              <TextComponent
+                text={`$${convertToUSD(eventData.ticketPrice)}`}
+                size={16}
+              />
+            </RowComponent>
+            <RowComponent
+              styles={{justifyContent: 'space-between', paddingBottom: 10}}>
+              <TextComponent text="Quantity" size={16} />
+              <TextComponent text={eventData.quantity} size={16} />
+            </RowComponent>
+            <RowComponent styles={{justifyContent: 'space-between'}}>
+              <TextComponent text="Fees" size={16} />
+              <TextComponent text="$0.00" size={16} />
+            </RowComponent>
+          </SectionComponent>
+          <View
+            style={{
+              height: 1,
+              backgroundColor: appColors.gray2,
+              marginHorizontal: 16,
+            }}
+          />
+          <SectionComponent>
+            <RowComponent styles={{justifyContent: 'space-between'}}>
+              <TextComponent
+                text="Total"
+                size={18}
+                font={fontFamilies.medium}
+              />
+              <TextComponent
+                text={`$${convertToUSD(
+                  eventData.ticketPrice * eventData.quantity,
+                )}`}
+                size={18}
+                font={fontFamilies.medium}
+              />
+            </RowComponent>
+          </SectionComponent>
+
+          <SectionComponent>
+            <TextComponent text="Payment Method" title size={20} />
+            <RowComponent
+              styles={{paddingTop: 15}}
+              onPress={() => handlePaymentMethodChange('paypal')}>
+              <RowComponent styles={{flex: 1}}>
+                <ShapeComponent radius={12} color={appColors.white4} size={36}>
+                  <Image source={require('../../assets/images/paypal.png')} />
+                </ShapeComponent>
+                <SpaceComponent width={15} />
+                <TextComponent text="Paypal" size={16} />
+              </RowComponent>
+              <Radio selected={paymentMethod === 'paypal'} />
+            </RowComponent>
+            <RowComponent
+              styles={{paddingTop: 15}}
+              onPress={() => handlePaymentMethodChange('momo')}>
+              <RowComponent styles={{flex: 1}}>
+                <ShapeComponent radius={12} color={appColors.white4} size={36}>
+                  <Image
+                    source={require('../../assets/images/momo.png')}
+                    style={{width: 24, height: 24}}
+                  />
+                </ShapeComponent>
+                <SpaceComponent width={15} />
+                <TextComponent text="Momo" size={16} />
+              </RowComponent>
+              <Radio selected={paymentMethod === 'momo'} />
+            </RowComponent>
+          </SectionComponent>
         </View>
+
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingVertical: 20,
+          }}>
+          <ButtonComponent
+            onPress={
+              paymentMethod === 'paypal'
+                ? handlePaypal
+                : () => {
+                    console.log('first');
+                  }
+            }
+            styles={{width: '70%', padding: 12}}
+            text="Checkout"
+            type="primary"
+            textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
+          />
+        </View>
+      </View>
       {/* )} */}
     </>
   );

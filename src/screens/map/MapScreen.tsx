@@ -39,6 +39,8 @@ const MapScreen = ({navigation}: any) => {
   const [isEditDistance, setisEditDistance] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isPress, setIsPress] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
   const user = useSelector(authSelector);
 
   const flatListRef = useRef<any>(null);
@@ -62,7 +64,7 @@ const MapScreen = ({navigation}: any) => {
   };
 
   const getEvents = async (lat: number, long: number, distance?: any) => {
-    const api = `/?lat=${lat}&long=${long}&distance=${distance}`;
+    const api = `/?lat=${lat}&long=${long}&distance=${distance}&date=${currentTime}`;
     try {
       const res = await eventAPI.HandleEvent(api);
       setEvents(res.data);

@@ -6,6 +6,8 @@ import {
   Location,
   Map,
   Profile,
+  Ticket,
+  Ticket2,
 } from 'iconsax-react-native';
 import React, {ReactNode} from 'react';
 import EventScreen from '../screens/events/EventScreen';
@@ -14,7 +16,7 @@ import MapNavigator from './MapNavigator';
 import EventNavigator from './EventNavigator';
 import ProfileNavigator from './ProfileNavigator';
 import {appColors} from '../utils/constants/appColors';
-import {AddNewScreen, MyProfileScreen} from '../screens';
+import {AddNewScreen, MyProfileScreen, TicketScreen} from '../screens';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {View} from 'react-native';
 import {TextComponent} from '../components';
@@ -25,11 +27,10 @@ const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
 
   return (
-   
     <Tab.Navigator
       screenOptions={({route}) => ({
         headerShown: false,
-        
+
         tabBarStyle: {
           height: 54,
           justifyContent: 'center',
@@ -55,7 +56,10 @@ const TabNavigator = () => {
             case 'Profile':
               icon = <Profile color={color} size={size} variant="Bold" />;
               break;
-            case 'Add':
+            case 'Tickets':
+              icon = <Ticket color={color} size={size} variant="Bold" />;
+              break;
+              // case 'Add':
               icon = (
                 <View
                   style={[
@@ -81,19 +85,19 @@ const TabNavigator = () => {
           }
           return icon;
         },
-        tabBarLabel({focused}) {
-          return route.name === 'Add' ? null : (
-            <TextComponent
-              text={route.name}
-              size={12}
-              color={focused ? appColors.primary : appColors.gray2}
-            />
-          );
-        },
+        // tabBarLabel({focused}) {
+        //   return route.name === 'Add' ? null : (
+        //     <TextComponent
+        //       text={route.name}
+        //       size={12}
+        //       color={focused ? appColors.primary : appColors.gray2}
+        //     />
+        //   );
+        // },
       })}>
-      <Tab.Screen  name="Explore" component={ExploerNavigator} />
+      <Tab.Screen name="Explore" component={ExploerNavigator} />
       <Tab.Screen name="Events" component={EventNavigator} />
-      <Tab.Screen  name="Add" component={AddNewScreen} />
+      <Tab.Screen name="Tickets" component={TicketScreen} />
       <Tab.Screen name="Map" component={MapNavigator} />
       <Tab.Screen name="Profile" component={MyProfileScreen} />
     </Tab.Navigator>

@@ -107,7 +107,7 @@ const SocialComponent = () => {
           styles={{textAlign: 'center'}}
         />
         <SpaceComponent height={16} />
-<ButtonComponent text='Logout' onPress={() => GoogleSignin.signOut()}/>
+        <ButtonComponent text="Logout" onPress={() => GoogleSignin.signOut()} />
         <ButtonComponent
           onPress={handleLoginWithGoogle}
           textColor={appColors.text}

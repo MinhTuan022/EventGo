@@ -39,25 +39,26 @@ const TabNavigator = () => {
         tabBarItemStyle: {
           paddingVertical: 7,
         },
-        tabBarIcon: ({focused, color, size}) => {
+        tabBarIcon: ({focused, color, size, variant}:any) => {
           let icon: ReactNode;
           color = focused ? appColors.primary : appColors.gray2;
           size = 23;
+          variant = focused ? "Bold" : 'Linear';
           switch (route.name) {
             case 'Explore':
               icon = <MaterialIcons name="explore" color={color} size={size} />;
               break;
             case 'Events':
-              icon = <Calendar color={color} size={size} variant="Bold" />;
+              icon = <Calendar color={color} size={size} variant={variant}/>
               break;
             case 'Map':
-              icon = <Location color={color} size={size} variant="Bold" />;
+              icon = <Location color={color} size={size} variant={variant}/>;
               break;
             case 'Profile':
-              icon = <Profile color={color} size={size} variant="Bold" />;
+              icon = <Profile color={color} size={size} variant={variant}/>;
               break;
             case 'Tickets':
-              icon = <Ticket color={color} size={size} variant="Bold" />;
+              icon = <Ticket color={color} size={size} variant={variant}/>;
               break;
               // case 'Add':
               icon = (

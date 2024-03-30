@@ -121,10 +121,9 @@ const MapScreen = ({navigation}: any) => {
           <Mapbox.MarkerView
             // id={`hgg${index}`}
             key={index}
-            coordinate={[
-              item.position.coordinates[1],
-              item.position.coordinates[0],
-            ]}>
+            coordinate={
+              item.position.coordinates
+            }>
             <TouchableOpacity
               onPress={() => handleMarkerClick(index)}
               style={{

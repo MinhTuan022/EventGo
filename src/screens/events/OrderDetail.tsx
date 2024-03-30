@@ -42,7 +42,7 @@ const OrderDetail = ({route, navigation}: any) => {
     userId: user.id,
     quantity: eventData.quantity,
     totalPrice: ticketPrice *eventData.quantity,
-    status: 'CONFIRMED',
+    status: 'Paid',
   }
   console.log(data)
   const [showModal, setShowModal] = useState(false);
@@ -90,23 +90,17 @@ const OrderDetail = ({route, navigation}: any) => {
     const {url} = navState;
     if (url.includes('http://192.168.1.106:3001/paypal/success')) {
       handleTicket();
-
       setShowModal(false);
       setPaymentSuccess(true);
-      // setTicketInfo({
-      //   ticketType: 'VIP',
-      //   numberOfTickets: 2,
-      //   totalPrice: 100, // or any other relevant info
-      // });
-      console.log('hihi');
     } else if (url.includes('http://192.168.1.106:3001/paypal/cancel')) {
       setShowModal(false);
+
     }
   };
 
   return (
     <>
-      {paymentSuccess && (
+      {paymentSuccess &&(
         <Modal transparent={true}>
           <StatusBar backgroundColor="rgba(0, 0, 0, 0.5)" translucent={true} />
           <View

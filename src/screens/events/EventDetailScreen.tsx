@@ -1,5 +1,11 @@
 import Mapbox from '@rnmapbox/maps';
-import {ArrowLeft, Calendar, Heart, Location} from 'iconsax-react-native';
+import {
+  ArrowLeft,
+  Calendar,
+  Heart,
+  Location,
+  Ticket,
+} from 'iconsax-react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {
   Animated,
@@ -29,10 +35,11 @@ import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import {DateTime} from '../../utils/convertDateTime';
 import {useFocusEffect} from '@react-navigation/native';
-import { convertToUSD } from '../../utils/convertToUSD';
+import {convertToUSD} from '../../utils/convertToUSD';
+import {EventModel} from '../../models/EventModel';
 
 const EventDetailScreen = ({navigation, route}: any) => {
-  const {item}: {item: any} = route.params;
+  const {item}: {item: EventModel} = route.params;
   const [showMap, setShowMap] = useState(false);
   const [isFollowing, setisFollowing] = useState(false);
   const [userId, setUserId] = useState(useSelector(authSelector).id);
@@ -294,6 +301,40 @@ const EventDetailScreen = ({navigation, route}: any) => {
             </View>
           </RowComponent>
           <SpaceComponent height={20} />
+
+          <RowComponent>
+            <ShapeComponent color={appColors.purple2} size={48} radius={12}>
+              <Ticket size={25} color={appColors.purple} variant="Bold" />
+            </ShapeComponent>
+            <SpaceComponent width={10} />
+            <View>
+              <TextComponent
+                text={
+                  item.ticketTypes.length > 0
+                    ? `${Math.min(
+                        ...item.ticketTypes.map(ticket => ticket.price),
+                      )} - ${Math.max(
+                        ...item.ticketTypes.map(ticket => ticket.price),
+                      )}`
+                    : 'Free'
+                }
+                font={fontFamilies.medium}
+                size={16}
+              />
+              <TextComponent
+                text={'Ticket price depends on package'}
+                size={12}
+              />
+            </View>
+          </RowComponent>
+        </SectionComponent>
+        <View
+          style={{
+            marginHorizontal: 16,
+            backgroundColor: appColors.gray2,
+            height: 0.7,
+          }}></View>
+        <SectionComponent styles={{}}>
           {item && (
             <RowComponent styles={{justifyContent: 'space-between'}}>
               <RowComponent
@@ -349,14 +390,6 @@ const EventDetailScreen = ({navigation, route}: any) => {
               )}
             </RowComponent>
           )}
-        </SectionComponent>
-        <SectionComponent>
-          <View
-            style={{
-              backgroundColor: appColors.gray2,
-              width: '100%',
-              height: 0.4,
-            }}></View>
           <View style={{paddingTop: 20}}>
             <TextComponent
               text="About Event"
@@ -415,9 +448,9 @@ const EventDetailScreen = ({navigation, route}: any) => {
                   <Mapbox.Camera
                     animationMode="flyTo"
                     zoomLevel={14}
-                    centerCoordinate={[105.7655, 21.0109]}
+                    centerCoordinate={item.position.coordinates}
                   />
-                  <Mapbox.MarkerView coordinate={[105.7655, 21.0109]}>
+                  <Mapbox.MarkerView coordinate={item.position.coordinates}>
                     <View style={{}}>
                       <Location size={30} color="red" variant="Bold" />
                     </View>
@@ -483,20 +516,22 @@ const EventDetailScreen = ({navigation, route}: any) => {
           </View>
         </SectionComponent>
       </ScrollView>
-
-      <View
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          paddingVertical: 20,
-        }}>
-        <ButtonComponent onPress={() => navigation.navigate('OrderTickets', item)}
-          styles={{width: '70%', padding: 12}}
-          text={`GET TICKET`}
-          type="primary"
-          textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
-        />
-      </View>
+      {userId !== item.organizer._id && (
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingVertical: 20,
+          }}>
+          <ButtonComponent
+            onPress={() => navigation.navigate('OrderTickets', item)}
+            styles={{width: '70%', padding: 12}}
+            text={`GET TICKET`}
+            type="primary"
+            textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 };

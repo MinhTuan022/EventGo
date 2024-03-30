@@ -10,8 +10,9 @@ export interface EventModel {
   endTime: Date
   organizer: Organizer
   category: string
-  attendees: any[]
-  tickets: any[]
+  attendees: Attendee[]
+  totalTickets: number
+  ticketTypes: TicketType[]
   __v: number
 }
 
@@ -23,4 +24,18 @@ export interface Position {
 export interface Organizer {
   _id: string
   name: string
+  photo: string
+}
+
+export interface Attendee {
+  _id: string
+  name: string
+  photo: string
+  followers: any[]
+}
+
+export interface TicketType {
+  typeTicket: string
+  price: number
+  _id: string
 }

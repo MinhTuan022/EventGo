@@ -112,10 +112,9 @@ const SocialComponent = () => {
           onPress={handleLoginWithGoogle}
           textColor={appColors.text}
           color="white"
-          iconFlex="left"
           text="Login With Google"
           type="primary"
-          icon={
+          iconLeft={
             <Svg width="26" height="26" viewBox="0 0 26 26" fill="none">
               <Path
                 d="M13.0005 5.02721C14.8632 4.99855 16.6646 5.69251 18.0267 6.96346L21.6955 3.37596C19.3417 1.17039 16.2259 -0.0390273 13.0005 0.000960935C10.5905 0.000404079 8.22797 0.670256 6.17696 1.93561C4.12596 3.20096 2.46738 5.01192 1.38672 7.16596L5.59047 10.4297C6.10448 8.86678 7.09614 7.50463 8.42559 6.53535C9.75505 5.56607 11.3552 5.03856 13.0005 5.02721Z"
@@ -141,10 +140,9 @@ const SocialComponent = () => {
           onPress={handleLoginWithFaceBook}
           textColor={appColors.text}
           color="white"
-          iconFlex="left"
           text="Login with Facebook"
           type="primary"
-          icon={
+          iconLeft={
             <Svg width="31" height="31" viewBox="0 0 31 31" fill="none">
               <Rect
                 width="30.7551"

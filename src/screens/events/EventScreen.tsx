@@ -26,8 +26,7 @@ const EventScreen = () => {
         <Image source={require('../../assets/images/event.png')}></Image>
       </View>
       <ButtonComponent
-        iconFlex="right"
-        icon={<ArrowCircleRight size={22} color="white" />}
+        iconRight={<ArrowCircleRight size={22} color="white" />}
         text="EXPLORE EVENTS"
         type="primary"
         textStyle={{fontFamily: fontFamilies.regular}}

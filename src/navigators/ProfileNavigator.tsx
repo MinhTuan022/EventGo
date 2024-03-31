@@ -151,8 +151,7 @@ const ProfileNavigator = ({route, navigation}: any) => {
               styles={{width: '48%'}}
               text={!isFollowing ? 'Follow' : 'Following'}
               type="primary"
-              icon={<UserAdd size={24} color="white" />}
-              iconFlex="left"
+              iconLeft={<UserAdd size={24} color="white" />}
             />
             <ButtonComponent
               styles={{
@@ -164,8 +163,7 @@ const ProfileNavigator = ({route, navigation}: any) => {
               text="Massages"
               textColor={appColors.primary}
               type="primary"
-              icon={<Message size={24} color={appColors.primary} />}
-              iconFlex="left"
+              iconLeft={<Message size={24} color={appColors.primary} />}
             />
           </RowComponent>
         </View>

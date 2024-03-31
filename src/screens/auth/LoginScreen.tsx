@@ -149,9 +149,9 @@ const LoginScreen = ({navigation}: any) => {
           <ButtonComponent
             onPress={handleLogin}
             text="SIGN IN"
-            iconFlex="right"
+            // iconFlex="right"
             type="primary"
-            icon={<ArrowCircleRight size={21} color={appColors.white} />}
+            iconRight={<ArrowCircleRight size={21} color={appColors.white} />}
           />
         </SectionComponent>
         <SocialComponent />

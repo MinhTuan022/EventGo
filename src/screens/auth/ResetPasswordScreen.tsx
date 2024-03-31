@@ -117,9 +117,8 @@ const ResetPasswordScreen = ({navigation, route}: any) => {
           <ButtonComponent
             onPress={handleResetPass}
             text="Send"
-            iconFlex="right"
             type="primary"
-            icon={
+            iconRight={
               <ArrowCircleRight size={22} color="white" />
             }></ButtonComponent>
         </SectionComponent>

@@ -162,10 +162,9 @@ const SignUpScreen = ({navigation}: any) => {
         <SectionComponent styles={{alignItems: 'center'}}>
           <ButtonComponent
             onPress={handleSignUp}
-            iconFlex="right"
             text="SIGN UP"
             type="primary"
-            icon={<ArrowCircleRight size={22} color={appColors.white} />}
+            iconRight={<ArrowCircleRight size={22} color={appColors.white} />}
           />
         </SectionComponent>
         <SocialComponent></SocialComponent>

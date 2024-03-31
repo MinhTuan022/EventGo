@@ -120,8 +120,7 @@ const DrawerCustom = ({navigation}: any) => {
         styles={{marginTop: 60, width: '70%', elevation: 0}}
         textColor="#00F8FF"
         color="#F2FFFF"
-        iconFlex="left"
-        icon={<Crown size={size} color="#00F8FF" />}
+        iconLeft={<Crown size={size} color="#00F8FF" />}
         type="primary"
         text="Upgrade Pro"
       />

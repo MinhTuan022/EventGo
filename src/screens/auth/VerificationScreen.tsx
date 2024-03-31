@@ -142,9 +142,8 @@ const VerificationScreen = ({navigation, route}: any) => {
           textStyle={{fontFamily: fontFamilies.medium}}
           onPress={handleVerification}
           text="CONTINUE"
-          iconFlex="right"
           type="primary"
-          icon={<ArrowCircleRight size={22} color="white" />}></ButtonComponent>
+          iconRight={<ArrowCircleRight size={22} color="white" />}></ButtonComponent>
       </SectionComponent>
       <SectionComponent>
         <RowComponent styles={{justifyContent: 'center'}}>

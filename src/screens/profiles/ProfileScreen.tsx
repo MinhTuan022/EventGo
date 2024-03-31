@@ -98,8 +98,7 @@ const ProfileScreen = () => {
             styles={{width: '48%'}}
             text="Follow"
             type="primary"
-            icon={<UserAdd size={24} color="white" />}
-            iconFlex="left"
+            iconLeft={<UserAdd size={24} color="white" />}
           />
           <ButtonComponent
             styles={{
@@ -111,8 +110,7 @@ const ProfileScreen = () => {
             text="Massages"
             textColor={appColors.primary}
             type="primary"
-            icon={<Message size={24} color={appColors.primary} />}
-            iconFlex="left"
+            iconLeft={<Message size={24} color={appColors.primary} />}
           />
         </RowComponent>
       </View>

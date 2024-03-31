@@ -68,9 +68,8 @@ const ForgotPasswordScreen = ({navigation}: any) => {
             disable={email ? false : true}
             onPress={handleForgotPass}
             text="Send"
-            iconFlex="right"
             type="primary"
-            icon={
+            iconRight={
               <ArrowCircleRight size={22} color="white" />
             }></ButtonComponent>
         </SectionComponent>

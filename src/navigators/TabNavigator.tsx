@@ -3,6 +3,10 @@ import {
   AddSquare,
   Calendar,
   Discover,
+  Heart,
+  Home,
+  Home2,
+  Home3,
   Location,
   Map,
   Profile,
@@ -10,10 +14,10 @@ import {
   Ticket2,
 } from 'iconsax-react-native';
 import React, {ReactNode} from 'react';
-import EventScreen from '../screens/events/EventScreen';
-import ExploerNavigator from './ExploreNavigator';
+import EventScreen from '../screens/favorites/FavoriteScreen';
+import HomeNavigator from './HomeNavigator';
 import MapNavigator from './MapNavigator';
-import EventNavigator from './EventNavigator';
+import  FavoriteNavigator from './FavoriteNavigator';
 import ProfileNavigator from './ProfileNavigator';
 import {appColors} from '../utils/constants/appColors';
 import {AddNewScreen, MyProfileScreen, TicketScreen} from '../screens';
@@ -39,26 +43,26 @@ const TabNavigator = () => {
         tabBarItemStyle: {
           paddingVertical: 7,
         },
-        tabBarIcon: ({focused, color, size, variant}:any) => {
+        tabBarIcon: ({focused, color, size, variant}: any) => {
           let icon: ReactNode;
           color = focused ? appColors.primary : appColors.gray2;
           size = 23;
-          variant = focused ? "Bold" : 'Linear';
+          variant = focused ? 'Bold' : 'Linear';
           switch (route.name) {
             case 'Explore':
-              icon = <MaterialIcons name="explore" color={color} size={size} />;
+              icon = <Home color={color} size={size} variant={variant} />;
               break;
-            case 'Events':
-              icon = <Calendar color={color} size={size} variant={variant}/>
+            case 'Favorites':
+              icon = <Heart color={color} size={size} variant={variant} />;
               break;
             case 'Map':
-              icon = <Location color={color} size={size} variant={variant}/>;
+              icon = <Location color={color} size={size} variant={variant} />;
               break;
             case 'Profile':
-              icon = <Profile color={color} size={size} variant={variant}/>;
+              icon = <Profile color={color} size={size} variant={variant} />;
               break;
             case 'Tickets':
-              icon = <Ticket color={color} size={size} variant={variant}/>;
+              icon = <Ticket color={color} size={size} variant={variant} />;
               break;
               // case 'Add':
               icon = (
@@ -96,8 +100,8 @@ const TabNavigator = () => {
         //   );
         // },
       })}>
-      <Tab.Screen name="Explore" component={ExploerNavigator} />
-      <Tab.Screen name="Events" component={EventNavigator} />
+      <Tab.Screen name="Explore" component={HomeNavigator} />
+      <Tab.Screen name="Favorites" component={FavoriteNavigator} />
       <Tab.Screen name="Tickets" component={TicketScreen} />
       <Tab.Screen name="Map" component={MapNavigator} />
       <Tab.Screen name="Profile" component={MyProfileScreen} />

@@ -124,7 +124,7 @@ const HomeScreen = ({navigation}: any) => {
         }}>
         <View style={{paddingHorizontal: 20, flex: 1}}>
           <RowComponent>
-            <TouchableOpacity onPress={() => navigation.openDrawer()}>
+            <TouchableOpacity>
               <AntDesign name="menuunfold" size={25} color={appColors.white} />
             </TouchableOpacity>
             <View style={{flex: 1, alignItems: 'center'}}>

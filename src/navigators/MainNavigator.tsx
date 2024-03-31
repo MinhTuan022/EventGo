@@ -3,6 +3,7 @@ import React from 'react';
 import { EventDetailScreen, GoingScreen, NotificationScreen, OrderDetail, OrderTickets, SearchScreen } from '../screens';
 import DrawerNavigator from './DrawerNavigator';
 import ProfileNavigator from './ProfileNavigator';
+import TabNavigator from './TabNavigator';
 
 
 const MainNavigator = () => {
@@ -11,7 +12,7 @@ const MainNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       
-      <Stack.Screen name="Main" component={DrawerNavigator} />
+      <Stack.Screen name="Menu" component={TabNavigator} />
       <Stack.Screen name="EventDetail" component={EventDetailScreen} />
       <Stack.Screen name="ProfileNavigator" component={ProfileNavigator} />
       <Stack.Screen name='NotificationScreen' component={NotificationScreen}/>

@@ -11,7 +11,7 @@ import {
 import { globalStyles } from '../../styles/globalStyles';
 import { fontFamilies } from '../../utils/constants/fontFamilies';
 
-const EventScreen = () => {
+const  FavoriteScreen = () => {
   return (
     <View
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
@@ -36,4 +36,4 @@ const EventScreen = () => {
   );
 };
 
-export default EventScreen;
+export default  FavoriteScreen;

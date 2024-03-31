@@ -5,7 +5,7 @@ import OnBoardingScreen from './auth/OnBoardingScreen';
 import ResetPasswordScreen from './auth/ResetPasswordScreen';
 import SignUpScreen from './auth/SignUpScreen';
 import EventDetailScreen from './events/EventDetailScreen';
-import EventScreen from './events/EventScreen';
+import  FavoriteScreen from './favorites/FavoriteScreen';
 import HomeScreen from './home/HomeScreen';
 import MapScreen from './map/MapScreen';
 import ProfileScreen from './profiles/ProfileScreen';
@@ -24,7 +24,7 @@ export {
   OnBoardingScreen,
   ResetPasswordScreen,
   SignUpScreen,
-  EventScreen,
+  FavoriteScreen,
   MapScreen,
   ProfileScreen,
   AddNewScreen,

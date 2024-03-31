@@ -3,6 +3,7 @@ import {
   ArchiveTick,
   Facebook,
   GalleryFavorite,
+  Heart,
   Location,
 } from 'iconsax-react-native';
 import React, {useEffect, useState} from 'react';
@@ -78,12 +79,12 @@ const EventItem = (props: Props) => {
               />
             </CardComponent>
 
-            <ShapeComponent
+            <ShapeComponent onPress={() => {}}
               radius={10}
               size={30}
               color="white"
               styles={{margin: 12}}>
-              <ArchiveTick color="red" size={14} variant="Bold" />
+              <Heart color="red" size={18}  />
             </ShapeComponent>
           </ImageBackground>
           <TextComponent text={item.title} title size={18} />

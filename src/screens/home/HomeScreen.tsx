@@ -1,9 +1,10 @@
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
-import {Notification, SearchNormal, Sort} from 'iconsax-react-native';
+import {Filter, Notification, SearchNormal, Sort} from 'iconsax-react-native';
 import React, {useEffect, useState} from 'react';
 import {
   FlatList,
+  SafeAreaView,
   ScrollView,
   StatusBar,
   TouchableOpacity,
@@ -11,9 +12,10 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import eventAPI from '../../apis/eventApi';
 import {
+  ButtonComponent,
   EventItem,
   RowComponent,
   SectionComponent,
@@ -30,9 +32,12 @@ import categoryAPI from '../../apis/categoryApi';
 import {appInfo} from '../../utils/constants/appInfos';
 import {WebView} from 'react-native-webview';
 import {useFocusEffect} from '@react-navigation/native';
+import {authSelector} from '../../redux/reducers/authReducer';
+import {Image} from 'react-native';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
+  const user = useSelector(authSelector);
   const [categories, setCategories] = useState([]);
   const [eventUpcoming, setEventUpcoming] = useState([]);
   const [eventNear, setEventNear] = useState([]);
@@ -109,11 +114,18 @@ const HomeScreen = ({navigation}: any) => {
     }
   };
   return (
-    <View style={[globalStyles.container, {backgroundColor: appColors.white2}]}>
-      <StatusBar barStyle={'light-content'} />
+    <SafeAreaView
+      style={[
+        globalStyles.container,
+        {
+          backgroundColor: appColors.white2,
+          paddingTop: StatusBar.currentHeight,
+        },
+      ]}>
+      <StatusBar barStyle={'dark-content'} />
 
       {/* HeaderComponent */}
-      <View
+      {/* <View
         style={{
           backgroundColor: appColors.purple,
           height: '23%',
@@ -205,19 +217,77 @@ const HomeScreen = ({navigation}: any) => {
         </View>
 
         <CategoriesList />
-      </View>
+      </View> */}
 
-      {/* Body */}
-      <ScrollView
-        style={{flex: 1, marginTop: 40}}
-        showsVerticalScrollIndicator={false}>
+      <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
+        {/* /Header */}
+        <SectionComponent>
+          <RowComponent styles={{justifyContent: 'space-between'}}>
+            <RowComponent>
+              <Image
+                source={{uri: user.photo}}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 100,
+                  marginRight: 8,
+                }}
+              />
+              <View>
+                <TextComponent text="Good Morning" />
+                <TextComponent
+                  text={user.name}
+                  font={fontFamilies.medium}
+                  size={16}
+                />
+              </View>
+            </RowComponent>
+            <ShapeComponent
+              styles={{
+                backgroundColor: 'white',
+                borderColor: appColors.gray2,
+                borderWidth: 1,
+              }}
+              onPress={() => navigation.navigate('NotificationScreen')}>
+              <View>
+                <Notification size={18} color="black" />
+                <View
+                  style={{
+                    backgroundColor: '#02E9FE',
+                    width: 6,
+                    height: 6,
+                    borderRadius: 100,
+                    position: 'absolute',
+                    top: 1,
+                    right: 1,
+                  }}></View>
+              </View>
+            </ShapeComponent>
+          </RowComponent>
+          <ButtonComponent
+          text="What event are looking for"
+          iconLeft={<SearchNormal size={22} color={appColors.gray2} />}
+          iconRight={<Filter size={22} color={appColors.primary} />}
+          type='primary'
+          styles={{width:"100%", marginTop:20}}
+          color={"#F5F5F5"}
+          textColor={appColors.gray2}
+        />
+        </SectionComponent>
+        
+        {/* /Header */}
+        {/* <SectionComponent>
+          <CategoriesList/>
+        </SectionComponent> */}
+
+        {/* Body */}
         <RowComponent
           styles={{
             // marginTop: 40,
             justifyContent: 'space-between',
             paddingHorizontal: 16,
           }}>
-          <TextComponent text="Upcomming Events" title />
+          <TextComponent text="Upcomming Events" title size={20}/>
           <TextComponent text="See All" />
         </RowComponent>
 
@@ -229,13 +299,14 @@ const HomeScreen = ({navigation}: any) => {
             <EventItem key={index} item={item} type="card" />
           )}
         />
+        
         <RowComponent
           styles={{
             // marginTop: 40,
             justifyContent: 'space-between',
             paddingHorizontal: 16,
           }}>
-          <TextComponent text="NearBy" title />
+          <TextComponent text="NearBy" title size={20}/>
           <TextComponent text="See All" />
         </RowComponent>
 
@@ -247,9 +318,25 @@ const HomeScreen = ({navigation}: any) => {
             <EventItem key={index} item={item} type="card" />
           )}
         />
+        <FlatList
+          showsHorizontalScrollIndicator={false}
+          horizontal
+          data={eventUpcoming}
+          renderItem={({item, index}) => (
+            <EventItem key={index} item={item} type="card" />
+          )}
+        />
+        <FlatList
+          showsHorizontalScrollIndicator={false}
+          horizontal
+          data={eventUpcoming}
+          renderItem={({item, index}) => (
+            <EventItem key={index} item={item} type="card" />
+          )}
+        />
       </ScrollView>
       {/* <WebView source={{ uri: 'https://reactnative.dev/' }}/> */}
-    </View>
+    </SafeAreaView>
   );
 };
 export default HomeScreen;

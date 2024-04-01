@@ -1,25 +1,22 @@
-import {View, Text, Alert} from 'react-native';
-import React, {useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import React, { useState } from 'react';
+import {
+  LoginManager,
+  Profile,
+  Settings
+} from 'react-native-fbsdk-next';
+import { Path, Rect, Svg } from 'react-native-svg';
+import { useDispatch } from 'react-redux';
 import {
   ButtonComponent,
   SectionComponent,
   SpaceComponent,
   TextComponent,
 } from '.';
-import {appColors} from '../utils/constants/appColors';
-import {Path, Rect, Svg, SvgFromXml} from 'react-native-svg';
-import {globalStyles} from '../styles/globalStyles';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import second, {
-  LoginButton,
-  LoginManager,
-  Profile,
-  Settings,
-} from 'react-native-fbsdk-next';
 import authenticationAPI from '../apis/authApi';
-import {useDispatch} from 'react-redux';
-import {addAuth} from '../redux/reducers/authReducer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { addAuth, addFavoriteEvent } from '../redux/reducers/authReducer';
+import { appColors } from '../utils/constants/appColors';
 import LoadingModal from './modals/LoadingModal';
 
 GoogleSignin.configure({
@@ -87,8 +84,9 @@ const SocialComponent = () => {
             data,
             'post',
           );
-          console.log(res);
+          console.log(res.data);
           dispatch(addAuth(res.data));
+
 
           await AsyncStorage.setItem('auth', JSON.stringify(res.data));
         }

@@ -1,3 +1,4 @@
+import {useFocusEffect} from '@react-navigation/native';
 import Mapbox from '@rnmapbox/maps';
 import {
   ArrowLeft,
@@ -6,7 +7,7 @@ import {
   Location,
   Ticket,
 } from 'iconsax-react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   Animated,
   Image,
@@ -19,7 +20,7 @@ import {
   View,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import userAPI from '../../apis/userApi';
 import {
   ButtonComponent,
@@ -29,21 +30,28 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {authSelector} from '../../redux/reducers/authReducer';
+import {EventModel} from '../../models/EventModel';
+import {
+  addFavoriteEvent,
+  authSelector,
+  removeFavoriteEvent,
+} from '../../redux/reducers/authReducer';
 import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import {DateTime} from '../../utils/convertDateTime';
-import {useFocusEffect} from '@react-navigation/native';
-import {convertToUSD} from '../../utils/convertToUSD';
-import {EventModel} from '../../models/EventModel';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const EventDetailScreen = ({navigation, route}: any) => {
   const {item}: {item: EventModel} = route.params;
+  const user = useSelector(authSelector);
   const [showMap, setShowMap] = useState(false);
   const [isFollowing, setisFollowing] = useState(false);
-  const [userId, setUserId] = useState(useSelector(authSelector).id);
+  const [userId, setUserId] = useState(user.id);
   const [targetUserId, setTargetUserId] = useState(item.organizer._id);
+  const [favorite, setFavorite] = useState(false);
+  const dispatch = useDispatch();
+  // const [test, settest] = useState<String[]>([]);
   // const [userGoing, setUserGoing] = useState([]);
 
   // useEffect(() => {
@@ -76,8 +84,36 @@ const EventDetailScreen = ({navigation, route}: any) => {
       };
 
       checkFollowing();
-    }, [userId, targetUserId]),
+      if (user.favorites && user.favorites.includes(item._id)) {
+        setFavorite(true);
+      }
+      if (user) {
+        AsyncStorage.setItem('auth', JSON.stringify(user));
+        // console.log(user);
+      }
+    }, [userId, targetUserId, user]),
   );
+  const handleFavorite = async () => {
+    try {
+      setFavorite(!favorite);
+
+      const res = await userAPI.HandleUser(
+        `/favorite`,
+        {userId, eventId: item._id},
+        'post',
+      );
+      console.log(res);
+
+      if (favorite) {
+        dispatch(removeFavoriteEvent(item._id));
+      } else {
+        dispatch(addFavoriteEvent(item._id));
+      }
+      console.log(favorite);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleFollow = async () => {
     try {
@@ -87,7 +123,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
         {userId, targetUserId},
         'post',
       );
-      console.log(res);
+      // console.log(res);
       setisFollowing(!isFollowing);
     } catch (error) {
       console.log(error);
@@ -140,13 +176,16 @@ const EventDetailScreen = ({navigation, route}: any) => {
           height: 100,
           position: 'absolute',
           backgroundColor: 'white',
-          //   top: 0,
+          // alignItems:'center',
+          // justifyContent:'center',
           zIndex: 1,
           opacity: animatedValue.interpolate({
             inputRange: [0, 1],
             outputRange: [0, 1],
           }),
-        }}></Animated.View>
+        }}>
+        <TextComponent text="dd" />
+      </Animated.View>
       <RowComponent
         styles={{
           justifyContent: 'space-between',
@@ -166,8 +205,16 @@ const EventDetailScreen = ({navigation, route}: any) => {
           </ShapeComponent>
         </RowComponent>
         <RowComponent>
-          <ShapeComponent radius={12} color={appColors.white} size={36}>
-            <Heart size={20} color={'red'} variant="Bold" />
+          <ShapeComponent
+            radius={12}
+            color={appColors.white}
+            size={36}
+            onPress={handleFavorite}>
+            <Heart
+              size={20}
+              color={'red'}
+              variant={favorite ? 'Bold' : 'Linear'}
+            />
           </ShapeComponent>
           <SpaceComponent width={10} />
           <ShapeComponent

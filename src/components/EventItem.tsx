@@ -7,7 +7,13 @@ import {
   Location,
 } from 'iconsax-react-native';
 import React, {useEffect, useState} from 'react';
-import {Dimensions, Image, ImageBackground, View} from 'react-native';
+import {
+  Dimensions,
+  Image,
+  ImageBackground,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {
   AvataGroup,
   CardComponent,
@@ -22,16 +28,19 @@ import {fontFamilies} from '../utils/constants/fontFamilies';
 import {EventModel} from '../models/EventModel';
 import eventAPI from '../apis/eventApi';
 import {DateTime} from '../utils/convertDateTime';
+import userAPI from '../apis/userApi';
+import {useSelector} from 'react-redux';
+import {AuthState, authSelector} from '../redux/reducers/authReducer';
 
 interface Props {
   item: EventModel;
   type: 'card' | 'list';
-  disible?: boolean
+  disible?: boolean;
 }
 
 const EventItem = (props: Props) => {
   const {item, type, disible} = props;
-
+  const user: AuthState = useSelector(authSelector);
   const navigation: any = useNavigation();
 
   return (
@@ -42,8 +51,9 @@ const EventItem = (props: Props) => {
             ? Dimensions.get('window').width * 0.6
             : Dimensions.get('window').width * 0.93,
       }}
-      
-       onPress={!disible ? () => navigation.navigate('EventDetail', {item}) : undefined}>
+      onPress={
+        !disible ? () => navigation.navigate('EventDetail', {item}) : undefined
+      }>
       {type === 'card' ? (
         <>
           <ImageBackground
@@ -79,12 +89,13 @@ const EventItem = (props: Props) => {
               />
             </CardComponent>
 
-            <ShapeComponent onPress={() => {}}
+            <ShapeComponent
+              onPress={() => {}}
               radius={10}
               size={30}
               color="white"
               styles={{margin: 12}}>
-              <Heart color="red" size={18}  />
+              <Heart color="red" size={18} variant={user.favorites && item && user.favorites.includes(item._id) ? "Bold" : 'Linear'}/>
             </ShapeComponent>
           </ImageBackground>
           <TextComponent text={item.title} title size={18} />
@@ -137,7 +148,6 @@ const EventItem = (props: Props) => {
                 style={{
                   flex: 1,
                   justifyContent: 'space-around',
-
                 }}>
                 <TextComponent text={item.title} title size={18} />
                 <TextComponent
@@ -149,13 +159,19 @@ const EventItem = (props: Props) => {
                   color={appColors.primary}
                   font={fontFamilies.medium}
                 />
-                <RowComponent>
-                  <Location
-                    size={16}
-                    color={appColors.primary}
-                    variant="Bold"
-                  />
-                  <TextComponent text={item.location} />
+                <RowComponent  styles={{justifyContent: 'space-between'}}>
+                  <RowComponent>
+                    <Location
+                      size={16}
+                      color={appColors.primary}
+                      variant="Bold"
+                    />
+                    <TextComponent text={item.location} />
+                  </RowComponent>
+
+                  <TouchableOpacity>
+                    <Heart size={18} color={appColors.primary} variant={user.favorites && item && user.favorites.includes(item._id) ? "Bold" : 'Linear'}/>
+                  </TouchableOpacity>
                 </RowComponent>
               </View>
             </View>

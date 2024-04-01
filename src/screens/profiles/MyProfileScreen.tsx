@@ -24,15 +24,20 @@ import {
 import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import {StyleSheet} from 'react-native';
-import {useSelector} from 'react-redux';
-import {authSelector} from '../../redux/reducers/authReducer';
+import {useDispatch, useSelector} from 'react-redux';
+import {authSelector, removeAuth} from '../../redux/reducers/authReducer';
 import userAPI from '../../apis/userApi';
 import {UserModel} from '../../models/UserModel';
 import {useFocusEffect} from '@react-navigation/native';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { LoginManager } from 'react-native-fbsdk-next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const MyProfileScreen = ({route}: any) => {
   const user = useSelector(authSelector);
   const [userData, setUserData] = useState<UserModel>();
+  const dispatch = useDispatch();
   // useEffect(() =>{
   //   if(user){
   //     handleProfile()
@@ -45,6 +50,12 @@ const MyProfileScreen = ({route}: any) => {
       }
     }, [user]),
   );
+  const handleLogOut = async () => {
+    await GoogleSignin.signOut();
+    await LoginManager.logOut();
+    dispatch(removeAuth());
+    await AsyncStorage.clear();
+  };
   const handleProfile = async () => {
     try {
       const res = await userAPI.HandleUser(`/userId?userId=${user.id}`);
@@ -290,7 +301,7 @@ const MyProfileScreen = ({route}: any) => {
           styles={localStyle.button}
           textStyle={{fontFamily: fontFamilies.medium}}
         />
-        <ButtonComponent
+        <ButtonComponent onPress={handleLogOut}
           text="Logout"
           iconLeft={<Logout size={22} color="red" />}
           // iconRight={<ArrowCircleRight size={22} color="black" />}

@@ -34,13 +34,15 @@ import {WebView} from 'react-native-webview';
 import {useFocusEffect} from '@react-navigation/native';
 import {authSelector} from '../../redux/reducers/authReducer';
 import {Image} from 'react-native';
+import userAPI from '../../apis/userApi';
+import { EventModel } from '../../models/EventModel';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
   const user = useSelector(authSelector);
   const [categories, setCategories] = useState([]);
-  const [eventUpcoming, setEventUpcoming] = useState([]);
-  const [eventNear, setEventNear] = useState([]);
+  const [eventUpcoming, setEventUpcoming] = useState<EventModel[]>([]);
+  const [eventNear, setEventNear] = useState<EventModel[]>([]);
   const [currentLocation, setCurrentLocation] = useState<AddressModel>();
   const [currentTime, setCurrentTime] = useState(new Date());
   const limit = 5;
@@ -61,6 +63,7 @@ const HomeScreen = ({navigation}: any) => {
     React.useCallback(() => {
       fetchEvents();
       fetchEvents(currentLocation?.position.lat, currentLocation?.position.lng);
+
     }, [currentLocation]),
   );
   // useEffect(() => {
@@ -113,6 +116,7 @@ const HomeScreen = ({navigation}: any) => {
       console.log(error);
     }
   };
+ 
   return (
     <SafeAreaView
       style={[

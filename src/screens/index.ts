@@ -16,6 +16,7 @@ import GoingScreen from './events/GoingScreen';
 import OrderTickets from './events/OrderTickets';
 import OrderDetail from './events/OrderDetail';
 import TicketScreen from './tickets/TicketScreen';
+import EditProfileScreen from './profiles/EditProfileScreen';
 
 export {
   HomeScreen,
@@ -35,5 +36,6 @@ export {
   GoingScreen,
   OrderTickets,
   OrderDetail,
-  TicketScreen
+  TicketScreen,
+  EditProfileScreen
 };

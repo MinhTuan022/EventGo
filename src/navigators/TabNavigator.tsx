@@ -25,6 +25,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {View} from 'react-native';
 import {TextComponent} from '../components';
 import {globalStyles} from '../styles/globalStyles';
+import MyProfileNavigator from './MyProfileNavigator';
 
 const TabNavigator = () => {
   // const isUser = true
@@ -104,7 +105,7 @@ const TabNavigator = () => {
       <Tab.Screen name="Favorites" component={FavoriteNavigator} />
       <Tab.Screen name="Tickets" component={TicketScreen} />
       <Tab.Screen name="Map" component={MapNavigator} />
-      <Tab.Screen name="Profile" component={MyProfileScreen} />
+      <Tab.Screen name="Profile" component={MyProfileNavigator} />
     </Tab.Navigator>
   );
 };

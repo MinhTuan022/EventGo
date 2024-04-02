@@ -34,7 +34,7 @@ import { LoginManager } from 'react-native-fbsdk-next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-const MyProfileScreen = ({route}: any) => {
+const MyProfileScreen = ({route, navigation}: any) => {
   const user = useSelector(authSelector);
   const [userData, setUserData] = useState<UserModel>();
   const dispatch = useDispatch();
@@ -231,7 +231,7 @@ const MyProfileScreen = ({route}: any) => {
             marginVertical: 10,
           }}
         />
-        <ButtonComponent
+        <ButtonComponent onPress={() => {navigation.navigate("EditProfileScreen", userData)}}
           text="Profile"
           iconLeft={<Profile size={22} color="black" />}
           iconRight={<ArrowCircleRight size={22} color="black" />}

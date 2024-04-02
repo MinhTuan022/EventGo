@@ -22,12 +22,23 @@ import {
 import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
+import ChoicePictureModal from '../../components/modals/ChoicePictureModal';
+import userAPI from '../../apis/userApi';
+import LoadingModal from '../../components/modals/LoadingModal';
+import {useNavigation} from '@react-navigation/native';
+import {UserModel} from '../../models/UserModel';
 
 const EditProfileScreen = ({route}: any) => {
-  const userData = route.params;
+  const userData: UserModel = route.params;
+  console.log(userData);
   const [imageUrl, setImageUrl] = useState<any>(null);
-  const [modalVisible, setModalVisible] = useState(false); // Trạng thái hiển thị modal
+  const [modalVisible, setModalVisible] = useState(false);
+  const [firstName, setFirstName] = useState(userData.firstname);
+  const [lastName, setLastName] = useState(userData.lastname);
+  const [about, setAbout] = useState(userData.about);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const navigation = useNavigation();
   const openModal = () => {
     setModalVisible(true);
   };
@@ -37,15 +48,18 @@ const EditProfileScreen = ({route}: any) => {
   };
   const selectFromLibrary = async () => {
     try {
+      // closeModal();
       const image = await ImageCropPicker.openPicker({
         width: 300,
         height: 300,
         cropping: true,
       });
       console.log(image.path);
+
       await uploadImage(image.path);
     } catch (error) {
       console.log(error);
+      closeModal();
     }
   };
 
@@ -59,6 +73,7 @@ const EditProfileScreen = ({route}: any) => {
       console.log(image.path);
     } catch (error) {
       console.log(error);
+      closeModal();
     }
   };
 
@@ -73,6 +88,30 @@ const EditProfileScreen = ({route}: any) => {
       console.log(error);
     }
   };
+
+  const updateProfile = async () => {
+    setIsLoading(true);
+    try {
+      const res = await userAPI.HandleUser(
+        '/profile',
+        {
+          userId: userData._id,
+          firstName: firstName,
+          lastName: lastName,
+          about: about,
+          photo: imageUrl,
+        },
+        'put',
+      );
+      setIsLoading(false);
+      navigation.goBack();
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     console.log(imageUrl);
   }, [imageUrl]);
@@ -81,7 +120,7 @@ const EditProfileScreen = ({route}: any) => {
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <RowComponent styles={{alignItems: 'center', paddingHorizontal: 16}}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={updateProfile}>
             <ArrowLeft size={22} color="black" fontFamily={fontFamilies.bold} />
           </TouchableOpacity>
           <SpaceComponent width={20} />
@@ -100,7 +139,9 @@ const EditProfileScreen = ({route}: any) => {
             activeOpacity={1}>
             <Image
               source={{
-                uri: userData
+                uri: imageUrl
+                  ? imageUrl
+                  : userData
                   ? userData.photo
                   : 'https://www.pexels.com/photo/shallow-focus-photography-of-gray-cat-in-box-3389528/',
               }}
@@ -125,8 +166,13 @@ const EditProfileScreen = ({route}: any) => {
           <SpaceComponent height={20} />
           <TextComponent text={String(userData?.name)} title />
         </View>
-        {/* <ChoicePictureModal visible={true}/> */}
-        <Modal visible={modalVisible} transparent animationType="slide">
+        <ChoicePictureModal
+          modalVisible={modalVisible}
+          closeModal={closeModal}
+          captureFromCamera={captureFromCamera}
+          selectFromLibrary={selectFromLibrary}
+        />
+        {/* <Modal visible={modalVisible} transparent animationType="slide">
           <TouchableOpacity
             onPress={closeModal}
             activeOpacity={1}
@@ -191,16 +237,39 @@ const EditProfileScreen = ({route}: any) => {
               />
             </View>
           </TouchableOpacity>
-        </Modal>
+        </Modal> */}
         <SectionComponent>
-          <InputComponent placeHolder="Hihi" value="" onChange={() => {}} />
-          <InputComponent placeHolder="Hihi" value="" onChange={() => {}} />
+          <InputComponent
+            label='First Name'
+            placeHolder="First Name"
+            value={firstName}
+            onChange={val => setFirstName(val)}
+          />
+          <InputComponent
+            label='First Name'
 
-          <InputComponent placeHolder="Hihi" value="" onChange={() => {}} />
+            placeHolder="Last Name"
+            value={lastName}
+            onChange={val => setLastName(val)}
+          />
+          <InputComponent
+            label='First Name'
 
-          <InputComponent placeHolder="Hihi" value="" onChange={() => {}} />
+            editable={false}
+            placeHolder="Email"
+            value={userData.email}
+            onChange={() => {}}
+          />
+          <InputComponent
+            label='First Name'
+
+            placeHolder="About me"
+            value={about}
+            onChange={val => setAbout(val)}
+          />
         </SectionComponent>
       </ScrollView>
+      <LoadingModal visible={isLoading} />
     </View>
   );
 };

@@ -24,7 +24,8 @@ interface Props {
   type?: KeyboardType;
   validate?: ReactNode;
   styles?: StyleProp<ViewStyle>
-  label?: string
+  label?: string,
+  editable?: boolean
 //   onEnd?: () => void;
 }
 
@@ -40,16 +41,18 @@ const InputComponent = (props: Props) => {
     type,
     validate,
     styles,
-    label
+    label,
+    editable
    //  onEnd
   } = props;
   const [isShowPass, setIsShowPass] = useState(isPassword ?? false);
   return (
     <View>
        {label && <TextComponent text={label} styles={{paddingBottom:7}}/>}
-      <View style={[globalStyles.inputContainer, styles]}>
+      <View style={[globalStyles.inputContainer, {backgroundColor: editable===false ? appColors.gray2  : 'white'}, styles]}>
         {affix ?? affix}
         <TextInput
+          editable={editable}
           style={[globalStyles.input, affix || suffix ? {paddingHorizontal:15} : {}]}
           value={value}
           placeholder={placeHolder ?? ''}
@@ -73,9 +76,9 @@ const InputComponent = (props: Props) => {
               <Eye size={22} color={appColors.gray} />
             )
           ) : (
-            value.length > 0 && (
+            value && value.length > 5 ? (
               <AntDesign name="close" size={22} color={appColors.gray2} />
-            )
+            ) : ''
           )}
         </TouchableOpacity>
       </View>

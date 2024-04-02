@@ -8,6 +8,7 @@ export interface UserModel {
   photo: string
   createdAt: string
   updateAt: string
+  about: string
   __v: number
   events: string[]
   following: string[]

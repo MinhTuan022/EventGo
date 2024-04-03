@@ -1,18 +1,18 @@
 import Geolocation from '@react-native-community/geolocation';
 import Mapbox from '@rnmapbox/maps';
 import axios from 'axios';
-import { Edit2, Location } from 'iconsax-react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import {Edit2, Location} from 'iconsax-react-native';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   FlatList,
   Image,
   StatusBar,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import eventAPI from '../../apis/eventApi';
 import {
   EventItem,
@@ -21,14 +21,14 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import { AddressModel } from '../../models/AddressModel';
-import { EventModel } from '../../models/EventModel';
-import { authSelector } from '../../redux/reducers/authReducer';
-import { globalStyles } from '../../styles/globalStyles';
-import { appColors } from '../../utils/constants/appColors';
-import { appInfo } from '../../utils/constants/appInfos';
-import { fontFamilies } from '../../utils/constants/fontFamilies';
-
+import {AddressModel} from '../../models/AddressModel';
+import {EventModel} from '../../models/EventModel';
+import {authSelector} from '../../redux/reducers/authReducer';
+import {globalStyles} from '../../styles/globalStyles';
+import {appColors} from '../../utils/constants/appColors';
+import {appInfo} from '../../utils/constants/appInfos';
+import {fontFamilies} from '../../utils/constants/fontFamilies';
+import userAPI from '../../apis/userApi';
 
 const MapScreen = ({navigation}: any) => {
   const [events, setEvents] = useState([]);
@@ -40,8 +40,8 @@ const MapScreen = ({navigation}: any) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isPress, setIsPress] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
-
-  const user = useSelector(authSelector);
+  const [user, setUser] = useState<any>();
+  const auth = useSelector(authSelector);
 
   const flatListRef = useRef<any>(null);
   useEffect(() => {
@@ -55,7 +55,9 @@ const MapScreen = ({navigation}: any) => {
       (error: any) => console.log('Error getting location: ', error),
       {},
     );
-  }, [distance]);
+
+    getUser(auth.id);
+  }, [distance, auth.id]);
   const handleMarkerClick = (index: any) => {
     setSelectedItem(index);
     setIsPress(true);
@@ -73,6 +75,14 @@ const MapScreen = ({navigation}: any) => {
     }
   };
 
+  const getUser = async (uid:any) => {
+    try {
+      const res = await userAPI.HandleUser(`/userId?userId=${uid}`);
+      setUser(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const reverseGeoCode = async (lat: number, long: number) => {
     const api = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=vi-VN&apiKey=${appInfo.API_KEY_REVGEOCODE}`;
 
@@ -112,7 +122,11 @@ const MapScreen = ({navigation}: any) => {
               borderRadius: 100,
             }}>
             <Image
-              source={{uri: user.photo}}
+              source={{
+                uri: user
+                  ? user.photo
+                  : 'https://www.pexels.com/photo/shallow-focus-photography-of-gray-cat-in-box-3389528/',
+              }}
               style={{width: 50, height: 50, borderRadius: 100}}
             />
           </View>
@@ -121,9 +135,7 @@ const MapScreen = ({navigation}: any) => {
           <Mapbox.MarkerView
             // id={`hgg${index}`}
             key={index}
-            coordinate={
-              item.position.coordinates
-            }>
+            coordinate={item.position.coordinates}>
             <TouchableOpacity
               onPress={() => handleMarkerClick(index)}
               style={{
@@ -144,7 +156,6 @@ const MapScreen = ({navigation}: any) => {
                 />
               </View>
             </TouchableOpacity>
-
           </Mapbox.MarkerView>
         ))}
       </Mapbox.MapView>

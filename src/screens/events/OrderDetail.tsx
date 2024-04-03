@@ -145,7 +145,7 @@ const OrderDetail = ({route, navigation}: any) => {
               <ButtonComponent
                 text="Go Home"
                 type="primary"
-                onPress={() => navigation.navigate('Main')}
+                onPress={() => navigation.navigate('Menu')}
                 color={appColors.purple2}
                 textColor={appColors.primary}
               />

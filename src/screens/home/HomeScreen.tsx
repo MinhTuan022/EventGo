@@ -35,11 +35,14 @@ import {useFocusEffect} from '@react-navigation/native';
 import {authSelector} from '../../redux/reducers/authReducer';
 import {Image} from 'react-native';
 import userAPI from '../../apis/userApi';
-import { EventModel } from '../../models/EventModel';
+import {EventModel} from '../../models/EventModel';
+import {UserModel} from '../../models/UserModel';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
-  const user = useSelector(authSelector);
+  const auth = useSelector(authSelector);
+  // console.log(user)
+  const [user, setUser] = useState<any>();
   const [categories, setCategories] = useState([]);
   const [eventUpcoming, setEventUpcoming] = useState<EventModel[]>([]);
   const [eventNear, setEventNear] = useState<EventModel[]>([]);
@@ -63,7 +66,7 @@ const HomeScreen = ({navigation}: any) => {
     React.useCallback(() => {
       fetchEvents();
       fetchEvents(currentLocation?.position.lat, currentLocation?.position.lng);
-
+      getUser()
     }, [currentLocation]),
   );
   // useEffect(() => {
@@ -116,7 +119,14 @@ const HomeScreen = ({navigation}: any) => {
       console.log(error);
     }
   };
- 
+  const getUser = async () => {
+    try {
+      const res = await userAPI.HandleUser(`/userId?userId=${auth.id}`);
+      setUser(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <SafeAreaView
       style={[
@@ -229,7 +239,7 @@ const HomeScreen = ({navigation}: any) => {
           <RowComponent styles={{justifyContent: 'space-between'}}>
             <RowComponent>
               <Image
-                source={{uri: user.photo}}
+                source={{uri: user ?  user.photo : "https://th.bing.com/th/id/OIP.DxdqBFLVLPcWsjkds8636QHaHf?rs=1&pid=ImgDetMain"}}
                 style={{
                   width: 40,
                   height: 40,
@@ -240,7 +250,7 @@ const HomeScreen = ({navigation}: any) => {
               <View>
                 <TextComponent text="Good Morning" />
                 <TextComponent
-                  text={user.name}
+                  text={String(user?.name)}
                   font={fontFamilies.medium}
                   size={16}
                 />
@@ -269,16 +279,16 @@ const HomeScreen = ({navigation}: any) => {
             </ShapeComponent>
           </RowComponent>
           <ButtonComponent
-          text="What event are looking for"
-          iconLeft={<SearchNormal size={22} color={appColors.gray2} />}
-          iconRight={<Filter size={22} color={appColors.primary} />}
-          type='primary'
-          styles={{width:"100%", marginTop:20}}
-          color={"#F5F5F5"}
-          textColor={appColors.gray2}
-        />
+            text="What event are looking for"
+            iconLeft={<SearchNormal size={22} color={appColors.gray2} />}
+            iconRight={<Filter size={22} color={appColors.primary} />}
+            type="primary"
+            styles={{width: '100%', marginTop: 20}}
+            color={'#F5F5F5'}
+            textColor={appColors.gray2}
+          />
         </SectionComponent>
-        
+
         {/* /Header */}
         {/* <SectionComponent>
           <CategoriesList/>
@@ -291,7 +301,7 @@ const HomeScreen = ({navigation}: any) => {
             justifyContent: 'space-between',
             paddingHorizontal: 16,
           }}>
-          <TextComponent text="Upcomming Events" title size={20}/>
+          <TextComponent text="Upcomming Events" title size={20} />
           <TextComponent text="See All" />
         </RowComponent>
 
@@ -303,14 +313,14 @@ const HomeScreen = ({navigation}: any) => {
             <EventItem key={index} item={item} type="card" />
           )}
         />
-        
+
         <RowComponent
           styles={{
             // marginTop: 40,
             justifyContent: 'space-between',
             paddingHorizontal: 16,
           }}>
-          <TextComponent text="NearBy" title size={20}/>
+          <TextComponent text="NearBy" title size={20} />
           <TextComponent text="See All" />
         </RowComponent>
 

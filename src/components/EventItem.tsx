@@ -42,7 +42,19 @@ const EventItem = (props: Props) => {
   const {item, type, disible} = props;
   const user: AuthState = useSelector(authSelector);
   const navigation: any = useNavigation();
+  const [attendees, setAttendees] = useState<any>([]);
 
+  useEffect(() => {
+    getGoing(item.attendees);
+  }, [item.attendees]);
+  const getGoing = async (ids: any) => {
+    try {
+      const res = await eventAPI.HandleEvent(`/going?ids=${ids}`);
+      setAttendees(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <CardComponent
       styles={{
@@ -95,19 +107,27 @@ const EventItem = (props: Props) => {
               size={30}
               color="white"
               styles={{margin: 12}}>
-              <Heart color="red" size={18} variant={user.favorites && item && user.favorites.includes(item._id) ? "Bold" : 'Linear'}/>
+              <Heart
+                color="red"
+                size={18}
+                variant={
+                  user.favorites && item && user.favorites.includes(item._id)
+                    ? 'Bold'
+                    : 'Linear'
+                }
+              />
             </ShapeComponent>
           </ImageBackground>
           <TextComponent text={item.title} title size={18} />
           <RowComponent styles={{marginVertical: 12}}>
             {Array.from({
-              length: item.attendees.length > 3 ? 3 : item.attendees.length,
+              length: attendees.length > 3 ? 3 : attendees.length,
             }).map((ite, index) => (
               <Image
                 key={`img${index}`}
                 source={{
-                  uri: item.attendees[index].photo
-                    ? item.attendees[index].photo
+                  uri: attendees[index].photo
+                    ? attendees[index].photo
                     : 'https://images.pexels.com/photos/20568187/pexels-photo-20568187/free-photo-of-l-nh-tuy-t-th-i-trang-nh-ng-ng-i.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
                 }}
                 style={{
@@ -159,7 +179,7 @@ const EventItem = (props: Props) => {
                   color={appColors.primary}
                   font={fontFamilies.medium}
                 />
-                <RowComponent  styles={{justifyContent: 'space-between'}}>
+                <RowComponent styles={{justifyContent: 'space-between'}}>
                   <RowComponent>
                     <Location
                       size={16}
@@ -170,7 +190,17 @@ const EventItem = (props: Props) => {
                   </RowComponent>
 
                   <TouchableOpacity>
-                    <Heart size={18} color={appColors.primary} variant={user.favorites && item && user.favorites.includes(item._id) ? "Bold" : 'Linear'}/>
+                    <Heart
+                      size={18}
+                      color={appColors.primary}
+                      variant={
+                        user.favorites &&
+                        item &&
+                        user.favorites.includes(item._id)
+                          ? 'Bold'
+                          : 'Linear'
+                      }
+                    />
                   </TouchableOpacity>
                 </RowComponent>
               </View>

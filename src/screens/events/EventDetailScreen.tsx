@@ -1,4 +1,5 @@
-import {useFocusEffect} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 import Mapbox from '@rnmapbox/maps';
 import {
   ArrowLeft,
@@ -7,7 +8,7 @@ import {
   Location,
   Ticket,
 } from 'iconsax-react-native';
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Animated,
   Image,
@@ -20,7 +21,8 @@ import {
   View,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import eventAPI from '../../apis/eventApi';
 import userAPI from '../../apis/userApi';
 import {
   ButtonComponent,
@@ -30,17 +32,17 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {EventModel} from '../../models/EventModel';
+import { EventModel } from '../../models/EventModel';
+import { UserModel } from '../../models/UserModel';
 import {
   addFavoriteEvent,
   authSelector,
   removeFavoriteEvent,
 } from '../../redux/reducers/authReducer';
-import {globalStyles} from '../../styles/globalStyles';
-import {appColors} from '../../utils/constants/appColors';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
-import {DateTime} from '../../utils/convertDateTime';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { globalStyles } from '../../styles/globalStyles';
+import { appColors } from '../../utils/constants/appColors';
+import { fontFamilies } from '../../utils/constants/fontFamilies';
+import { DateTime } from '../../utils/convertDateTime';
 
 const EventDetailScreen = ({navigation, route}: any) => {
   const {item}: {item: EventModel} = route.params;
@@ -48,27 +50,12 @@ const EventDetailScreen = ({navigation, route}: any) => {
   const [showMap, setShowMap] = useState(false);
   const [isFollowing, setisFollowing] = useState(false);
   const [userId, setUserId] = useState(user.id);
-  const [targetUserId, setTargetUserId] = useState(item.organizer._id);
+  const [targetUserId, setTargetUserId] = useState(item.organizer);
   const [favorite, setFavorite] = useState(false);
   const dispatch = useDispatch();
-  // const [test, settest] = useState<String[]>([]);
-  // const [userGoing, setUserGoing] = useState([]);
+  const [organizer, setOrganizer] = useState<UserModel>();
+  const [attendees, setAttendees] = useState<any>([]);
 
-  // useEffect(() => {
-  //   const checkFollowing = async () => {
-  //     try {
-  //       const res = await userAPI.HandleUser(
-  //         `/check-following?userId=${userId}&targetUserId=${targetUserId}`,
-  //       );
-  //       setisFollowing(res.data);
-  //       console.log(res);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
-  //   checkFollowing();
-  // }, [userId, targetUserId]);
   useFocusEffect(
     React.useCallback(() => {
       const checkFollowing = async () => {
@@ -77,13 +64,20 @@ const EventDetailScreen = ({navigation, route}: any) => {
             `/check-following?userId=${userId}&targetUserId=${targetUserId}`,
           );
           setisFollowing(res.data);
-          console.log(res);
+          // console.log(res);
         } catch (error) {
           console.log(error);
         }
       };
 
       checkFollowing();
+      if (item.organizer) {
+        getOrganizer(item.organizer);
+      }
+      if (item.attendees) {
+        getGoing(item.attendees);
+        // console.log("fjf", userGoing)
+      }
       if (user.favorites && user.favorites.includes(item._id)) {
         setFavorite(true);
       }
@@ -91,8 +85,24 @@ const EventDetailScreen = ({navigation, route}: any) => {
         AsyncStorage.setItem('auth', JSON.stringify(user));
         // console.log(user);
       }
-    }, [userId, targetUserId, user]),
+    }, [userId, targetUserId, user, item.organizer, item.attendees]),
   );
+  const getOrganizer = async (uid: any) => {
+    try {
+      const res = await userAPI.HandleUser(`/userId?userId=${uid}`);
+      setOrganizer(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getGoing = async (ids: any) => {
+    try {
+      const res = await eventAPI.HandleEvent(`/going?ids=${ids}`);
+      setAttendees(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleFavorite = async () => {
     try {
       setFavorite(!favorite);
@@ -102,14 +112,15 @@ const EventDetailScreen = ({navigation, route}: any) => {
         {userId, eventId: item._id},
         'post',
       );
-      console.log(res);
+      // console.log(res);
 
       if (favorite) {
         dispatch(removeFavoriteEvent(item._id));
       } else {
         dispatch(addFavoriteEvent(item._id));
       }
-      console.log(favorite);
+      // console.log(favorite);
+      // await AsyncStorage.setItem('auth', JSON.stringify(user));
     } catch (error) {
       console.log(error);
     }
@@ -164,7 +175,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
     Linking.openURL(url);
   };
   const animatedValue = useRef(new Animated.Value(0)).current;
-  // console.log(item._id);
+
   return (
     <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
       <StatusBar barStyle="dark-content" />
@@ -265,18 +276,17 @@ const EventDetailScreen = ({navigation, route}: any) => {
                   styles={{marginVertical: 12}}
                   onPress={() =>
                     navigation.navigate('GoingScreen', {
-                      attendees: item.attendees,
+                      attendees: attendees,
                     })
                   }>
                   {Array.from({
-                    length:
-                      item.attendees.length > 3 ? 3 : item.attendees.length,
+                    length: attendees.length > 3 ? 3 : attendees.length,
                   }).map((it, index) => (
                     <Image
                       key={`img${index}`}
                       source={{
-                        uri: item.attendees
-                          ? item.attendees[index].photo
+                        uri: attendees
+                          ? attendees[index].photo
                           : 'https://images.pexels.com/photos/20568187/pexels-photo-20568187/free-photo-of-l-nh-tuy-t-th-i-trang-nh-ng-ng-i.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
                       }}
                       style={{
@@ -292,7 +302,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
                     styles={{marginLeft: 10}}
                     color={appColors.primary}
                     font={fontFamilies.medium}
-                    text={`${item.attendees.length} Going`}
+                    text={`${attendees.length} Going`}
                   />
                 </RowComponent>
                 <TouchableOpacity
@@ -386,10 +396,10 @@ const EventDetailScreen = ({navigation, route}: any) => {
             <RowComponent styles={{justifyContent: 'space-between'}}>
               <RowComponent
                 onPress={
-                  userId !== item.organizer._id
+                  userId !== organizer?._id
                     ? () => {
                         navigation.navigate('ProfileNavigator', {
-                          profiledata: item.organizer,
+                          profiledata: organizer,
                         });
                       }
                     : () => {
@@ -398,22 +408,22 @@ const EventDetailScreen = ({navigation, route}: any) => {
                 }>
                 <Image
                   source={{
-                    uri: item.organizer.photo
-                      ? item.organizer.photo
+                    uri: organizer
+                      ? organizer.photo
                       : 'https://images.pexels.com/photos/1825012/pexels-photo-1825012.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
                   }}
                   style={{width: 48, height: 48, borderRadius: 12}}></Image>
                 <SpaceComponent width={10} />
                 <View>
                   <TextComponent
-                    text={item.organizer.name}
+                    text={String(organizer?.name)}
                     font={fontFamilies.medium}
                     size={16}
                   />
                   <TextComponent text="Organizer" size={12} />
                 </View>
               </RowComponent>
-              {userId !== item.organizer._id ? (
+              {userId !== item.organizer ? (
                 <TouchableOpacity
                   onPress={handleFollow}
                   style={{
@@ -563,7 +573,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
           </View>
         </SectionComponent>
       </ScrollView>
-      {userId !== item.organizer._id && (
+      {organizer && userId !== organizer._id && (
         <View
           style={{
             justifyContent: 'center',

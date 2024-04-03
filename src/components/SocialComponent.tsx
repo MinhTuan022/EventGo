@@ -1,13 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import React, { useState } from 'react';
-import {
-  LoginManager,
-  Profile,
-  Settings
-} from 'react-native-fbsdk-next';
-import { Path, Rect, Svg } from 'react-native-svg';
-import { useDispatch } from 'react-redux';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import React, {useState} from 'react';
+import {LoginManager, Profile, Settings} from 'react-native-fbsdk-next';
+import {Path, Rect, Svg} from 'react-native-svg';
+import {useDispatch} from 'react-redux';
 import {
   ButtonComponent,
   SectionComponent,
@@ -15,8 +11,8 @@ import {
   TextComponent,
 } from '.';
 import authenticationAPI from '../apis/authApi';
-import { addAuth, addFavoriteEvent } from '../redux/reducers/authReducer';
-import { appColors } from '../utils/constants/appColors';
+import {addAuth, addFavoriteEvent} from '../redux/reducers/authReducer';
+import {appColors} from '../utils/constants/appColors';
 import LoadingModal from './modals/LoadingModal';
 
 GoogleSignin.configure({
@@ -50,9 +46,24 @@ const SocialComponent = () => {
         data,
         'post',
       );
-      dispatch(addAuth(res.data));
+      dispatch(
+        addAuth({
+          accessToken: res.data.accessToken,
+          email: res.data.email,
+          id: res.data.id,
+          favorites: res.data.favorites,
+        }),
+      );
       setIsLoading(false);
-      await AsyncStorage.setItem('auth', JSON.stringify(res.data));
+      await AsyncStorage.setItem(
+        'auth',
+        JSON.stringify({
+          accessToken: res.data.accessToken,
+          email: res.data.email,
+          id: res.data.id,
+          favorites: res.data.favorites,
+        }),
+      );
     } catch (error) {
       console.log(error);
       setIsLoading(false);
@@ -85,10 +96,24 @@ const SocialComponent = () => {
             'post',
           );
           console.log(res.data);
-          dispatch(addAuth(res.data));
+          dispatch(
+            addAuth({
+              accessToken: res.data.accessToken,
+              email: res.data.email,
+              id: res.data.id,
+              favorites: res.data.favorites,
+            }),
+          );
 
-
-          await AsyncStorage.setItem('auth', JSON.stringify(res.data));
+          await AsyncStorage.setItem(
+            'auth',
+            JSON.stringify({
+              accessToken: res.data.accessToken,
+              email: res.data.email,
+              id: res.data.id,
+              favorites: res.data.favorites,
+            }),
+          );
         }
       }
     } catch (error) {

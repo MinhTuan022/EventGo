@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 import Mapbox from '@rnmapbox/maps';
 import {
   ArrowLeft,
@@ -8,9 +8,10 @@ import {
   Location,
   Ticket,
 } from 'iconsax-react-native';
-import React, { useRef, useState } from 'react';
+import React, {useRef, useState} from 'react';
 import {
   Animated,
+  Dimensions,
   Image,
   Linking,
   SafeAreaView,
@@ -21,7 +22,7 @@ import {
   View,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import eventAPI from '../../apis/eventApi';
 import userAPI from '../../apis/userApi';
 import {
@@ -32,23 +33,25 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import { EventModel } from '../../models/EventModel';
-import { UserModel } from '../../models/UserModel';
+import {EventModel} from '../../models/EventModel';
+import {UserModel} from '../../models/UserModel';
 import {
   addFavoriteEvent,
   authSelector,
   removeFavoriteEvent,
 } from '../../redux/reducers/authReducer';
-import { globalStyles } from '../../styles/globalStyles';
-import { appColors } from '../../utils/constants/appColors';
-import { fontFamilies } from '../../utils/constants/fontFamilies';
-import { DateTime } from '../../utils/convertDateTime';
+import {globalStyles} from '../../styles/globalStyles';
+import {appColors} from '../../utils/constants/appColors';
+import {fontFamilies} from '../../utils/constants/fontFamilies';
+import {DateTime} from '../../utils/convertDateTime';
 
 const EventDetailScreen = ({navigation, route}: any) => {
   const {item}: {item: EventModel} = route.params;
   const user = useSelector(authSelector);
   const [showMap, setShowMap] = useState(false);
   const [isFollowing, setisFollowing] = useState(false);
+  const [relationship, setRelationship] = useState('');
+
   const [userId, setUserId] = useState(user.id);
   const [targetUserId, setTargetUserId] = useState(item.organizer);
   const [favorite, setFavorite] = useState(false);
@@ -58,19 +61,32 @@ const EventDetailScreen = ({navigation, route}: any) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      const checkFollowing = async () => {
+      // const checkFollowing = async () => {
+      //   try {
+      //     const res = await userAPI.HandleUser(
+      //       `/check-following?userId=${userId}&targetUserId=${targetUserId}`,
+      //     );
+      //     setisFollowing(res.data);
+      //     // console.log(res);
+      //   } catch (error) {
+      //     console.log(error);
+      //   }
+      // };
+
+      // checkFollowing();
+      const checkRelationship = async () => {
         try {
           const res = await userAPI.HandleUser(
-            `/check-following?userId=${userId}&targetUserId=${targetUserId}`,
+            `/check-relationship?userId=${userId}&targetUserId=${targetUserId}`,
           );
-          setisFollowing(res.data);
-          // console.log(res);
+          setRelationship(res.data);
+          console.log(res);
         } catch (error) {
           console.log(error);
         }
       };
+      checkRelationship();
 
-      checkFollowing();
       if (item.organizer) {
         getOrganizer(item.organizer);
       }
@@ -135,7 +151,15 @@ const EventDetailScreen = ({navigation, route}: any) => {
         'post',
       );
       // console.log(res);
-      setisFollowing(!isFollowing);
+      if (relationship === 'following') {
+        setRelationship('none');
+      } else if (relationship === 'friend') {
+        setRelationship('follower');
+      } else if (relationship === 'follower') {
+        setRelationship('friend');
+      } else if (relationship === 'none') {
+        setRelationship('following');
+      }
     } catch (error) {
       console.log(error);
     }
@@ -195,7 +219,6 @@ const EventDetailScreen = ({navigation, route}: any) => {
             outputRange: [0, 1],
           }),
         }}>
-        <TextComponent text="dd" />
       </Animated.View>
       <RowComponent
         styles={{
@@ -240,7 +263,17 @@ const EventDetailScreen = ({navigation, route}: any) => {
 
       <ScrollView
         onScroll={e => {
-          animatedValue.setValue(e.nativeEvent.contentOffset.y);
+          console.log( e.nativeEvent.contentOffset.y)
+          const currentY = e.nativeEvent.contentOffset.y;
+          const halfScreenHeight = Dimensions.get('window').height * 0.2; // Lấy chiều cao của màn hình và chia cho 2
+
+          // Kiểm tra xem ScrollView đã cuộn đến nửa màn hình chưa
+          if (currentY >= halfScreenHeight) {
+            animatedValue.setValue(currentY);
+          }else{
+            animatedValue.setValue(0)
+          }
+          // animatedValue.setValue(e.nativeEvent.contentOffset.y);
         }}
         scrollEventThrottle={16}>
         <View style={{height: 200}}>
@@ -287,7 +320,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
                       source={{
                         uri: attendees
                           ? attendees[index].photo
-                          : 'https://images.pexels.com/photos/20568187/pexels-photo-20568187/free-photo-of-l-nh-tuy-t-th-i-trang-nh-ng-ng-i.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                          : 'https://th.bing.com/th/id/OIP.DxdqBFLVLPcWsjkds8636QHaHf?rs=1&pid=ImgDetMain',
                       }}
                       style={{
                         width: 24,
@@ -410,7 +443,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
                   source={{
                     uri: organizer
                       ? organizer.photo
-                      : 'https://images.pexels.com/photos/1825012/pexels-photo-1825012.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                      : 'https://th.bing.com/th/id/OIP.DxdqBFLVLPcWsjkds8636QHaHf?rs=1&pid=ImgDetMain',
                   }}
                   style={{width: 48, height: 48, borderRadius: 12}}></Image>
                 <SpaceComponent width={10} />
@@ -432,8 +465,15 @@ const EventDetailScreen = ({navigation, route}: any) => {
                     paddingVertical: 8,
                     borderRadius: 12,
                   }}>
-                  {isFollowing ? (
+                  {relationship && relationship === 'friend' ? (
+                    <TextComponent text="Friend" color={appColors.primary} />
+                  ) : relationship === 'following' ? (
                     <TextComponent text="Following" color={appColors.primary} />
+                  ) : relationship === 'follower' ? (
+                    <TextComponent
+                      text="Follow Lại"
+                      color={appColors.primary}
+                    />
                   ) : (
                     <TextComponent text="Follow" color={appColors.primary} />
                   )}

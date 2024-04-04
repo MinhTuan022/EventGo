@@ -44,17 +44,17 @@ const EventItem = (props: Props) => {
   const navigation: any = useNavigation();
   const [attendees, setAttendees] = useState<any>([]);
 
-  useEffect(() => {
-    getGoing(item.attendees);
-  }, [item.attendees]);
-  const getGoing = async (ids: any) => {
-    try {
-      const res = await eventAPI.HandleEvent(`/going?ids=${ids}`);
-      setAttendees(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // useEffect(() => {
+  //   getGoing(item.attendees);
+  // }, [item]);
+  // const getGoing = async (ids: any) => {
+  //   try {
+  //     const res = await eventAPI.HandleEvent(`/going?ids=${ids}`);
+  //     setAttendees(res.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
   return (
     <CardComponent
       styles={{
@@ -119,7 +119,9 @@ const EventItem = (props: Props) => {
             </ShapeComponent>
           </ImageBackground>
           <TextComponent text={item.title} title size={18} />
-          <RowComponent styles={{marginVertical: 12}}>
+          <TextComponent text={DateTime.GetDate(item.startTime)}  size={14} color={appColors.primary}/>
+
+          {/* <RowComponent styles={{marginVertical: 12}}>
             {Array.from({
               length: attendees.length > 3 ? 3 : attendees.length,
             }).map((ite, index) => (
@@ -145,7 +147,7 @@ const EventItem = (props: Props) => {
               font={fontFamilies.medium}
               text={`${item.attendees.length} Going`}
             />
-          </RowComponent>
+          </RowComponent> */}
           <RowComponent>
             <Location size={16} color={appColors.gray2} variant="Bold" />
             <SpaceComponent width={5} />

@@ -1,42 +1,36 @@
 import Geolocation from '@react-native-community/geolocation';
+import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
-import {Filter, Notification, SearchNormal, Sort} from 'iconsax-react-native';
+import {Filter, Notification, SearchNormal} from 'iconsax-react-native';
 import React, {useEffect, useState} from 'react';
 import {
   FlatList,
+  Image,
   SafeAreaView,
   ScrollView,
   StatusBar,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useDispatch, useSelector} from 'react-redux';
+import categoryAPI from '../../apis/categoryApi';
 import eventAPI from '../../apis/eventApi';
+import userAPI from '../../apis/userApi';
 import {
   ButtonComponent,
   EventItem,
   RowComponent,
   SectionComponent,
   ShapeComponent,
-  SpaceComponent,
   TextComponent,
 } from '../../components';
-import CategoriesList from '../../components/CategoriesList';
 import {AddressModel} from '../../models/AddressModel';
+import {EventModel} from '../../models/EventModel';
+import {authSelector} from '../../redux/reducers/authReducer';
 import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
-import categoryAPI from '../../apis/categoryApi';
 import {appInfo} from '../../utils/constants/appInfos';
-import {WebView} from 'react-native-webview';
-import {useFocusEffect} from '@react-navigation/native';
-import {authSelector} from '../../redux/reducers/authReducer';
-import {Image} from 'react-native';
-import userAPI from '../../apis/userApi';
-import {EventModel} from '../../models/EventModel';
-import {UserModel} from '../../models/UserModel';
+import {fontFamilies} from '../../utils/constants/fontFamilies';
+import CategoriesList from '../../components/CategoriesList';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -48,6 +42,13 @@ const HomeScreen = ({navigation}: any) => {
   const [eventNear, setEventNear] = useState<EventModel[]>([]);
   const [currentLocation, setCurrentLocation] = useState<AddressModel>();
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const handleSelectCategory = (categoryKey: any) => {
+    setSelectedCategory(categoryKey);
+    // console.log('Selected Category:', categoryKey);
+  };
+
   const limit = 5;
   useEffect(() => {
     // Lấy vị trí hiện tại của người dùng khi component được mount
@@ -66,7 +67,7 @@ const HomeScreen = ({navigation}: any) => {
     React.useCallback(() => {
       fetchEvents();
       fetchEvents(currentLocation?.position.lat, currentLocation?.position.lng);
-      getUser()
+      getUser();
     }, [currentLocation]),
   );
   // useEffect(() => {
@@ -127,6 +128,15 @@ const HomeScreen = ({navigation}: any) => {
       console.log(error);
     }
   };
+  // const getGoing = async (ids: any) => {
+  //   try {
+  //     const res = await eventAPI.HandleEvent(`/going?ids=${ids}`);
+  //     setAttendees(res.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   return (
     <SafeAreaView
       style={[
@@ -239,7 +249,11 @@ const HomeScreen = ({navigation}: any) => {
           <RowComponent styles={{justifyContent: 'space-between'}}>
             <RowComponent>
               <Image
-                source={{uri: user ?  user.photo : "https://th.bing.com/th/id/OIP.DxdqBFLVLPcWsjkds8636QHaHf?rs=1&pid=ImgDetMain"}}
+                source={{
+                  uri: user
+                    ? user.photo
+                    : 'https://th.bing.com/th/id/OIP.DxdqBFLVLPcWsjkds8636QHaHf?rs=1&pid=ImgDetMain',
+                }}
                 style={{
                   width: 40,
                   height: 40,
@@ -290,20 +304,22 @@ const HomeScreen = ({navigation}: any) => {
         </SectionComponent>
 
         {/* /Header */}
-        {/* <SectionComponent>
-          <CategoriesList/>
-        </SectionComponent> */}
+        <View style={{paddingHorizontal: 16}}>
+          <CategoriesList onSelectCategory={handleSelectCategory} />
+        </View>
 
         {/* Body */}
-        <RowComponent
-          styles={{
-            // marginTop: 40,
-            justifyContent: 'space-between',
-            paddingHorizontal: 16,
-          }}>
-          <TextComponent text="Upcomming Events" title size={20} />
-          <TextComponent text="See All" />
-        </RowComponent>
+        <SectionComponent>
+          <RowComponent
+            styles={{
+              // marginTop: 40,
+              justifyContent: 'space-between',
+              // paddingHorizontal: 16,
+            }}>
+            <TextComponent text="Upcomming Events" title size={20} />
+            <TextComponent text="See All" />
+          </RowComponent>
+        </SectionComponent>
 
         <FlatList
           showsHorizontalScrollIndicator={false}

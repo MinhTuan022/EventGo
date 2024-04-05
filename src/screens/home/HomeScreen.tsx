@@ -1,9 +1,15 @@
 import Geolocation from '@react-native-community/geolocation';
 import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
-import {Filter, Notification, SearchNormal} from 'iconsax-react-native';
-import React, {useEffect, useState} from 'react';
 import {
+  Filter,
+  Location,
+  Notification,
+  SearchNormal,
+} from 'iconsax-react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  Animated,
   FlatList,
   Image,
   SafeAreaView,
@@ -21,6 +27,7 @@ import {
   RowComponent,
   SectionComponent,
   ShapeComponent,
+  SpaceComponent,
   TextComponent,
 } from '../../components';
 import {AddressModel} from '../../models/AddressModel';
@@ -31,6 +38,7 @@ import {appColors} from '../../utils/constants/appColors';
 import {appInfo} from '../../utils/constants/appInfos';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import CategoriesList from '../../components/CategoriesList';
+import {CurrentLocation} from '..';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -43,6 +51,7 @@ const HomeScreen = ({navigation}: any) => {
   const [currentLocation, setCurrentLocation] = useState<AddressModel>();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const animatedValue = useRef(new Animated.Value(0)).current;
 
   const handleSelectCategory = (categoryKey: any) => {
     setSelectedCategory(categoryKey);
@@ -243,7 +252,12 @@ const HomeScreen = ({navigation}: any) => {
         <CategoriesList />
       </View> */}
 
-      <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={{flex: 1}}
+        showsVerticalScrollIndicator={false}
+        onScroll={e => {
+          animatedValue.setValue(e.nativeEvent.contentOffset.y);
+        }}>
         {/* /Header */}
         <SectionComponent>
           <RowComponent styles={{justifyContent: 'space-between'}}>
@@ -365,7 +379,38 @@ const HomeScreen = ({navigation}: any) => {
           )}
         />
       </ScrollView>
-      {/* <WebView source={{ uri: 'https://reactnative.dev/' }}/> */}
+      {/* <CurrentLocation/>
+       */}
+      <View style={{alignItems: 'center'}}>
+        <Animated.View
+          style={[
+            globalStyles.shadow,
+            {
+              paddingHorizontal: 13,
+              paddingVertical: 13,
+              position: 'absolute',
+              backgroundColor: appColors.white,
+              borderRadius: 100,
+              zIndex: 1,
+              bottom: 15,
+              justifyContent: 'center',
+              alignItems: 'center',
+              opacity: animatedValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 0],
+              }),
+              flexDirection: 'row',
+            },
+          ]}>
+          <Location size={20} color={appColors.primary} />
+          <SpaceComponent width={5} />
+          <TextComponent
+            text={`${currentLocation?.address.city}, ${currentLocation?.address.countryCode}`}
+            color={appColors.primary}
+            font={fontFamilies.medium}
+          />
+        </Animated.View>
+      </View>
     </SafeAreaView>
   );
 };

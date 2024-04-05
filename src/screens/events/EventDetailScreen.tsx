@@ -263,17 +263,17 @@ const EventDetailScreen = ({navigation, route}: any) => {
 
       <ScrollView
         onScroll={e => {
-          console.log( e.nativeEvent.contentOffset.y)
-          const currentY = e.nativeEvent.contentOffset.y;
-          const halfScreenHeight = Dimensions.get('window').height * 0.2; // Lấy chiều cao của màn hình và chia cho 2
+          // // console.log( e.nativeEvent.contentOffset.y)
+          // const currentY = e.nativeEvent.contentOffset.y;
+          // const halfScreenHeight = Dimensions.get('window').height * 0.2; // Lấy chiều cao của màn hình và chia cho 2
 
-          // Kiểm tra xem ScrollView đã cuộn đến nửa màn hình chưa
-          if (currentY >= halfScreenHeight) {
-            animatedValue.setValue(currentY);
-          }else{
-            animatedValue.setValue(0)
-          }
-          // animatedValue.setValue(e.nativeEvent.contentOffset.y);
+          // // Kiểm tra xem ScrollView đã cuộn đến nửa màn hình chưa
+          // if (currentY >= halfScreenHeight) {
+          //   animatedValue.setValue(currentY);
+          // }else{
+          //   animatedValue.setValue(0)
+          // }
+          animatedValue.setValue(e.nativeEvent.contentOffset.y);
         }}
         scrollEventThrottle={16}>
         <View style={{height: 200}}>

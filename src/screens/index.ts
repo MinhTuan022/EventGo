@@ -17,6 +17,7 @@ import OrderTickets from './events/OrderTickets';
 import OrderDetail from './events/OrderDetail';
 import TicketScreen from './tickets/TicketScreen';
 import EditProfileScreen from './profiles/EditProfileScreen';
+import CurrentLocation from './home/components/CurrentLocation';
 
 export {
   HomeScreen,
@@ -37,5 +38,6 @@ export {
   OrderTickets,
   OrderDetail,
   TicketScreen,
-  EditProfileScreen
+  EditProfileScreen,
+  CurrentLocation
 };

@@ -524,8 +524,8 @@ const EventDetailScreen = ({navigation, route}: any) => {
                   text={item.location}
                   font={fontFamilies.medium}
                 />
-                <TextComponent text="27 Via Tortona" />
-                <TextComponent text="20144 Milano" />
+                <TextComponent text="Nguyễn Khoái" />
+                {/* <TextComponent text="20144 Milano" /> */}
               </View>
             </RowComponent>
             {showMap ? (

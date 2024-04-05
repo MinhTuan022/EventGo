@@ -3,6 +3,7 @@ export const appColors ={
    white2: '#FBFBFB',
    white3: '#FFFFFF4D',
    white4: "#F6F6F6",
+   whiteBg:"#F7F7F7",
    purple: "#4A43EC",
    purple2: '#EBEDFF',
    white: "#FFF",

@@ -16,7 +16,7 @@ const CategoriesList = ({onSelectCategory}: CategoriesListProps) => {
   const size = 20;
   const categories = [
     {
-      key: 'sport',
+      key: 'sports',
       title: 'Sports',
       icon: <MemoSports width={size} height={size} />,
     },

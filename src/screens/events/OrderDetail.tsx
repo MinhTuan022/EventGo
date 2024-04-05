@@ -1,18 +1,19 @@
+import {ArrowLeft} from 'iconsax-react-native';
+import React, {useState} from 'react';
 import {
-  View,
-  Text,
-  Modal,
-  TouchableOpacity,
-  StatusBar,
   Image,
+  Modal,
+  StatusBar,
   StyleSheet,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import paypalApi from '../../apis/paypalApi';
 import WebView from 'react-native-webview';
+import {useSelector} from 'react-redux';
+import paypalApi from '../../apis/paypalApi';
+import ticketAPI from '../../apis/ticketApi';
 import {
   ButtonComponent,
-  CardComponent,
   EventItem,
   RowComponent,
   SectionComponent,
@@ -20,36 +21,30 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
-import {globalStyles} from '../../styles/globalStyles';
-import {ArrowLeft, Location} from 'iconsax-react-native';
-import {appColors} from '../../utils/constants/appColors';
-import {DateTime} from '../../utils/convertDateTime';
-import {convertToUSD} from '../../utils/convertToUSD';
-import {Style} from '@rnmapbox/maps';
-import ticketAPI from '../../apis/ticketApi';
-import {useSelector} from 'react-redux';
 import {authSelector} from '../../redux/reducers/authReducer';
+import {globalStyles} from '../../styles/globalStyles';
+import {appColors} from '../../utils/constants/appColors';
+import {fontFamilies} from '../../utils/constants/fontFamilies';
+import {convertToUSD} from '../../utils/convertToUSD';
 
 const OrderDetail = ({route, navigation}: any) => {
   const eventData = route.params;
-  console.log(eventData);
   const user = useSelector(authSelector);
   const ticketPrice = convertToUSD(eventData.ticketPrice);
-
   const data = {
     eventId: eventData._id,
     userId: user.id,
     quantity: eventData.quantity,
-    totalPrice: ticketPrice *eventData.quantity,
+    totalPrice: ticketPrice * eventData.quantity,
     status: 'Paid',
-  }
-  console.log(data)
+  };
+
   const [showModal, setShowModal] = useState(false);
   const [paypalUrl, setPaypalUrl] = useState('');
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [paymentFail, setPaymentFail] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
-
+  const [ticketInfo, setTicketInfo] = useState();
   const handlePaymentMethodChange = (method: any) => {
     setPaymentMethod(method);
   };
@@ -75,12 +70,9 @@ const OrderDetail = ({route, navigation}: any) => {
   };
   const handleTicket = async () => {
     try {
-      const res = await ticketAPI.HandleTicket(
-        '/',
-        data,
-        'post',
-      );
+      const res = await ticketAPI.HandleTicket('/', data, 'post');
       console.log(res);
+      setTicketInfo(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -94,13 +86,13 @@ const OrderDetail = ({route, navigation}: any) => {
       setPaymentSuccess(true);
     } else if (url.includes('http://192.168.1.106:3001/paypal/cancel')) {
       setShowModal(false);
-
+      setPaymentFail(true);
     }
   };
 
   return (
     <>
-      {paymentSuccess &&(
+      {paymentSuccess && (
         <Modal transparent={true}>
           <StatusBar backgroundColor="rgba(0, 0, 0, 0.5)" translucent={true} />
           <View
@@ -138,7 +130,70 @@ const OrderDetail = ({route, navigation}: any) => {
                 <TextComponent text="Enjoy the event!" size={16} />
               </View>
               <ButtonComponent
+                onPress={() => {
+                  navigation.navigate('TicketDetail', ticketInfo);
+                }}
                 text="View E-Ticket"
+                type="primary"
+                styles={{marginVertical: 10}}
+              />
+              <ButtonComponent
+                text="Go Home"
+                type="primary"
+                onPress={() => navigation.navigate('Menu')}
+                color={appColors.purple2}
+                textColor={appColors.primary}
+              />
+            </View>
+          </View>
+        </Modal>
+      )}
+      {paymentFail && (
+        <Modal transparent={true}>
+          <StatusBar backgroundColor="rgba(0, 0, 0, 0.5)" translucent={true} />
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            }}>
+            <View
+              style={{
+                backgroundColor: appColors.white,
+                width: '80%',
+                height: '60%',
+                borderRadius: 50,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <TextComponent
+                text="Oops, Failed"
+                color={'red'}
+                title
+                size={20}
+              />
+              <View
+                style={{
+                  paddingHorizontal: 30,
+                  paddingVertical: 20,
+                  alignItems: 'center',
+                }}>
+                <TextComponent text="Your payment failed. " size={16} />
+                <TextComponent
+                  text="Please check your internet connection then try again"
+                  size={16}
+                />
+              </View>
+              <ButtonComponent
+                onPress={
+                  paymentMethod === 'paypal'
+                    ? handlePaypal
+                    : () => {
+                        console.log('first');
+                      }
+                }
+                text="Try Again"
                 type="primary"
                 styles={{marginVertical: 10}}
               />

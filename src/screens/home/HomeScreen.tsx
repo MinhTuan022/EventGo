@@ -39,6 +39,8 @@ import {appInfo} from '../../utils/constants/appInfos';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import CategoriesList from '../../components/CategoriesList';
 import {CurrentLocation} from '..';
+import LodingModal from '../../components/modals/LoadingModal';
+import SkeletonContent from 'react-native-skeleton-content';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -50,9 +52,9 @@ const HomeScreen = ({navigation}: any) => {
   const [eventNear, setEventNear] = useState<EventModel[]>([]);
   const [currentLocation, setCurrentLocation] = useState<AddressModel>();
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const animatedValue = useRef(new Animated.Value(0)).current;
-
+  const [isLoading, setIsLoading] = useState(false);
   const handleSelectCategory = (categoryKey: any) => {
     setSelectedCategory(categoryKey);
     // console.log('Selected Category:', categoryKey);
@@ -74,15 +76,21 @@ const HomeScreen = ({navigation}: any) => {
   }, []);
   useFocusEffect(
     React.useCallback(() => {
-      fetchEvents();
-      fetchEvents(currentLocation?.position.lat, currentLocation?.position.lng);
+      fetchEvents(selectedCategory);
+      fetchEvents(
+        selectedCategory,
+        currentLocation?.position.lat,
+        currentLocation?.position.lng,
+      );
       getUser();
-    }, [currentLocation]),
+      // console.log(selectedCategory)
+    }, [currentLocation, selectedCategory]),
   );
   // useEffect(() => {
   //   fetchEvents(currentLocation?.position.lat, currentLocation?.position.lng);
   // }, [currentLocation]);
   const fetchEvents = async (
+    category?: string,
     lat?: number,
     long?: number,
     distance?: number,
@@ -91,9 +99,10 @@ const HomeScreen = ({navigation}: any) => {
       lat && long
         ? `/?limit=${limit}&date=${currentTime}&lat=${lat}&long=${long}&distance=${
             distance ? distance : 5
-          }`
-        : `/?limit=${limit}&date=${currentTime}`;
+          }&category=${selectedCategory}`
+        : `/?limit=${limit}&date=${currentTime}&category=${selectedCategory}`;
     try {
+      setIsLoading(true)
       const res = await eventAPI.HandleEvent(api);
       if (res && res.data && lat && long) {
         setEventNear(res.data);
@@ -101,8 +110,12 @@ const HomeScreen = ({navigation}: any) => {
         setEventUpcoming(res.data);
       }
       // console.log(events);
+      setIsLoading(false)
+
     } catch (error) {
       console.error('Error fetching events:', error);
+      setIsLoading(false)
+
     }
   };
   const reverseGeoCode = async (lat: number, long: number) => {
@@ -110,7 +123,6 @@ const HomeScreen = ({navigation}: any) => {
 
     try {
       const res = await axios(api);
-
       if (res && res.status === 200 && res.data) {
         const items = res.data.items;
         // console.log(items[0]);
@@ -410,7 +422,10 @@ const HomeScreen = ({navigation}: any) => {
             font={fontFamilies.medium}
           />
         </Animated.View>
+        
       </View>
+      <LodingModal visible={isLoading}/>
+     
     </SafeAreaView>
   );
 };

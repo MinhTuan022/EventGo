@@ -16,9 +16,10 @@ import TicketComponent from './TicketComponent';
 import ticketAPI from '../../apis/ticketApi';
 import {useSelector} from 'react-redux';
 import {authSelector} from '../../redux/reducers/authReducer';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 
-const TicketScreen = () => {
+const TicketScreen = ({navigation}: any) => {
+  // const navigation = useNavigation();
   const [selected, setSelected] = useState(0);
   const [ticket, setTicket] = useState([]);
   const user = useSelector(authSelector);
@@ -57,6 +58,21 @@ const TicketScreen = () => {
   useEffect(() => {
     console.log(status);
   }, [status]);
+  const handleCancelled = async (timeEvent: any) => {
+    console.log(timeEvent);
+    const currentTime = new Date();
+    const targetTime = new Date(timeEvent);
+
+    if (currentTime == targetTime) {
+      console.log('Thời gian hiện tại bằng thời gian mục tiêu.');
+    }
+  };
+  const handleReview = async () => {
+    console.log('first');
+  };
+  const handleView = () => {
+    // navigation.navigate("Screen")
+  };
   return (
     <View
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
@@ -90,8 +106,16 @@ const TicketScreen = () => {
       </SectionComponent>
       <FlatList
         data={ticket}
-        renderItem={({item, index}) => (
-          <TicketComponent key={index} item={item} />
+        renderItem={({item, index}: any) => (
+          <TicketComponent
+            key={index}
+            item={item}
+            onPressCancelled={() => handleCancelled(item.eventId.startTime)}
+            onPressReview={handleReview}
+            onPressView={() => {
+              navigation.navigate('TicketDetail', item);
+            }}
+          />
         )}></FlatList>
     </View>
   );

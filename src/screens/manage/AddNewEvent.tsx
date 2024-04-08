@@ -4,6 +4,8 @@ import {
   Image,
   StatusBar,
   StyleSheet,
+  Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -27,13 +29,29 @@ import {ArrowLeft} from 'iconsax-react-native';
 import userAPI from '../../apis/userApi';
 import {useSelector} from 'react-redux';
 import {authSelector} from '../../redux/reducers/authReducer';
+import Mapbox from '@rnmapbox/maps';
+import axios from 'axios';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 const AddNewEvent = () => {
   const user = useSelector(authSelector);
-  const [showModal, setShowModal] = useState(true);
   const [currentStep, setCurrentStep] = useState(1);
   const [friends, setFriends] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+  const [selectedPlace, setSelectedPlace] = useState('');
+  const [coordinates, setCoordinates] = useState<number[]>([
+    105.763791, 21.012379,
+  ]);
+  const [suggest, setSuggest] = useState(true);
+  const [press, setPress] = useState(false);
+  // const [selectedLocation, setSelectedLocation] = useState(null);
   const navigation = useNavigation();
+  const handleMapPress = (event: any) => {
+    setPress(true);
+    const {geometry} = event;
+    setCoordinates(geometry.coordinates);
+    // console.log(selectedLocation);
+  };
   const handleNext = () => {
     setCurrentStep(currentStep + 1);
   };
@@ -46,12 +64,61 @@ const AddNewEvent = () => {
   };
   useEffect(() => {
     getFriend(user.id);
-  }, [user.id]);
+    // console.log(coordinates);
+    if (press) {
+      handleReverse(coordinates);
+    }
+  }, [user.id, press, coordinates]);
   const getFriend = async (id: any) => {
     try {
       const res = await userAPI.HandleUser(`/friend?userId=${id}`);
       setFriends(res.data);
     } catch (error) {}
+  };
+
+  const handleSearch = async (query: any) => {
+    try {
+      const response = await axios.get(
+        `https://api.mapbox.com/search/geocode/v6/forward`,
+        {
+          params: {
+            q: query,
+            access_token:
+              'pk.eyJ1IjoidHVhbmh5MjAyNCIsImEiOiJjbHR6enJrMnMwNWgyMmttcXV1bmllZWx1In0._QHVjgvwYlqrW5rW2b9JDw',
+            language: 'vi',
+            proximity: '105.82523983746239, 21.010798918141646',
+          },
+        },
+      );
+      // console.log(response)
+      setSearchResults(response.data.features);
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+    }
+  };
+
+  const handleReverse = async (coord: number[]) => {
+    try {
+      const res = await axios.get(
+        `https://api.mapbox.com/search/geocode/v6/reverse`,
+        {
+          params: {
+            longitude: coord[0],
+            latitude: coord[1],
+            access_token:
+              'pk.eyJ1IjoidHVhbmh5MjAyNCIsImEiOiJjbHR6enJrMnMwNWgyMmttcXV1bmllZWx1In0._QHVjgvwYlqrW5rW2b9JDw',
+          },
+        },
+      );
+      setSelectedPlace(res.data.features[0].properties.full_address);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handlePlaceSelect = (placeName: any) => {
+    setSelectedPlace(placeName);
+    setSuggest(false);
+    setPress(false);
   };
   return (
     <>
@@ -74,8 +141,8 @@ const AddNewEvent = () => {
                 currentStep === 1
                   ? '1 of 3 Event Details'
                   : currentStep === 2
-                  ? '2 of 3 Invite Friends'
-                  : 'Preview'
+                  ? '2 of 3 Add Location'
+                  : 'Add Ticket'
               }
               title
               size={18}
@@ -142,78 +209,139 @@ const AddNewEvent = () => {
               <SpaceComponent width={16} />
               <DateTimePicker label="End at: " />
             </RowComponent>
-            {/* <InputComponent onChange={() => {}} value="" label="Date" />
-          <InputComponent onChange={() => {}} value="" label="Invited users" /> */}
-
             <ChoiceLocation onSelect={() => {}} />
-            {/* <SectionComponent styles={{alignItems: 'center'}}>
-            <ButtonComponent text="Submit" type="primary" />
-          </SectionComponent> */}
           </SectionComponent>
         </View>
       )}
       {currentStep === 2 && (
-        <View
-          style={[
-            globalStyles.container,
-            {paddingVertical: 20, paddingHorizontal: 20},
-          ]}>
-          {/* <SectionComponent styles={{backgroundColor:"red"}}> */}
-          <InputComponent
-            placeHolder="Search Friends"
-            onChange={() => {}}
-            value=""
-            suffix={
-              <AntDesign name="search1" size={22} color={appColors.primary} />
-            }
-            styles={{borderRadius: 100}}
-          />
-          {/* </SectionComponent> */}
-
-          {/* <SectionComponent> */}
-          {/* <RowComponent>
-              <Image
-                source={require('../../assets/images/cat.jpg')}
-                style={{width: 50, height: 50, borderRadius: 100}}
+        <View style={{backgroundColor: appColors.whiteBg, flex: 1}}>
+          <View style={{paddingHorizontal: 20, paddingVertical: 20}}>
+            <RowComponent
+              styles={{
+                borderWidth: 1,
+                borderRadius: 100,
+                paddingHorizontal: 10,
+                borderColor: appColors.gray2,
+              }}>
+              <TextInput
+                value={selectedPlace}
+                placeholder="Search Location"
+                style={{flex: 1, marginRight: 10}}
+                onChangeText={val => {
+                  setSelectedPlace(val);
+                  handleSearch(val);
+                  setSuggest(true);
+                }}
               />
-              <View style={{paddingLeft: 10}}>
-                <TextComponent text="Minh Tuấn" font={fontFamilies.medium} />
-                <TextComponent text="2,5k Followers" size={13} />
-              </View>
-            </RowComponent> */}
-          <FlatList
-            data={friends}
-            renderItem={({item, index}: any) => (
-              <UserList item={item} invite key={index}/>
-            )}
-          />
+              <AntDesign name="search1" size={22} color={appColors.primary} />
+            </RowComponent>
 
-          {/* </SectionComponent> */}
+            <View style={{width: '100%'}}>
+              <View
+                style={{
+                  position: 'absolute',
+                  zIndex: 1,
+                  backgroundColor: appColors.white,
+                  width: '100%',
+                  paddingHorizontal: 10,
+                }}>
+                {suggest && (
+                  <FlatList
+                    data={searchResults}
+                    renderItem={({item, index}: any) => (
+                      <TouchableOpacity
+                        onPress={() => {
+                          handlePlaceSelect(item.properties.full_address),
+                            setCoordinates([
+                              item.properties.coordinates.longitude,
+                              item.properties.coordinates.latitude,
+                            ]);
+                        }}
+                        style={{paddingVertical: 10}}>
+                        <TextComponent
+                          text={item.properties.full_address}
+                          font={fontFamilies.medium}
+                        />
+                      </TouchableOpacity>
+                    )}
+                  />
+                )}
+              </View>
+            </View>
+          </View>
+
+          <Mapbox.MapView style={{flex: 1}} onPress={handleMapPress}>
+            {/* <Mapbox.Camera followUserLocation minZoomLevel={15} /> */}
+            {/* <Mapbox.UserLocation /> */}
+            {press ? (
+              <Mapbox.PointAnnotation
+                children={<Entypo name="location-pin" size={30} color="red" />}
+                id="selectedLocation"
+                coordinate={coordinates}
+              />
+            ) : (
+              <>
+                <Mapbox.MarkerView
+                  coordinate={coordinates}
+                  children={
+                    <Entypo name="location-pin" size={30} color="red" />
+                  }
+                />
+                <Mapbox.Camera
+                  centerCoordinate={coordinates}
+                  minZoomLevel={15}
+                />
+              </>
+            )}
+          </Mapbox.MapView>
         </View>
       )}
       {currentStep === 3 && (
-        <View>
-          <TextComponent text="Preview" />
-        </View>
+        // <View
+        //   style={[
+        //     globalStyles.container,
+        //     {paddingVertical: 20, paddingHorizontal: 20},
+        //   ]}>
+        //   {/* <SectionComponent styles={{backgroundColor:"red"}}> */}
+        //   <InputComponent
+        //     placeHolder="Search Friends"
+        //     onChange={() => {}}
+        //     value=""
+        //     suffix={
+        //       <AntDesign name="search1" size={22} color={appColors.primary} />
+        //     }
+        //     styles={{borderRadius: 100}}
+        //   />
+        //   <FlatList
+        //     data={friends}
+        //     renderItem={({item, index}: any) => (
+        //       <UserList item={item} invite key={index} />
+        //     )}
+        //   />
+        // </View>
+        <View></View>
       )}
+
       <View
         style={{
           justifyContent: 'center',
           alignItems: 'center',
           paddingVertical: 10,
+          position: 'absolute',
+          bottom: 0,
+          width: '100%',
         }}>
         <ButtonComponent
           onPress={handleNext}
           styles={{width: '70%', padding: 12}}
-          text={currentStep === 1 ? `Next: Invite Friend` : 'Preview'}
+          text={
+            currentStep === 1 ? `Next: Add Location` : 'Next: Invite Friend'
+          }
           type="primary"
           textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
         />
       </View>
     </>
-    // <View style={{flex:1}}>
-    //   <AddEventModal visible={showModal} onClose={handleClose}/>
-    // </View>
   );
 };
 

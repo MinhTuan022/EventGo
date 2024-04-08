@@ -12,7 +12,6 @@ interface Props {
 
 const ChoiceLocation = (props: Props) => {
   const {onSelect} = props;
-
   const [isVibleModalLocation, setIsVibleModalLocation] = useState(false);
   const [addressSelected, setAddressSelected] = useState<{
     address: string;

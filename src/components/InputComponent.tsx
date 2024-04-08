@@ -15,7 +15,7 @@ import {globalStyles} from '../styles/globalStyles';
 import {ContainerComponent, TextComponent} from '.';
 interface Props {
   value: string;
-  onChange: (val: string) => void;
+  onChange: (val: string) => void ;
   affix?: ReactNode;
   placeHolder?: string;
   suffix?: ReactNode;
@@ -25,7 +25,8 @@ interface Props {
   validate?: ReactNode;
   styles?: StyleProp<ViewStyle>
   label?: string,
-  editable?: boolean
+  editable?: boolean,
+  onChangeText?: () => void
 //   onEnd?: () => void;
 }
 
@@ -42,7 +43,8 @@ const InputComponent = (props: Props) => {
     validate,
     styles,
     label,
-    editable
+    editable,
+    onChangeText
    //  onEnd
   } = props;
   const [isShowPass, setIsShowPass] = useState(isPassword ?? false);
@@ -56,7 +58,7 @@ const InputComponent = (props: Props) => {
           style={[globalStyles.input, affix || suffix ? {paddingHorizontal:15} : {}]}
           value={value}
           placeholder={placeHolder ?? ''}
-          onChangeText={val => onChange(val)}
+          onChangeText={onChangeText? onChangeText : val => onChange(val)}
           secureTextEntry={isShowPass}
           keyboardType={type ?? 'default'}
           autoCapitalize="none"

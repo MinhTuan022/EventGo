@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { EditProfileScreen, MapScreen, MyProfileScreen } from '../screens';
+import { EditProfileScreen, ManageEventScreen, MapScreen, MyProfileScreen } from '../screens';
 
 const MyProfileNavigator = () => {
    const Stack = createNativeStackNavigator();
@@ -10,6 +10,8 @@ const MyProfileNavigator = () => {
       <Stack.Screen name='MyProfileScreen' component={MyProfileScreen} />
 
       <Stack.Screen name='EditProfileScreen' component={EditProfileScreen} />
+      <Stack.Screen name='ManageEventScreen' component={ManageEventScreen} />
+
     </Stack.Navigator>
   )
 }

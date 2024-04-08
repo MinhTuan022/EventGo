@@ -117,7 +117,6 @@ const MyProfileScreen = ({route, navigation}: any) => {
         flex: 1,
         paddingTop: StatusBar.currentHeight,
         backgroundColor: 'white',
-        paddingVertical: 20,
         paddingHorizontal: 20,
       }}>
       <StatusBar barStyle="dark-content" />
@@ -204,7 +203,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
             iconFlex="left"
           />
         </View> */}
-        <ButtonComponent
+        <ButtonComponent onPress={() => {navigation.navigate("ManageEventScreen")}}
           text="Manage Events"
           iconLeft={<Calendar size={22} color="black" />}
           iconRight={<ArrowCircleRight size={22} color="black" />}

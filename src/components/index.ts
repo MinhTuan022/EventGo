@@ -5,7 +5,7 @@ import ContainerComponent from './ContainerComponent';
 import DateTimePicker from './DateTimePicker';
 import DrawerCustom from './DrawerCustom';
 import EventItem from './EventItem';
-import FollowList from './FollowList';
+import UserList from './UserList';
 import InputComponent from './InputComponent';
 import RowComponent from './RowComponent';
 import SectionComponent from './SectionComponent';
@@ -29,5 +29,5 @@ export {
   EventItem,
   AvataGroup,
   DateTimePicker,
-  FollowList
+  UserList
 };

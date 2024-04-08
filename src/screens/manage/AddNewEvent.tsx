@@ -1,71 +1,71 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
+  FlatList,
   Image,
   StatusBar,
   StyleSheet,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {
+  ButtonComponent,
   DateTimePicker,
   InputComponent,
   RowComponent,
   SectionComponent,
   SpaceComponent,
-  TextComponent
-} from '../components';
-import ChoiceLocation from '../components/ChoiceLocation';
-import { globalStyles } from '../styles/globalStyles';
-import { appColors } from '../utils/constants/appColors';
-import { fontFamilies } from '../utils/constants/fontFamilies';
+  TextComponent,
+  UserList,
+} from '../../components';
+import ChoiceLocation from '../../components/ChoiceLocation';
+import {globalStyles} from '../../styles/globalStyles';
+import {appColors} from '../../utils/constants/appColors';
+import {fontFamilies} from '../../utils/constants/fontFamilies';
+import {useNavigation} from '@react-navigation/native';
+import {ArrowLeft} from 'iconsax-react-native';
+import userAPI from '../../apis/userApi';
+import {useSelector} from 'react-redux';
+import {authSelector} from '../../redux/reducers/authReducer';
 
-const AddNewScreen = ({navigation}: any) => {
+const AddNewEvent = () => {
+  const user = useSelector(authSelector);
   const [showModal, setShowModal] = useState(true);
   const [currentStep, setCurrentStep] = useState(1);
-
+  const [friends, setFriends] = useState([]);
+  const navigation = useNavigation();
   const handleNext = () => {
     setCurrentStep(currentStep + 1);
   };
   const handlePrevious = () => {
-    setCurrentStep(currentStep - 1);
+    if (currentStep === 1) {
+      navigation.goBack();
+    } else {
+      setCurrentStep(currentStep - 1);
+    }
   };
-  console.log(currentStep);
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener('Add', (e:any) => {
-  //     // Kiểm tra tab đang được kích hoạt là tab này
-  //     if (navigation.isFocused()) {
-  //       setShowModal(true); // Hiển thị modal
-  //       e.preventDefault(); // Ngăn chặn chuyển tab mặc định
-  //     }
-  //   });
-
-  //   return unsubscribe;
-  // }, [navigation]);
-  const handleClose = () => {
-    setShowModal(false);
+  useEffect(() => {
+    getFriend(user.id);
+  }, [user.id]);
+  const getFriend = async (id: any) => {
+    try {
+      const res = await userAPI.HandleUser(`/friend?userId=${id}`);
+      setFriends(res.data);
+    } catch (error) {}
   };
   return (
     <>
       <View
         style={{
-          //   height: '10%',
-          paddingTop: Number(StatusBar.currentHeight) +10,
+          paddingTop: Number(StatusBar.currentHeight) + 10,
           backgroundColor: 'white',
           paddingHorizontal: 16,
           paddingVertical: 20,
         }}>
         <StatusBar barStyle={'dark-content'}></StatusBar>
         <RowComponent styles={{alignItems: 'center', justifyContent: 'center'}}>
-          <TouchableOpacity
-            onPress={handlePrevious}
-            style={{
-              backgroundColor: appColors.gray2,
-              paddingHorizontal: 15,
-              paddingVertical: 6,
-              borderRadius: 12,
-            }}>
-            <TextComponent text="Prev" font={fontFamilies.bold} />
+          <TouchableOpacity onPress={handlePrevious}>
+            <ArrowLeft size={22} color="black" />
           </TouchableOpacity>
 
           <View style={{flex: 1, alignItems: 'center'}}>
@@ -83,17 +83,7 @@ const AddNewScreen = ({navigation}: any) => {
               styles={{flex: 1}}
             />
           </View>
-
-          <TouchableOpacity
-            onPress={handleNext}
-            style={{
-              backgroundColor: appColors.gray2,
-              paddingHorizontal: 15,
-              paddingVertical: 6,
-              borderRadius: 12,
-            }}>
-            <TextComponent text="Next" font={fontFamilies.bold} />
-          </TouchableOpacity>
+          {/* <View/> */}
         </RowComponent>
       </View>
       <View
@@ -169,25 +159,36 @@ const AddNewScreen = ({navigation}: any) => {
             {paddingVertical: 20, paddingHorizontal: 20},
           ]}>
           {/* <SectionComponent styles={{backgroundColor:"red"}}> */}
-            <InputComponent
-              placeHolder="Search Friends"
-              onChange={() => {}}
-              value=""
-              suffix={
-                <AntDesign name="search1" size={22} color={appColors.primary} />
-              }
-              styles={{borderRadius: 100}}
-            />
+          <InputComponent
+            placeHolder="Search Friends"
+            onChange={() => {}}
+            value=""
+            suffix={
+              <AntDesign name="search1" size={22} color={appColors.primary} />
+            }
+            styles={{borderRadius: 100}}
+          />
           {/* </SectionComponent> */}
-          <SectionComponent>
-            <RowComponent>
-              <Image source={require('../assets/images/cat.jpg')} style={{width:50, height:50, borderRadius:100}}/>
-              <View style={{paddingLeft:10}}>
-                <TextComponent text='Minh Tuấn' font={fontFamilies.medium}/>
-                <TextComponent text='2,5k Followers' size={13}/>
+
+          {/* <SectionComponent> */}
+          {/* <RowComponent>
+              <Image
+                source={require('../../assets/images/cat.jpg')}
+                style={{width: 50, height: 50, borderRadius: 100}}
+              />
+              <View style={{paddingLeft: 10}}>
+                <TextComponent text="Minh Tuấn" font={fontFamilies.medium} />
+                <TextComponent text="2,5k Followers" size={13} />
               </View>
-            </RowComponent>
-          </SectionComponent>
+            </RowComponent> */}
+          <FlatList
+            data={friends}
+            renderItem={({item, index}: any) => (
+              <UserList item={item} invite key={index}/>
+            )}
+          />
+
+          {/* </SectionComponent> */}
         </View>
       )}
       {currentStep === 3 && (
@@ -195,6 +196,20 @@ const AddNewScreen = ({navigation}: any) => {
           <TextComponent text="Preview" />
         </View>
       )}
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingVertical: 10,
+        }}>
+        <ButtonComponent
+          onPress={handleNext}
+          styles={{width: '70%', padding: 12}}
+          text={currentStep === 1 ? `Next: Invite Friend` : 'Preview'}
+          type="primary"
+          textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
+        />
+      </View>
     </>
     // <View style={{flex:1}}>
     //   <AddEventModal visible={showModal} onClose={handleClose}/>
@@ -208,4 +223,4 @@ const localStyle = StyleSheet.create({
   },
 });
 
-export default AddNewScreen;
+export default AddNewEvent;

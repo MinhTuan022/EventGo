@@ -2,10 +2,10 @@ import { ArrowLeft } from 'iconsax-react-native';
 import React from 'react';
 import { FlatList, StatusBar, TouchableOpacity, View } from 'react-native';
 import {
-  FollowList,
   RowComponent,
   SectionComponent,
   TextComponent,
+  UserList,
 } from '../../components';
 import { globalStyles } from '../../styles/globalStyles';
 import { appColors } from '../../utils/constants/appColors';
@@ -35,7 +35,7 @@ const GoingScreen = ({route, navigation}: any) => {
           <FlatList
             data={attendees}
             renderItem={({item, index}) => (
-              <FollowList item={item} key={index} />
+              <UserList item={item} key={index} />
             )}></FlatList>
         </SectionComponent>
       ) : (

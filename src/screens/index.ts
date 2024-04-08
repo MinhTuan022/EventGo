@@ -1,11 +1,11 @@
-import AddNewScreen from './AddNewScreen';
+import AddNewEvent from './manage/AddNewEvent';
 import SplashScreen from './SplashScreen';
 import LoginScreen from './auth/LoginScreen';
 import OnBoardingScreen from './auth/OnBoardingScreen';
 import ResetPasswordScreen from './auth/ResetPasswordScreen';
 import SignUpScreen from './auth/SignUpScreen';
 import EventDetailScreen from './events/EventDetailScreen';
-import  FavoriteScreen from './favorites/FavoriteScreen';
+import FavoriteScreen from './favorites/FavoriteScreen';
 import HomeScreen from './home/HomeScreen';
 import MapScreen from './map/MapScreen';
 import ProfileScreen from './profiles/ProfileScreen';
@@ -19,6 +19,7 @@ import TicketScreen from './tickets/TicketScreen';
 import EditProfileScreen from './profiles/EditProfileScreen';
 import CurrentLocation from './home/components/CurrentLocation';
 import TicketDetailScreen from './tickets/TicketDetailScreen';
+import ManageEventScreen from './manage/ManageEventScreen';
 
 export {
   HomeScreen,
@@ -30,7 +31,7 @@ export {
   FavoriteScreen,
   MapScreen,
   ProfileScreen,
-  AddNewScreen,
+  AddNewEvent,
   EventDetailScreen,
   NotificationScreen,
   SearchScreen,
@@ -41,5 +42,6 @@ export {
   TicketScreen,
   EditProfileScreen,
   CurrentLocation,
-  TicketDetailScreen
+  TicketDetailScreen,
+  ManageEventScreen,
 };

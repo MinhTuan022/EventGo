@@ -38,7 +38,8 @@ const AddNewEvent = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [friends, setFriends] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
-  const [selectedPlace, setSelectedPlace] = useState('');
+  const [fullAddress, setFullAddress] = useState('');
+  const [address, setAddress] = useState('');
   const [coordinates, setCoordinates] = useState<number[]>([
     105.763791, 21.012379,
   ]);
@@ -110,13 +111,15 @@ const AddNewEvent = () => {
           },
         },
       );
-      setSelectedPlace(res.data.features[0].properties.full_address);
+      setFullAddress(res.data.features[0].properties.full_address);
+      setAddress(res.data.features[0].properties.name)
     } catch (error) {
       console.log(error);
     }
   };
-  const handlePlaceSelect = (placeName: any) => {
-    setSelectedPlace(placeName);
+  const handlePlaceSelect = (properties: any) => {
+    setFullAddress(properties.full_address);
+    setAddress(properties.name)
     setSuggest(false);
     setPress(false);
   };
@@ -214,7 +217,7 @@ const AddNewEvent = () => {
         </View>
       )}
       {currentStep === 2 && (
-        <View style={{backgroundColor: appColors.whiteBg, flex: 1}}>
+        <View style={globalStyles.container}>
           <View style={{paddingHorizontal: 20, paddingVertical: 20}}>
             <RowComponent
               styles={{
@@ -224,11 +227,11 @@ const AddNewEvent = () => {
                 borderColor: appColors.gray2,
               }}>
               <TextInput
-                value={selectedPlace}
+                value={fullAddress}
                 placeholder="Search Location"
                 style={{flex: 1, marginRight: 10}}
                 onChangeText={val => {
-                  setSelectedPlace(val);
+                  setFullAddress(val);
                   handleSearch(val);
                   setSuggest(true);
                 }}
@@ -251,7 +254,7 @@ const AddNewEvent = () => {
                     renderItem={({item, index}: any) => (
                       <TouchableOpacity
                         onPress={() => {
-                          handlePlaceSelect(item.properties.full_address),
+                          handlePlaceSelect(item.properties),
                             setCoordinates([
                               item.properties.coordinates.longitude,
                               item.properties.coordinates.latitude,
@@ -297,50 +300,84 @@ const AddNewEvent = () => {
         </View>
       )}
       {currentStep === 3 && (
-        // <View
-        //   style={[
-        //     globalStyles.container,
-        //     {paddingVertical: 20, paddingHorizontal: 20},
-        //   ]}>
-        //   {/* <SectionComponent styles={{backgroundColor:"red"}}> */}
-        //   <InputComponent
-        //     placeHolder="Search Friends"
-        //     onChange={() => {}}
-        //     value=""
-        //     suffix={
-        //       <AntDesign name="search1" size={22} color={appColors.primary} />
-        //     }
-        //     styles={{borderRadius: 100}}
-        //   />
-        //   <FlatList
-        //     data={friends}
-        //     renderItem={({item, index}: any) => (
-        //       <UserList item={item} invite key={index} />
-        //     )}
-        //   />
-        // </View>
-        <View></View>
-      )}
+        <View style={globalStyles.container}>
+          <SectionComponent>
+            <RowComponent>
+              <TouchableOpacity style={localStyle.button}>
+                <TextComponent text='Paid' size={18}/>
+              </TouchableOpacity>
+              <SpaceComponent width={20}/>
+              <TouchableOpacity style={localStyle.button}>
+                <TextComponent text='Free' size={18}/>
+              </TouchableOpacity>
+            </RowComponent>
+          </SectionComponent>
+          <SectionComponent>
+            <InputComponent value='' onChange={()=>{}}/>
+            <InputComponent value='' onChange={()=>{}}/>
+            <InputComponent value='' onChange={()=>{}}/>
 
-      <View
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          paddingVertical: 10,
-          position: 'absolute',
-          bottom: 0,
-          width: '100%',
-        }}>
-        <ButtonComponent
-          onPress={handleNext}
-          styles={{width: '70%', padding: 12}}
-          text={
-            currentStep === 1 ? `Next: Add Location` : 'Next: Invite Friend'
-          }
-          type="primary"
-          textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
-        />
-      </View>
+          </SectionComponent>
+        </View>
+      )}
+      {currentStep === 1 && (
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingVertical: 10,
+            position: 'absolute',
+            bottom: 0,
+            width: '100%',
+          }}>
+          <ButtonComponent
+            onPress={handleNext}
+            styles={{width: '70%', padding: 12}}
+            text={`Next: Add Location`}
+            type="primary"
+            textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
+          />
+        </View>
+      )}
+      {currentStep === 2 && (
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingVertical: 10,
+            position: 'absolute',
+            bottom: 0,
+            width: '100%',
+          }}>
+          <ButtonComponent
+            disable={fullAddress && address && coordinates ? false :true}
+            onPress={handleNext}
+            styles={{width: '70%', padding: 12}}
+            text={`Next: Add Ticket`}
+            type="primary"
+            textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
+          />
+        </View>
+      )}
+      {currentStep === 3 && (
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingVertical: 10,
+            position: 'absolute',
+            bottom: 0,
+            width: '100%',
+          }}>
+          <ButtonComponent
+            onPress={handleNext}
+            styles={{width: '70%', padding: 12}}
+            text={`Save`}
+            type="primary"
+            textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
+          />
+        </View>
+      )}
     </>
   );
 };
@@ -349,6 +386,16 @@ const localStyle = StyleSheet.create({
   input: {
     backgroundColor: 'red',
   },
+  button: {
+
+    borderRadius:5,
+    justifyContent:'center',
+    paddingVertical:15,
+    borderWidth:1,
+    borderColor:appColors.gray2,
+    flex:1,
+    alignItems:'center'
+  }
 });
 
 export default AddNewEvent;

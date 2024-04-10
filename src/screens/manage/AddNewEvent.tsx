@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -25,13 +26,16 @@ import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import {useNavigation} from '@react-navigation/native';
-import {ArrowLeft} from 'iconsax-react-native';
+import {ArrowLeft, DollarCircle, DollarSquare} from 'iconsax-react-native';
 import userAPI from '../../apis/userApi';
 import {useSelector} from 'react-redux';
 import {authSelector} from '../../redux/reducers/authReducer';
 import Mapbox from '@rnmapbox/maps';
 import axios from 'axios';
 import Entypo from 'react-native-vector-icons/Entypo';
+import ImageCropPicker from 'react-native-image-crop-picker';
+import storage from '@react-native-firebase/storage';
+import ChoicePictureModal from '../../components/modals/ChoicePictureModal';
 
 const AddNewEvent = () => {
   const user = useSelector(authSelector);
@@ -45,8 +49,64 @@ const AddNewEvent = () => {
   ]);
   const [suggest, setSuggest] = useState(true);
   const [press, setPress] = useState(false);
-  // const [selectedLocation, setSelectedLocation] = useState(null);
+  const [quantity, setQuantity] = useState('');
+  const [nameTicket, setNameTicket] = useState('');
+  const [priceTicket, setPriceTicket] = useState('');
+  const [selectedType, setselectedType] = useState('');
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [imageUrl, setImageUrl] = useState<any>(null);
+  const [timeDate, setTimeDate] = useState(new Date());
+
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+  const selectFromLibrary = async () => {
+    try {
+      // closeModal();
+      const image = await ImageCropPicker.openPicker({
+        width: 300,
+        height: 300,
+        cropping: true,
+      });
+      console.log(image.path);
+
+      await uploadImage(image.path);
+    } catch (error) {
+      console.log(error);
+      closeModal();
+    }
+  };
+
+  const captureFromCamera = async () => {
+    try {
+      const image = await ImageCropPicker.openCamera({
+        width: 300,
+        height: 300,
+        cropping: true,
+      });
+      console.log(image.path);
+    } catch (error) {
+      console.log(error);
+      closeModal();
+    }
+  };
+
+  const uploadImage = async (imagePath: any) => {
+    try {
+      const reference = storage().ref(`avatars-${Date.now()}.jpg`);
+      await reference.putFile(imagePath);
+      const imageUrl = await reference.getDownloadURL();
+      setImageUrl(imageUrl);
+      closeModal();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const handleMapPress = (event: any) => {
     setPress(true);
     const {geometry} = event;
@@ -112,19 +172,26 @@ const AddNewEvent = () => {
         },
       );
       setFullAddress(res.data.features[0].properties.full_address);
-      setAddress(res.data.features[0].properties.name)
+      setAddress(res.data.features[0].properties.name);
     } catch (error) {
       console.log(error);
     }
   };
   const handlePlaceSelect = (properties: any) => {
     setFullAddress(properties.full_address);
-    setAddress(properties.name)
+    setAddress(properties.name);
     setSuggest(false);
     setPress(false);
   };
+
   return (
     <>
+      <ChoicePictureModal
+        modalVisible={modalVisible}
+        closeModal={closeModal}
+        captureFromCamera={captureFromCamera}
+        selectFromLibrary={selectFromLibrary}
+      />
       <View
         style={{
           paddingTop: Number(StatusBar.currentHeight) + 10,
@@ -164,8 +231,20 @@ const AddNewEvent = () => {
         }}
       />
       {currentStep === 1 && (
-        <View style={[{flex: 1, backgroundColor: 'white'}]}>
+        <ScrollView style={[globalStyles.container]}>
           <SectionComponent styles={{}}>
+            <TouchableOpacity onPress={openModal}>
+              <Image
+                source={{
+                  uri: imageUrl
+                    ? imageUrl
+                    : 'https://th.bing.com/th/id/R.3663a6a0645024b783dfaba0e16eca2f?rik=RmACL83QdOI4tw&riu=http%3a%2f%2fwww.thedalejrfoundation.org%2fwidgets%2fstatic%2fimages%2fdefaultimage.png&ehk=%2fCMinQQyGjCzek1QICfIMogrKSbDKrXuYS5P5agBNFQ%3d&risl=&pid=ImgRaw&r=0',
+                }}
+                style={{height: 250, borderRadius: 12}}
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
+            <SpaceComponent height={15} />
             <TextComponent
               text="Title"
               title
@@ -203,18 +282,17 @@ const AddNewEvent = () => {
               styles={{paddingBottom: 7}}
             />
             <RowComponent styles={{justifyContent: 'space-between'}}>
-              <DateTimePicker label="Start at: " mode="time" />
+              <DateTimePicker label="Start Date: " mode="date" onSelect={val =>setTimeDate(val)} selected={timeDate}/>
               <SpaceComponent width={16} />
-              <DateTimePicker label="End at: " />
+              <DateTimePicker label="Start at: " mode="time" onSelect={val => setTimeDate(val)} selected={timeDate}/>
             </RowComponent>
             <RowComponent styles={{justifyContent: 'space-between'}}>
-              <DateTimePicker label="Start at: " mode="time" />
+              <DateTimePicker label="End date: " mode="date" onSelect={val => setTimeDate(val)} selected={timeDate}/>
               <SpaceComponent width={16} />
-              <DateTimePicker label="End at: " />
+              <DateTimePicker label="End at: " mode="time" onSelect={val => setTimeDate(val)} selected={timeDate}/>
             </RowComponent>
-            <ChoiceLocation onSelect={() => {}} />
           </SectionComponent>
-        </View>
+        </ScrollView>
       )}
       {currentStep === 2 && (
         <View style={globalStyles.container}>
@@ -303,20 +381,52 @@ const AddNewEvent = () => {
         <View style={globalStyles.container}>
           <SectionComponent>
             <RowComponent>
-              <TouchableOpacity style={localStyle.button}>
-                <TextComponent text='Paid' size={18}/>
+              <TouchableOpacity
+                style={
+                  selectedType === 'Paid'
+                    ? localStyle.buttonSelected
+                    : localStyle.button
+                }
+                onPress={() => {
+                  setselectedType('Paid');
+                }}>
+                <TextComponent text="Paid" size={18} />
               </TouchableOpacity>
-              <SpaceComponent width={20}/>
-              <TouchableOpacity style={localStyle.button}>
-                <TextComponent text='Free' size={18}/>
+              <SpaceComponent width={20} />
+              <TouchableOpacity
+                style={
+                  selectedType === 'Free'
+                    ? localStyle.buttonSelected
+                    : localStyle.button
+                }
+                onPress={() => {
+                  setselectedType('Free');
+                  setPriceTicket('0');
+                }}>
+                <TextComponent text="Free" size={18} />
               </TouchableOpacity>
             </RowComponent>
           </SectionComponent>
           <SectionComponent>
-            <InputComponent value='' onChange={()=>{}}/>
-            <InputComponent value='' onChange={()=>{}}/>
-            <InputComponent value='' onChange={()=>{}}/>
-
+            <InputComponent
+              value={nameTicket}
+              onChange={val => setNameTicket(val)}
+              label="Name"
+            />
+            <InputComponent
+              value={quantity}
+              onChange={val => setQuantity(val)}
+              label="Available quantity"
+            />
+            <InputComponent
+              affix={<DollarSquare size={20} color="black" />}
+              value={selectedType === 'Free' ? 'Free' : priceTicket}
+              onChange={val => {
+                setPriceTicket(val);
+              }}
+              label="Price"
+              editable={selectedType === 'Free' ? false : true}
+            />
           </SectionComponent>
         </View>
       )}
@@ -326,8 +436,8 @@ const AddNewEvent = () => {
             justifyContent: 'center',
             alignItems: 'center',
             paddingVertical: 10,
-            position: 'absolute',
-            bottom: 0,
+            // position: 'absolute',
+            // bottom: 0,
             width: '100%',
           }}>
           <ButtonComponent
@@ -345,12 +455,12 @@ const AddNewEvent = () => {
             justifyContent: 'center',
             alignItems: 'center',
             paddingVertical: 10,
-            position: 'absolute',
-            bottom: 0,
+            // position: 'absolute',
+            // bottom: 0,
             width: '100%',
           }}>
           <ButtonComponent
-            disable={fullAddress && address && coordinates ? false :true}
+            disable={fullAddress && address && coordinates ? false : true}
             onPress={handleNext}
             styles={{width: '70%', padding: 12}}
             text={`Next: Add Ticket`}
@@ -365,11 +475,16 @@ const AddNewEvent = () => {
             justifyContent: 'center',
             alignItems: 'center',
             paddingVertical: 10,
-            position: 'absolute',
-            bottom: 0,
+            // position: 'absolute',
+            // bottom: 0,
             width: '100%',
           }}>
           <ButtonComponent
+            disable={
+              quantity && nameTicket && selectedType && priceTicket
+                ? false
+                : true
+            }
             onPress={handleNext}
             styles={{width: '70%', padding: 12}}
             text={`Save`}
@@ -387,15 +502,23 @@ const localStyle = StyleSheet.create({
     backgroundColor: 'red',
   },
   button: {
-
-    borderRadius:5,
-    justifyContent:'center',
-    paddingVertical:15,
-    borderWidth:1,
-    borderColor:appColors.gray2,
-    flex:1,
-    alignItems:'center'
-  }
+    borderRadius: 5,
+    justifyContent: 'center',
+    paddingVertical: 15,
+    borderWidth: 1,
+    borderColor: appColors.gray2,
+    flex: 1,
+    alignItems: 'center',
+  },
+  buttonSelected: {
+    borderRadius: 5,
+    justifyContent: 'center',
+    paddingVertical: 15,
+    borderWidth: 1,
+    borderColor: appColors.primary,
+    flex: 1,
+    alignItems: 'center',
+  },
 });
 
 export default AddNewEvent;

@@ -279,7 +279,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
         <View style={{height: 200}}>
           <Image
             resizeMode="cover"
-            source={{uri: item.photoUrl}}
+            source={{uri: item.photoEvent}}
             style={{height: '100%', width: '100%'}}
           />
         </View>
@@ -383,11 +383,11 @@ const EventDetailScreen = ({navigation, route}: any) => {
             <SpaceComponent width={10} />
             <View>
               <TextComponent
-                text={item.location}
+                text={item.address}
                 font={fontFamilies.medium}
                 size={16}
               />
-              <TextComponent text={item.location} size={12} />
+              <TextComponent text={item.address} size={12} />
             </View>
           </RowComponent>
           <SpaceComponent height={20} />
@@ -400,13 +400,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
             <View>
               <TextComponent
                 text={
-                  item.ticketTypes.length > 0
-                    ? `${Math.min(
-                        ...item.ticketTypes.map(ticket => ticket.price),
-                      )} - ${Math.max(
-                        ...item.ticketTypes.map(ticket => ticket.price),
-                      )}`
-                    : 'Free'
+                  ``
                 }
                 font={fontFamilies.medium}
                 size={16}
@@ -521,10 +515,10 @@ const EventDetailScreen = ({navigation, route}: any) => {
               <SpaceComponent width={10} />
               <View>
                 <TextComponent
-                  text={item.location}
+                  text={item.address}
                   font={fontFamilies.medium}
                 />
-                <TextComponent text="Nguyễn Khoái" />
+                <TextComponent text={`${item.fullAddress}`}/>
                 {/* <TextComponent text="20144 Milano" /> */}
               </View>
             </RowComponent>
@@ -545,9 +539,9 @@ const EventDetailScreen = ({navigation, route}: any) => {
                   <Mapbox.Camera
                     animationMode="flyTo"
                     zoomLevel={14}
-                    centerCoordinate={item.position.coordinates}
+                    centerCoordinate={item.geometry.coordinates}
                   />
-                  <Mapbox.MarkerView coordinate={item.position.coordinates}>
+                  <Mapbox.MarkerView coordinate={item.geometry.coordinates}>
                     <View style={{}}>
                       <Location size={30} color="red" variant="Bold" />
                     </View>

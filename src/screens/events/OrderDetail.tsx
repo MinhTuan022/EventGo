@@ -26,16 +26,19 @@ import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import {convertToUSD} from '../../utils/convertToUSD';
+import orderAPI from '../../apis/orderApi';
 
 const OrderDetail = ({route, navigation}: any) => {
   const eventData = route.params;
+  console.log(eventData)
   const user = useSelector(authSelector);
-  const ticketPrice = convertToUSD(eventData.ticketPrice);
+  // const ticketPrice = convertToUSD(eventData.ticketPrice);
   const data = {
     eventId: eventData._id,
     userId: user.id,
-    quantity: eventData.quantity,
-    totalPrice: ticketPrice * eventData.quantity,
+    ticketId: eventData.ticketId,
+    quantity: eventData.quantityBuy,
+    totalPrice: eventData.ticketPrice * eventData.quantityBuy,
     status: 'Paid',
   };
 
@@ -44,7 +47,7 @@ const OrderDetail = ({route, navigation}: any) => {
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [paymentFail, setPaymentFail] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('');
-  const [ticketInfo, setTicketInfo] = useState();
+  const [orderInfo, setOrderInfo] = useState();
   const handlePaymentMethodChange = (method: any) => {
     setPaymentMethod(method);
   };
@@ -54,8 +57,8 @@ const OrderDetail = ({route, navigation}: any) => {
         '/',
         {
           name: eventData.title,
-          price: ticketPrice,
-          quantity: eventData.quantity,
+          price: convertToUSD(eventData.ticketPrice),
+          quantity: eventData.quantityBuy,
         },
         'post',
       );
@@ -70,9 +73,9 @@ const OrderDetail = ({route, navigation}: any) => {
   };
   const handleTicket = async () => {
     try {
-      const res = await ticketAPI.HandleTicket('/', data, 'post');
+      const res = await orderAPI.HandleOrder('/', data, 'post');
       console.log(res);
-      setTicketInfo(res.data);
+      setOrderInfo(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -81,8 +84,8 @@ const OrderDetail = ({route, navigation}: any) => {
   const handleResponse = (navState: any) => {
     const {url} = navState;
     if (url.includes('http://192.168.1.106:3001/paypal/success')) {
-      handleTicket();
       setShowModal(false);
+      handleTicket();
       setPaymentSuccess(true);
     } else if (url.includes('http://192.168.1.106:3001/paypal/cancel')) {
       setShowModal(false);
@@ -131,7 +134,7 @@ const OrderDetail = ({route, navigation}: any) => {
               </View>
               <ButtonComponent
                 onPress={() => {
-                  navigation.navigate('TicketDetail', ticketInfo);
+                  navigation.navigate('TicketDetail', orderInfo);
                 }}
                 text="View E-Ticket"
                 type="primary"
@@ -236,20 +239,17 @@ const OrderDetail = ({route, navigation}: any) => {
             <RowComponent
               styles={{justifyContent: 'space-between', paddingBottom: 10}}>
               <TextComponent text="Ticket Price" size={16} />
-              <TextComponent
-                text={`$${convertToUSD(eventData.ticketPrice)}`}
-                size={16}
-              />
+              <TextComponent text={`${eventData.ticketPrice}đ`} size={16} />
             </RowComponent>
             <RowComponent
               styles={{justifyContent: 'space-between', paddingBottom: 10}}>
               <TextComponent text="Quantity" size={16} />
-              <TextComponent text={eventData.quantity} size={16} />
+              <TextComponent text={eventData.quantityBuy} size={16} />
             </RowComponent>
-            <RowComponent styles={{justifyContent: 'space-between'}}>
-              <TextComponent text="Fees" size={16} />
-              <TextComponent text="$0.00" size={16} />
-            </RowComponent>
+            {/* <RowComponent styles={{justifyContent: 'space-between'}}> */}
+              {/* <TextComponent text="Fees" size={16} /> */}
+              {/* <TextComponent text="0đ" size={16} /> */}
+            {/* </RowComponent> */}
           </SectionComponent>
           <View
             style={{
@@ -266,9 +266,7 @@ const OrderDetail = ({route, navigation}: any) => {
                 font={fontFamilies.medium}
               />
               <TextComponent
-                text={`$${convertToUSD(
-                  eventData.ticketPrice * eventData.quantity,
-                )}`}
+                text={`${eventData.ticketPrice * eventData.quantityBuy}đ`}
                 size={18}
                 font={fontFamilies.medium}
               />

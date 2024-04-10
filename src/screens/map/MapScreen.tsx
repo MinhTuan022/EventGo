@@ -35,7 +35,7 @@ const MapScreen = ({navigation}: any) => {
   const [currentLocation, setCurrentLocation] = useState<AddressModel>();
   const [location, setLocation] = useState({latitude: 0, longitude: 0});
   const [textInputValue, setTextInputValue] = useState('5');
-  const [distance, setDistance] = useState('5');
+  const [distance, setDistance] = useState(5);
   const [isEditDistance, setisEditDistance] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isPress, setIsPress] = useState(false);
@@ -75,7 +75,7 @@ const MapScreen = ({navigation}: any) => {
     }
   };
 
-  const getUser = async (uid:any) => {
+  const getUser = async (uid: any) => {
     try {
       const res = await userAPI.HandleUser(`/userId?userId=${uid}`);
       setUser(res.data);
@@ -100,7 +100,7 @@ const MapScreen = ({navigation}: any) => {
   };
   const handleChangeDistance = () => {
     setisEditDistance(!isEditDistance);
-    setDistance(textInputValue);
+    setDistance(Number(textInputValue));
   };
 
   return (
@@ -108,10 +108,11 @@ const MapScreen = ({navigation}: any) => {
       <StatusBar barStyle={'dark-content'} />
       <Mapbox.MapView style={{flex: 1}} logoEnabled={false}>
         <Mapbox.Camera
-          zoomLevel={15}
+          // zoomLevel={15}
           centerCoordinate={[location.longitude, location.latitude]}
           animationMode="none"
-          minZoomLevel={15}
+          // minZoomLevel={10}
+          zoomLevel={18 - distance > 7 ? 18 - distance : 7}
         />
         {/* <Mapbox.UserLocation visible={true} /> */}
         <Mapbox.MarkerView coordinate={[location.longitude, location.latitude]}>
@@ -135,7 +136,7 @@ const MapScreen = ({navigation}: any) => {
           <Mapbox.MarkerView
             // id={`hgg${index}`}
             key={index}
-            coordinate={item.position.coordinates}>
+            coordinate={item.geometry.coordinates}>
             <TouchableOpacity
               onPress={() => handleMarkerClick(index)}
               style={{
@@ -151,7 +152,7 @@ const MapScreen = ({navigation}: any) => {
                   borderRadius: 100,
                 }}>
                 <Image
-                  source={{uri: item.photoUrl}}
+                  source={{uri: item.photoEvent}}
                   style={{width: 35, height: 35, borderRadius: 100}}
                 />
               </View>

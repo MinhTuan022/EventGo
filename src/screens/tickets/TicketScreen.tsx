@@ -17,6 +17,7 @@ import ticketAPI from '../../apis/ticketApi';
 import {useSelector} from 'react-redux';
 import {authSelector} from '../../redux/reducers/authReducer';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import orderAPI from '../../apis/orderApi';
 
 const TicketScreen = ({navigation}: any) => {
   // const navigation = useNavigation();
@@ -41,7 +42,7 @@ const TicketScreen = ({navigation}: any) => {
   );
   const getTicket = async () => {
     try {
-      const res = await ticketAPI.HandleTicket(
+      const res = await orderAPI.HandleOrder(
         `?userId=${user.id}&status=${status}`,
       );
       console.log(`?userId=${user.id}&status=${status}`);

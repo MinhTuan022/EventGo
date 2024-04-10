@@ -43,18 +43,6 @@ const EventItem = (props: Props) => {
   const user: AuthState = useSelector(authSelector);
   const navigation: any = useNavigation();
   const [attendees, setAttendees] = useState<any>([]);
-
-  // useEffect(() => {
-  //   getGoing(item.attendees);
-  // }, [item]);
-  // const getGoing = async (ids: any) => {
-  //   try {
-  //     const res = await eventAPI.HandleEvent(`/going?ids=${ids}`);
-  //     setAttendees(res.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
   return (
     <CardComponent
       styles={{
@@ -77,7 +65,7 @@ const EventItem = (props: Props) => {
               flexDirection: 'row',
               marginBottom: 16,
             }}
-            source={{uri: item.photoUrl ?? item.photoUrl}}>
+            source={{uri: item.photoEvent ?? item.photoEvent}}>
             <CardComponent
               styles={{
                 alignItems: 'center',
@@ -151,14 +139,14 @@ const EventItem = (props: Props) => {
           <RowComponent>
             <Location size={16} color={appColors.gray2} variant="Bold" />
             <SpaceComponent width={5} />
-            <TextComponent text={item.location} color={appColors.gray2} />
+            <TextComponent text={item.address} color={appColors.gray2} />
           </RowComponent>
         </>
       ) : (
         <>
           <RowComponent>
             <Image
-              source={{uri: item.photoUrl}}
+              source={{uri: item.photoEvent}}
               style={{height: 90, width: 90, borderRadius: 12}}
             />
             <View
@@ -188,7 +176,7 @@ const EventItem = (props: Props) => {
                       color={appColors.primary}
                       variant="Bold"
                     />
-                    <TextComponent text={item.location} />
+                    <TextComponent text={item.address} />
                   </RowComponent>
 
                   <TouchableOpacity>

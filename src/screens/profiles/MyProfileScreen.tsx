@@ -38,11 +38,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
   const user = useSelector(authSelector);
   const [userData, setUserData] = useState<UserModel>();
   const dispatch = useDispatch();
-  // useEffect(() =>{
-  //   if(user){
-  //     handleProfile()
-  //   }
-  // },[user])
+
   useFocusEffect(
     React.useCallback(() => {
       if (user) {
@@ -151,7 +147,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
         <RowComponent styles={{justifyContent: 'center'}}>
           <View style={{alignItems: 'center', paddingHorizontal: 30}}>
             <TextComponent
-              text={String(userData?.events.length)}
+              text={""}
               font={fontFamilies.medium}
               size={18}
             />
@@ -187,22 +183,6 @@ const MyProfileScreen = ({route, navigation}: any) => {
             marginVertical: 20,
           }}
         />
-
-        {/* <View style={{justifyContent: 'center', alignItems: 'center'}}>
-          <ButtonComponent
-            styles={{
-              width: '48%',
-              backgroundColor: 'white',
-              borderColor: appColors.primary,
-              borderWidth: 1,
-            }}
-            text="Edit Profile"
-            textColor={appColors.primary}
-            type="primary"
-            icon={<Edit size={24} color={appColors.primary} />}
-            iconFlex="left"
-          />
-        </View> */}
         <ButtonComponent onPress={() => {navigation.navigate("ManageEventScreen")}}
           text="Manage Events"
           iconLeft={<Calendar size={22} color="black" />}

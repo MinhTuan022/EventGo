@@ -99,7 +99,7 @@ const HomeScreen = ({navigation}: any) => {
       lat && long
         ? `/?limit=${limit}&date=${currentTime}&lat=${lat}&long=${long}&distance=${
             distance ? distance : 5
-          }&category=${selectedCategory}`
+          }&category=${category}`
         : `/?limit=${limit}&date=${currentTime}&category=${selectedCategory}`;
     try {
       setIsLoading(true)
@@ -149,14 +149,6 @@ const HomeScreen = ({navigation}: any) => {
       console.log(error);
     }
   };
-  // const getGoing = async (ids: any) => {
-  //   try {
-  //     const res = await eventAPI.HandleEvent(`/going?ids=${ids}`);
-  //     setAttendees(res.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   return (
     <SafeAreaView

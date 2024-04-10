@@ -1,41 +1,21 @@
 export interface EventModel {
-  position: Position
+  geometry: Geometry
   _id: string
   title: string
   description: string
-  location: string
-  images: any[]
-  photoUrl: string
+  address: string
+  fullAddress: string
+  photoEvent: string
   startTime: Date
   endTime: Date
-  organizer: Organizer
+  organizer: string
   category: string
-  attendees: Attendee[]
-  totalTickets: number
-  ticketTypes: TicketType[]
+  attendees: any[]
+  tickets: string[]
   __v: number
 }
 
-export interface Position {
+export interface Geometry {
   type: string
   coordinates: number[]
-}
-
-export interface Organizer {
-  _id: string
-  name: string
-  photo: string
-}
-
-export interface Attendee {
-  _id: string
-  name: string
-  photo: string
-  followers: any[]
-}
-
-export interface TicketType {
-  typeTicket: string
-  price: number
-  _id: string
 }

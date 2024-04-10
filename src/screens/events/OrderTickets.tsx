@@ -17,33 +17,30 @@ import {convertToUSD} from '../../utils/convertToUSD';
 
 const OrderTickets = ({navigation, route}: any) => {
   const item = route.params;
-
-  const [quantity, setQuantity] = useState(1);
+  const [quantityBuy, setQuantityBuy] = useState(1);
   const [selectedType, setSelectedType] = useState(0);
   const [ticketType, setTicketType] = useState(
-    item.ticketTypes.length > 0 ? item.ticketTypes[0].typeTicket : 'Free',
+    item.tickets.length > 0 ?? item.tickets[0].ticketType,
   );
   const [ticketPrice, setTicketPrice] = useState(
-    item.ticketTypes.length > 0 ? item.ticketTypes[0].price : 0,
+    item.tickets.length > 0 ? item.tickets[0].price : 0,
   );
-  // useEffect(() => {
-  //   console.log(ticketType);
-  //   console.log(ticketPrice);
-  // }, [ticketType, ticketPrice]);
-  const newItem = {...item, quantity: quantity, ticketPrice: ticketPrice, totalPrice: ticketPrice * quantity};
-  // console.log(newItem.quantity);
-  const handleType = (index: any, typeTicket: any, ticketPrice: any) => {
+const [ticketId, setTicketId] = useState();
+  const newItem = {...item, quantityBuy: quantityBuy, ticketPrice: ticketPrice, ticketId: ticketId};
+  // // console.log(newItem.quantity);
+  const handleType = (index: any, typeTicket: any, ticketPrice: any, id:any) => {
     setSelectedType(index);
     setTicketPrice(ticketPrice);
     setTicketType(typeTicket);
+    setTicketId(id)
   };
   const increaseQuantity = () => {
-    setQuantity(quantity + 1);
+    setQuantityBuy(quantityBuy + 1);
   };
 
   const decreaseQuantity = () => {
-    if (quantity > 0) {
-      setQuantity(quantity - 1);
+    if (quantityBuy > 0) {
+      setQuantityBuy(quantityBuy - 1);
     }
   };
   return (
@@ -63,12 +60,14 @@ const OrderTickets = ({navigation, route}: any) => {
           </RowComponent>
         </SectionComponent>
 
-        {item.ticketTypes.length > 0 && (
+        {item.tickets.length > 0 && (
           <SectionComponent>
             <RowComponent styles={{justifyContent: 'center'}}>
-              {item.ticketTypes.map((type: any, index: any) => (
+              {item.tickets.map((ticket: any, index: any) => (
                 <TouchableOpacity
-                  onPress={() => handleType(index, type.typeTicket, type.price)}
+                  onPress={() =>
+                    handleType(index, ticket.ticketType, ticket.price, ticket._id)
+                  }
                   style={[
                     localStyle.touchableOpacity,
                     selectedType === index &&
@@ -76,7 +75,7 @@ const OrderTickets = ({navigation, route}: any) => {
                   ]}
                   key={index}>
                   <TextComponent
-                    text={type.typeTicket}
+                    text={ticket.ticketType}
                     color={
                       selectedType === index
                         ? appColors.primary
@@ -111,7 +110,7 @@ const OrderTickets = ({navigation, route}: any) => {
             </ShapeComponent>
 
             <TextComponent
-              text={String(quantity)}
+              text={String(quantityBuy)}
               size={22}
               font={fontFamilies.medium}
             />
@@ -138,10 +137,10 @@ const OrderTickets = ({navigation, route}: any) => {
           paddingVertical: 20,
         }}>
         <ButtonComponent
-          disable={quantity === 0 ? true : false}
+          disable={quantityBuy === 0 ? true : false}
           onPress={() => navigation.navigate('OrderDetail', newItem)}
           styles={{width: '70%', padding: 12}}
-          text={`Continue - ${convertToUSD(ticketPrice * quantity)} $`}
+          text={`Continue - ${ticketPrice * quantityBuy} VNĐ`}
           type="primary"
           textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
         />

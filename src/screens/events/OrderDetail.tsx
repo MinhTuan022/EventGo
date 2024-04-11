@@ -29,19 +29,8 @@ import {convertToUSD} from '../../utils/convertToUSD';
 import orderAPI from '../../apis/orderApi';
 
 const OrderDetail = ({route, navigation}: any) => {
-  const eventData = route.params;
-  console.log(eventData)
-  const user = useSelector(authSelector);
-  // const ticketPrice = convertToUSD(eventData.ticketPrice);
-  const data = {
-    eventId: eventData._id,
-    userId: user.id,
-    ticketId: eventData.ticketId,
-    quantity: eventData.quantityBuy,
-    totalPrice: eventData.ticketPrice * eventData.quantityBuy,
-    status: 'Paid',
-  };
-
+  const {eventData, orderId} = route.params;
+  // console.log(eventData)
   const [showModal, setShowModal] = useState(false);
   const [paypalUrl, setPaypalUrl] = useState('');
   const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -56,6 +45,7 @@ const OrderDetail = ({route, navigation}: any) => {
       const res = await paypalApi.HandlePaypal(
         '/',
         {
+          orderId,
           name: eventData.title,
           price: convertToUSD(eventData.ticketPrice),
           quantity: eventData.quantityBuy,
@@ -71,23 +61,13 @@ const OrderDetail = ({route, navigation}: any) => {
       console.log(error);
     }
   };
-  const handleTicket = async () => {
-    try {
-      const res = await orderAPI.HandleOrder('/', data, 'post');
-      console.log(res);
-      setOrderInfo(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const handleResponse = (navState: any) => {
     const {url} = navState;
-    if (url.includes('http://192.168.1.106:3001/paypal/success')) {
+    if (url.includes('http://192.168.76.235:3001/paypal/success')) {
       setShowModal(false);
-      handleTicket();
       setPaymentSuccess(true);
-    } else if (url.includes('http://192.168.1.106:3001/paypal/cancel')) {
+    } else if (url.includes('http://192.168.76.235:3001/paypal/cancel')) {
       setShowModal(false);
       setPaymentFail(true);
     }
@@ -247,8 +227,8 @@ const OrderDetail = ({route, navigation}: any) => {
               <TextComponent text={eventData.quantityBuy} size={16} />
             </RowComponent>
             {/* <RowComponent styles={{justifyContent: 'space-between'}}> */}
-              {/* <TextComponent text="Fees" size={16} /> */}
-              {/* <TextComponent text="0đ" size={16} /> */}
+            {/* <TextComponent text="Fees" size={16} /> */}
+            {/* <TextComponent text="0đ" size={16} /> */}
             {/* </RowComponent> */}
           </SectionComponent>
           <View

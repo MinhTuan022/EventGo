@@ -32,6 +32,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { LoginManager } from 'react-native-fbsdk-next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import eventAPI from '../../apis/eventApi';
 
 
 const MyProfileScreen = ({route, navigation}: any) => {
@@ -41,10 +42,8 @@ const MyProfileScreen = ({route, navigation}: any) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      if (user) {
-        handleProfile();
-      }
-    }, [user]),
+        handleProfile(user.id);
+    }, [user.id]),
   );
   const handleLogOut = async () => {
     await GoogleSignin.signOut();
@@ -52,14 +51,15 @@ const MyProfileScreen = ({route, navigation}: any) => {
     dispatch(removeAuth());
     await AsyncStorage.clear();
   };
-  const handleProfile = async () => {
+  const handleProfile = async (id:any) => {
     try {
-      const res = await userAPI.HandleUser(`/userId?userId=${user.id}`);
+      const res = await userAPI.HandleUser(`/userId?userId=${id}`);
       setUserData(res.data);
     } catch (error) {
       console.log(error);
     }
   };
+
   const data = [
     {
       tittle: 'Manage Events',
@@ -147,7 +147,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
         <RowComponent styles={{justifyContent: 'center'}}>
           <View style={{alignItems: 'center', paddingHorizontal: 30}}>
             <TextComponent
-              text={""}
+              text={``}
               font={fontFamilies.medium}
               size={18}
             />

@@ -20,26 +20,43 @@ import userAPI from '../../apis/userApi';
 import {useSelector} from 'react-redux';
 import {authSelector} from '../../redux/reducers/authReducer';
 import {EventModel} from '../../models/EventModel';
+import eventAPI from '../../apis/eventApi';
 
 const FavoriteScreen = () => {
   const user = useSelector(authSelector);
-  const [eventFavorites, setEventFavorites] = useState([]);
+  const [idsFavorite, setIdsFavorite] = useState<string[]>([]);
+  const [eventFavorites, setEventFavorites] = useState<any>([]);
 
   useEffect(() => {
     if (user) {
-      handleFavorites();
+      getIdFavorites();
     }
   }, [user]);
-  const handleFavorites = async () => {
+  useEffect(() => {
+    if (idsFavorite.length > 0) {
+      getFavorites();
+    }
+  }, [idsFavorite]);
+  
+
+  const getIdFavorites = async () => {
     try {
       const res = await userAPI.HandleUser(`/favorites?userId=${user.id}`);
-      setEventFavorites(res.data);
       // console.log(res)
+      setIdsFavorite(res.data);
     } catch (error) {
       console.log(error);
     }
   };
-
+  const getFavorites = async () =>{
+    try {
+      const res = await eventAPI.HandleEvent(`/favorite?ids=${idsFavorite}`)
+      // console.log(res)
+      setEventFavorites(res.data)
+    } catch (error) {
+      console.log("d",error)
+    }
+  }
   return (
     <View
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>

@@ -14,9 +14,15 @@ import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import App from '../../../App';
 import {convertToUSD} from '../../utils/convertToUSD';
+import {useNavigation} from '@react-navigation/native';
+import orderAPI from '../../apis/orderApi';
+import {useSelector} from 'react-redux';
+import {authSelector} from '../../redux/reducers/authReducer';
 
-const OrderTickets = ({navigation, route}: any) => {
+const OrderTickets = ({route, navigation}: any) => {
   const item = route.params;
+  const user = useSelector(authSelector);
+
   const [quantityBuy, setQuantityBuy] = useState(1);
   const [selectedType, setSelectedType] = useState(0);
   const [ticketType, setTicketType] = useState(
@@ -25,14 +31,24 @@ const OrderTickets = ({navigation, route}: any) => {
   const [ticketPrice, setTicketPrice] = useState(
     item.tickets.length > 0 ? item.tickets[0].price : 0,
   );
-const [ticketId, setTicketId] = useState();
-  const newItem = {...item, quantityBuy: quantityBuy, ticketPrice: ticketPrice, ticketId: ticketId};
-  // // console.log(newItem.quantity);
-  const handleType = (index: any, typeTicket: any, ticketPrice: any, id:any) => {
+  const [ticketId, setTicketId] = useState(item.tickets.length > 0 ? item.tickets[0]._id : "");
+  const newItem = {
+    ...item,
+    quantityBuy: quantityBuy,
+    ticketPrice: ticketPrice,
+    ticketId: ticketId,
+  };
+  console.log(newItem);
+  const handleType = (
+    index: any,
+    typeTicket: any,
+    ticketPrice: any,
+    id: any,
+  ) => {
     setSelectedType(index);
     setTicketPrice(ticketPrice);
     setTicketType(typeTicket);
-    setTicketId(id)
+    setTicketId(id);
   };
   const increaseQuantity = () => {
     setQuantityBuy(quantityBuy + 1);
@@ -41,6 +57,29 @@ const [ticketId, setTicketId] = useState();
   const decreaseQuantity = () => {
     if (quantityBuy > 0) {
       setQuantityBuy(quantityBuy - 1);
+    }
+  };
+useEffect(() => {
+console.log(ticketId)
+},[ticketId])
+  const handleOrder = async () => {
+    try {
+      const res = await orderAPI.HandleOrder(
+        '/',
+        {
+          userId: user.id,
+          eventId: item._id,
+          ticketId: ticketId,
+          quantity: quantityBuy,
+          totalPrice: ticketPrice * quantityBuy,
+        },
+        'post',
+      );
+
+      navigation.navigate('OrderDetail', {eventData: newItem, orderId: res.data._id});
+      console.log(res);
+    } catch (error) {
+      console.log(error);
     }
   };
   return (
@@ -66,7 +105,12 @@ const [ticketId, setTicketId] = useState();
               {item.tickets.map((ticket: any, index: any) => (
                 <TouchableOpacity
                   onPress={() =>
-                    handleType(index, ticket.ticketType, ticket.price, ticket._id)
+                    handleType(
+                      index,
+                      ticket.ticketType,
+                      ticket.price,
+                      ticket._id,
+                    )
                   }
                   style={[
                     localStyle.touchableOpacity,
@@ -138,7 +182,10 @@ const [ticketId, setTicketId] = useState();
         }}>
         <ButtonComponent
           disable={quantityBuy === 0 ? true : false}
-          onPress={() => navigation.navigate('OrderDetail', newItem)}
+          onPress={
+            handleOrder
+            
+          }
           styles={{width: '70%', padding: 12}}
           text={`Continue - ${ticketPrice * quantityBuy} VNĐ`}
           type="primary"

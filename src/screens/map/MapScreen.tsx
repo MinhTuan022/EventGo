@@ -4,6 +4,7 @@ import axios from 'axios';
 import {Edit2, Location} from 'iconsax-react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {
+  Dimensions,
   FlatList,
   Image,
   StatusBar,
@@ -239,7 +240,7 @@ const MapScreen = ({navigation}: any) => {
         data={events}
         horizontal
         renderItem={({item, index}) => (
-          <EventItem key={index} item={item} type="list" />
+          <EventItem  key={index} item={item} type="list" />
         )}
       />
     </View>

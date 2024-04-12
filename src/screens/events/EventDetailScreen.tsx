@@ -8,7 +8,7 @@ import {
   Location,
   Ticket,
 } from 'iconsax-react-native';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Animated,
   Dimensions,
@@ -46,63 +46,88 @@ import {fontFamilies} from '../../utils/constants/fontFamilies';
 import {DateTime} from '../../utils/convertDateTime';
 
 const EventDetailScreen = ({navigation, route}: any) => {
-  const {item}: {item: EventModel} = route.params;
+  const {id} = route.params;
+  // console.log(id);
+  // const data = {
+  //   geometry: {
+  //     type: '',
+  //     coordinates: [],
+  //   },
+  //   address: '',
+  //   title: '',
+  //   description: '',
+  //   fullAddress: '',
+  //   photoEvent:
+  //     'https://th.bing.com/th/id/R.3663a6a0645024b783dfaba0e16eca2f?rik=RmACL83QdOI4tw&riu=http%3a%2f%2fwww.thedalejrfoundation.org%2fwidgets%2fstatic%2fimages%2fdefaultimage.png&ehk=%2fCMinQQyGjCzek1QICfIMogrKSbDKrXuYS5P5agBNFQ%3d&risl=&pid=ImgRaw&r=0',
+  //   startTime: new Date(),
+  //   endTime: new Date(),
+  //   organizer: '',
+  //   category: '',
+  //   attendees: [],
+  //   tickets: [],
+  //   __v: 0,
+  // };
   const user = useSelector(authSelector);
+  const [item, setItem] = useState<EventModel>();
   const [showMap, setShowMap] = useState(false);
   const [isFollowing, setisFollowing] = useState(false);
   const [relationship, setRelationship] = useState('');
-
   const [userId, setUserId] = useState(user.id);
-  const [targetUserId, setTargetUserId] = useState(item.organizer);
   const [favorite, setFavorite] = useState(false);
   const dispatch = useDispatch();
   const [organizer, setOrganizer] = useState<UserModel>();
   const [attendees, setAttendees] = useState<any>([]);
 
+  useEffect(() => {
+    getEventbyId();
+  }, [id]);
   useFocusEffect(
     React.useCallback(() => {
-      // const checkFollowing = async () => {
-      //   try {
-      //     const res = await userAPI.HandleUser(
-      //       `/check-following?userId=${userId}&targetUserId=${targetUserId}`,
-      //     );
-      //     setisFollowing(res.data);
-      //     // console.log(res);
-      //   } catch (error) {
-      //     console.log(error);
-      //   }
-      // };
+      if (item) {
+        const checkRelationship = async () => {
+          try {
+            const res = await userAPI.HandleUser(
+              `/check-relationship?userId=${userId}&targetUserId=${item.organizer}`,
+            );
+            setRelationship(res.data);
+            console.log(res);
+          } catch (error) {
+            console.log(error);
+          }
+        };
+        checkRelationship();
 
-      // checkFollowing();
-      const checkRelationship = async () => {
-        try {
-          const res = await userAPI.HandleUser(
-            `/check-relationship?userId=${userId}&targetUserId=${targetUserId}`,
-          );
-          setRelationship(res.data);
-          console.log(res);
-        } catch (error) {
-          console.log(error);
+        if (item.organizer) {
+          getOrganizer(item.organizer);
         }
-      };
-      checkRelationship();
-
-      if (item.organizer) {
-        getOrganizer(item.organizer);
+        if (item.attendees) {
+          getGoing(item.attendees);
+          // console.log("fjf", userGoing)
+        }
+        if (user.favorites && user.favorites.includes(id)) {
+          setFavorite(true);
+        }
+        if (user) {
+          AsyncStorage.setItem('auth', JSON.stringify(user));
+          // console.log(user);
+        }
       }
-      if (item.attendees) {
-        getGoing(item.attendees);
-        // console.log("fjf", userGoing)
-      }
-      if (user.favorites && user.favorites.includes(item._id)) {
-        setFavorite(true);
-      }
-      if (user) {
-        AsyncStorage.setItem('auth', JSON.stringify(user));
-        // console.log(user);
-      }
-    }, [userId, targetUserId, user, item.organizer, item.attendees]),
+    }, [item, user]),
   );
+  useEffect(() => {
+    console.log(organizer)
+
+  }, [organizer]);
+
+  const getEventbyId = async () => {
+    try {
+      const res = await eventAPI.HandleEvent(`/byId?id=${id}`);
+      console.log(res);
+      setItem(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const getOrganizer = async (uid: any) => {
     try {
       const res = await userAPI.HandleUser(`/userId?userId=${uid}`);
@@ -125,15 +150,15 @@ const EventDetailScreen = ({navigation, route}: any) => {
 
       const res = await userAPI.HandleUser(
         `/favorite`,
-        {userId, eventId: item._id},
+        {userId, eventId: id},
         'post',
       );
       // console.log(res);
 
       if (favorite) {
-        dispatch(removeFavoriteEvent(item._id));
+        dispatch(removeFavoriteEvent(id));
       } else {
-        dispatch(addFavoriteEvent(item._id));
+        dispatch(addFavoriteEvent(id));
       }
       // console.log(favorite);
       // await AsyncStorage.setItem('auth', JSON.stringify(user));
@@ -144,7 +169,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
 
   const handleFollow = async () => {
     try {
-      // const targetUserId = item.organizer;
+      const targetUserId = item?.organizer;
       const res = await userAPI.HandleUser(
         '/follow',
         {userId, targetUserId},
@@ -218,8 +243,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
             inputRange: [0, 1],
             outputRange: [0, 1],
           }),
-        }}>
-      </Animated.View>
+        }}></Animated.View>
       <RowComponent
         styles={{
           justifyContent: 'space-between',
@@ -263,23 +287,17 @@ const EventDetailScreen = ({navigation, route}: any) => {
 
       <ScrollView
         onScroll={e => {
-          // // console.log( e.nativeEvent.contentOffset.y)
-          // const currentY = e.nativeEvent.contentOffset.y;
-          // const halfScreenHeight = Dimensions.get('window').height * 0.2; // Lấy chiều cao của màn hình và chia cho 2
-
-          // // Kiểm tra xem ScrollView đã cuộn đến nửa màn hình chưa
-          // if (currentY >= halfScreenHeight) {
-          //   animatedValue.setValue(currentY);
-          // }else{
-          //   animatedValue.setValue(0)
-          // }
           animatedValue.setValue(e.nativeEvent.contentOffset.y);
         }}
         scrollEventThrottle={16}>
         <View style={{height: 200}}>
           <Image
             resizeMode="cover"
-            source={{uri: item.photoEvent}}
+            source={{
+              uri: item
+                ? item.photoEvent
+                : 'https://th.bing.com/th/id/R.3663a6a0645024b783dfaba0e16eca2f?rik=RmACL83QdOI4tw&riu=http%3a%2f%2fwww.thedalejrfoundation.org%2fwidgets%2fstatic%2fimages%2fdefaultimage.png&ehk=%2fCMinQQyGjCzek1QICfIMogrKSbDKrXuYS5P5agBNFQ%3d&risl=&pid=ImgRaw&r=0',
+            }}
             style={{height: '100%', width: '100%'}}
           />
         </View>
@@ -351,67 +369,63 @@ const EventDetailScreen = ({navigation, route}: any) => {
             </TouchableOpacity>
           </View>
         </View>
-        <SectionComponent>
-          <SpaceComponent height={30} />
-          <TextComponent text={item.title} size={30} title />
-          <SpaceComponent height={20} />
-          <RowComponent>
-            <ShapeComponent color={appColors.purple2} size={48} radius={12}>
-              <Calendar size={25} color={appColors.purple} variant="Bold" />
-            </ShapeComponent>
-            <SpaceComponent width={10} />
-            <View>
-              <TextComponent
-                text={DateTime.GetDate(item.startTime)}
-                font={fontFamilies.medium}
-                size={16}
-              />
-              {/* <TextComponent text="Tuesday, 4:00 PM - 9:00 PM" size={12} /> */}
-              <TextComponent
-                text={`${DateTime.GetTime(item.startTime)} - ${DateTime.GetTime(
-                  item.endTime,
-                )}`}
-                size={12}
-              />
-            </View>
-          </RowComponent>
-          <SpaceComponent height={20} />
-          <RowComponent>
-            <ShapeComponent color={appColors.purple2} size={48} radius={12}>
-              <Location size={25} color={appColors.purple} variant="Bold" />
-            </ShapeComponent>
-            <SpaceComponent width={10} />
-            <View>
-              <TextComponent
-                text={item.address}
-                font={fontFamilies.medium}
-                size={16}
-              />
-              <TextComponent text={item.address} size={12} />
-            </View>
-          </RowComponent>
-          <SpaceComponent height={20} />
+        {item && (
+          <SectionComponent>
+            <SpaceComponent height={30} />
+            <TextComponent text={item?.title} size={30} title />
+            <SpaceComponent height={20} />
+            <RowComponent>
+              <ShapeComponent color={appColors.purple2} size={48} radius={12}>
+                <Calendar size={25} color={appColors.purple} variant="Bold" />
+              </ShapeComponent>
+              <SpaceComponent width={10} />
+              <View>
+                <TextComponent
+                  text={DateTime.GetDate(item.startTime)}
+                  font={fontFamilies.medium}
+                  size={16}
+                />
+                {/* <TextComponent text="Tuesday, 4:00 PM - 9:00 PM" size={12} /> */}
+                <TextComponent
+                  text={`${DateTime.GetTime(
+                    item.startTime,
+                  )} - ${DateTime.GetTime(item.endTime)}`}
+                  size={12}
+                />
+              </View>
+            </RowComponent>
+            <SpaceComponent height={20} />
+            <RowComponent>
+              <ShapeComponent color={appColors.purple2} size={48} radius={12}>
+                <Location size={25} color={appColors.purple} variant="Bold" />
+              </ShapeComponent>
+              <SpaceComponent width={10} />
+              <View>
+                <TextComponent
+                  text={item.address}
+                  font={fontFamilies.medium}
+                  size={16}
+                />
+                <TextComponent text={item.address} size={12} />
+              </View>
+            </RowComponent>
+            <SpaceComponent height={20} />
 
-          <RowComponent>
-            <ShapeComponent color={appColors.purple2} size={48} radius={12}>
-              <Ticket size={25} color={appColors.purple} variant="Bold" />
-            </ShapeComponent>
-            <SpaceComponent width={10} />
-            <View>
-              <TextComponent
-                text={
-                  ``
-                }
-                font={fontFamilies.medium}
-                size={16}
-              />
-              <TextComponent
-                text={'Ticket price depends on package'}
-                size={12}
-              />
-            </View>
-          </RowComponent>
-        </SectionComponent>
+            <RowComponent>
+              <ShapeComponent color={appColors.purple2} size={48} radius={12}>
+                <Ticket size={25} color={appColors.purple} variant="Bold" />
+              </ShapeComponent>
+              <SpaceComponent width={10} />
+              <View>
+                <TextComponent text={``} font={fontFamilies.medium} size={16} />
+                <TextComponent
+                  text={'Ticket price depends on package'}
+                  size={12}
+                />
+              </View>
+            </RowComponent>
+          </SectionComponent>
+        )}
         <View
           style={{
             marginHorizontal: 16,
@@ -481,6 +495,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
               )}
             </RowComponent>
           )}
+
           <View style={{paddingTop: 20}}>
             <TextComponent
               text="About Event"
@@ -488,7 +503,11 @@ const EventDetailScreen = ({navigation, route}: any) => {
               font={fontFamilies.medium}
             />
             <SpaceComponent height={20} />
-            <TextComponent maxLength={187} size={16} text={item.description} />
+            <TextComponent
+              maxLength={187}
+              size={16}
+              text={String(item?.description)}
+            />
           </View>
         </SectionComponent>
         <SectionComponent>
@@ -515,10 +534,10 @@ const EventDetailScreen = ({navigation, route}: any) => {
               <SpaceComponent width={10} />
               <View>
                 <TextComponent
-                  text={item.address}
+                  text={String(item?.address)}
                   font={fontFamilies.medium}
                 />
-                <TextComponent text={`${item.fullAddress}`}/>
+                <TextComponent text={`${item?.fullAddress}`} />
                 {/* <TextComponent text="20144 Milano" /> */}
               </View>
             </RowComponent>
@@ -539,9 +558,9 @@ const EventDetailScreen = ({navigation, route}: any) => {
                   <Mapbox.Camera
                     animationMode="flyTo"
                     zoomLevel={14}
-                    centerCoordinate={item.geometry.coordinates}
+                    centerCoordinate={item?.geometry.coordinates}
                   />
-                  <Mapbox.MarkerView coordinate={item.geometry.coordinates}>
+                  <Mapbox.MarkerView coordinate={item?.geometry.coordinates}>
                     <View style={{}}>
                       <Location size={30} color="red" variant="Bold" />
                     </View>

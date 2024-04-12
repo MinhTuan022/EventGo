@@ -11,8 +11,10 @@ import {
   Dimensions,
   Image,
   ImageBackground,
+  StyleProp,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from 'react-native';
 import {
   AvataGroup,
@@ -36,23 +38,25 @@ interface Props {
   item: EventModel;
   type: 'card' | 'list';
   disible?: boolean;
+  styles?: StyleProp<ViewStyle>
 }
 
 const EventItem = (props: Props) => {
-  const {item, type, disible} = props;
+  const {item, type, disible, styles} = props;
   const user: AuthState = useSelector(authSelector);
   const navigation: any = useNavigation();
   const [attendees, setAttendees] = useState<any>([]);
   return (
     <CardComponent
-      styles={{
+      styles={[{
         width:
           type === 'card'
-            ? Dimensions.get('window').width * 0.6
+            ? Dimensions.get('window').width * 0.7
             : Dimensions.get('window').width * 0.93,
-      }}
+        // flex: type === "list" ? 1 : 0,
+      }, styles]}
       onPress={
-        !disible ? () => navigation.navigate('EventDetail', {item}) : undefined
+        !disible ? () => navigation.navigate('EventDetail', {id: item._id}) : undefined
       }>
       {type === 'card' ? (
         <>

@@ -37,6 +37,7 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {LoginManager} from 'react-native-fbsdk-next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import eventAPI from '../../apis/eventApi';
+import { HandleNotification } from '../../utils/handleNotification';
 
 const MyProfileScreen = ({route, navigation}: any) => {
   const user: AuthState = useSelector(authSelector);
@@ -58,6 +59,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
         if (index !== -1) {
           items.splice(index, 1);
         }
+        await HandleNotification.Update(user.id, items)
       }
     }
     await GoogleSignin.signOut();

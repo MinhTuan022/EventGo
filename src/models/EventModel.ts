@@ -10,12 +10,19 @@ export interface EventModel {
   endTime: Date
   organizer: string
   category: string
-  attendees: any[]
-  tickets: string[]
+  attendees: string[]
+  tickets: Ticket[]
   __v: number
 }
 
 export interface Geometry {
   type: string
   coordinates: number[]
+}
+
+export interface Ticket {
+  _id: string
+  ticketType: string
+  price: number
+  quantity: number
 }

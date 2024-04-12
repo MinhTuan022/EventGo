@@ -182,7 +182,7 @@ const ProfileNavigator = ({route, navigation}: any) => {
         <Tab.Screen
           name="Event"
           component={EventComponrnt}
-          initialParams={profile ? profile.events : {}}
+          initialParams={profile ? {id: profile._id} : {}}
         />
         <Tab.Screen name="Reviews" component={ReviewsComponent} />
       </Tab.Navigator>

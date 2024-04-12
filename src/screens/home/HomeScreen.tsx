@@ -1,5 +1,6 @@
 import Geolocation from '@react-native-community/geolocation';
-import {useFocusEffect} from '@react-navigation/native';
+import messaging from '@react-native-firebase/messaging';
+import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import {
   Filter,
@@ -7,17 +8,19 @@ import {
   Notification,
   SearchNormal,
 } from 'iconsax-react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
+  Button,
   FlatList,
   Image,
   SafeAreaView,
   ScrollView,
   StatusBar,
-  View,
+  View
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import Toast from 'react-native-toast-message';
+import { useDispatch, useSelector } from 'react-redux';
 import categoryAPI from '../../apis/categoryApi';
 import eventAPI from '../../apis/eventApi';
 import userAPI from '../../apis/userApi';
@@ -30,18 +33,15 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {AddressModel} from '../../models/AddressModel';
-import {EventModel} from '../../models/EventModel';
-import {authSelector} from '../../redux/reducers/authReducer';
-import {globalStyles} from '../../styles/globalStyles';
-import {appColors} from '../../utils/constants/appColors';
-import {appInfo} from '../../utils/constants/appInfos';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
 import CategoriesList from '../../components/CategoriesList';
-import {CurrentLocation} from '..';
 import LodingModal from '../../components/modals/LoadingModal';
-import SkeletonContent from 'react-native-skeleton-content';
-import { HandleNotification } from '../../utils/handleNotification';
+import { AddressModel } from '../../models/AddressModel';
+import { EventModel } from '../../models/EventModel';
+import { authSelector } from '../../redux/reducers/authReducer';
+import { globalStyles } from '../../styles/globalStyles';
+import { appColors } from '../../utils/constants/appColors';
+import { appInfo } from '../../utils/constants/appInfos';
+import { fontFamilies } from '../../utils/constants/fontFamilies';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -58,7 +58,6 @@ const HomeScreen = ({navigation}: any) => {
   const [isLoading, setIsLoading] = useState(false);
   const handleSelectCategory = (categoryKey: any) => {
     setSelectedCategory(categoryKey);
-    // console.log('Selected Category:', categoryKey);
   };
 // useEffect(() => {
 //   HandleNotification.checkNoticationPersion();
@@ -76,7 +75,23 @@ const HomeScreen = ({navigation}: any) => {
       (error: any) => console.log('Error getting location: ', error),
       {},
     );
+
   }, []);
+  useEffect(() => {
+    messaging().onMessage(async (mess: any) => {
+      Toast.show({
+        text1: mess.notification.title,
+        text2: mess.notification.body,
+        onPress: () => {
+          console.log(mess);
+          // const id = mess.data.id;
+          // console.log(id);
+          // navigation.navigate('EventDetail', {id});
+        },
+      });
+    });
+  },[])
+
   useFocusEffect(
     React.useCallback(() => {
       fetchEvents(selectedCategory);
@@ -163,7 +178,6 @@ const HomeScreen = ({navigation}: any) => {
         },
       ]}>
       <StatusBar barStyle={'dark-content'} />
-
       {/* HeaderComponent */}
       {/* <View
         style={{
@@ -313,6 +327,7 @@ const HomeScreen = ({navigation}: any) => {
               </View>
             </ShapeComponent>
           </RowComponent>
+          
           <ButtonComponent
             text="What event are looking for"
             iconLeft={<SearchNormal size={22} color={appColors.gray2} />}
@@ -341,6 +356,7 @@ const HomeScreen = ({navigation}: any) => {
             <TextComponent text="See All" />
           </RowComponent>
         </SectionComponent>
+        <Toast  />
 
         <FlatList
           showsHorizontalScrollIndicator={false}

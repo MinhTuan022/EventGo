@@ -9,14 +9,16 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Provider} from 'react-redux';
 import store from './src/redux/store';
 import Mapbox from '@rnmapbox/maps';
+import {HandleNotification} from './src/utils/handleNotification';
 
 const token: string =
   'pk.eyJ1IjoidHVhbmh5MjAyNCIsImEiOiJjbHR6enJrMnMwNWgyMmttcXV1bmllZWx1In0._QHVjgvwYlqrW5rW2b9JDw';
 Mapbox.setAccessToken(token);
 
-
-
 const App = () => {
+  useEffect(() => {
+    HandleNotification.checkNoticationPersion();
+  }, []);
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <Provider store={store}>
@@ -28,9 +30,9 @@ const App = () => {
         {/* {isShowSplash ? (
           <SplashScreen />
         ) : ( */}
-          <NavigationContainer>
-            <AppRouters />
-          </NavigationContainer>
+        <NavigationContainer>
+          <AppRouters />
+        </NavigationContainer>
         {/* )} */}
       </Provider>
     </GestureHandlerRootView>

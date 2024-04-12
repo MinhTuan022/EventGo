@@ -52,6 +52,8 @@ const SocialComponent = () => {
           email: res.data.email,
           id: res.data.id,
           favorites: res.data.favorites,
+          fcmTokens: res.data.fcmTokens
+
         }),
       );
       setIsLoading(false);
@@ -62,6 +64,8 @@ const SocialComponent = () => {
           email: res.data.email,
           id: res.data.id,
           favorites: res.data.favorites,
+          fcmTokens: res.data.fcmTokens
+
         }),
       );
     } catch (error) {
@@ -102,6 +106,8 @@ const SocialComponent = () => {
               email: res.data.email,
               id: res.data.id,
               favorites: res.data.favorites,
+              fcmTokens: res.data.fcmTokens
+
             }),
           );
 
@@ -112,6 +118,7 @@ const SocialComponent = () => {
               email: res.data.email,
               id: res.data.id,
               favorites: res.data.favorites,
+              fcmTokens: res.data.fcmTokens
             }),
           );
         }

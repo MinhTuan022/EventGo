@@ -5,6 +5,7 @@ export interface AuthState {
   email: string;
   accessToken: string;
   favorites: string[];
+  fcmTokens?: string[];
 }
 
 const intialStase: AuthState = {

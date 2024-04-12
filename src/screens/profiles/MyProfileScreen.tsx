@@ -25,33 +25,47 @@ import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import {StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {authSelector, removeAuth} from '../../redux/reducers/authReducer';
+import {
+  AuthState,
+  authSelector,
+  removeAuth,
+} from '../../redux/reducers/authReducer';
 import userAPI from '../../apis/userApi';
 import {UserModel} from '../../models/UserModel';
 import {useFocusEffect} from '@react-navigation/native';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import { LoginManager } from 'react-native-fbsdk-next';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {LoginManager} from 'react-native-fbsdk-next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import eventAPI from '../../apis/eventApi';
 
-
 const MyProfileScreen = ({route, navigation}: any) => {
-  const user = useSelector(authSelector);
+  const user: AuthState = useSelector(authSelector);
   const [userData, setUserData] = useState<UserModel>();
   const dispatch = useDispatch();
 
   useFocusEffect(
     React.useCallback(() => {
-        handleProfile(user.id);
+      handleProfile(user.id);
     }, [user.id]),
   );
   const handleLogOut = async () => {
+    const fcmtoken = await AsyncStorage.getItem('fcmtoken');
+    if (fcmtoken) {
+      if (user.fcmTokens && user.fcmTokens.length > 0) {
+        const items = [...user.fcmTokens];
+        const index = items.findIndex(element => element === fcmtoken);
+
+        if (index !== -1) {
+          items.splice(index, 1);
+        }
+      }
+    }
     await GoogleSignin.signOut();
-    await LoginManager.logOut();
+    LoginManager.logOut();
     dispatch(removeAuth());
-    await AsyncStorage.clear();
+    await AsyncStorage.removeItem('auth');
   };
-  const handleProfile = async (id:any) => {
+  const handleProfile = async (id: any) => {
     try {
       const res = await userAPI.HandleUser(`/userId?userId=${id}`);
       setUserData(res.data);
@@ -59,7 +73,9 @@ const MyProfileScreen = ({route, navigation}: any) => {
       console.log(error);
     }
   };
-
+  const test = async () => {
+    console.log(user);
+  };
   const data = [
     {
       tittle: 'Manage Events',
@@ -129,7 +145,11 @@ const MyProfileScreen = ({route, navigation}: any) => {
         <SpaceComponent height={40} />
         <View style={{alignItems: 'center', justifyContent: 'center'}}>
           <Image
-            source={{uri: userData? userData.photo : 'https://www.pexels.com/photo/shallow-focus-photography-of-gray-cat-in-box-3389528/'}}
+            source={{
+              uri: userData
+                ? userData.photo
+                : 'https://www.pexels.com/photo/shallow-focus-photography-of-gray-cat-in-box-3389528/',
+            }}
             style={{borderRadius: 100, width: 96, height: 96}}
           />
           <SpaceComponent height={20} />
@@ -146,11 +166,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
 
         <RowComponent styles={{justifyContent: 'center'}}>
           <View style={{alignItems: 'center', paddingHorizontal: 30}}>
-            <TextComponent
-              text={``}
-              font={fontFamilies.medium}
-              size={18}
-            />
+            <TextComponent text={``} font={fontFamilies.medium} size={18} />
             <TextComponent text="Events" />
           </View>
           <View
@@ -183,7 +199,10 @@ const MyProfileScreen = ({route, navigation}: any) => {
             marginVertical: 20,
           }}
         />
-        <ButtonComponent onPress={() => {navigation.navigate("ManageEventScreen")}}
+        <ButtonComponent
+          onPress={() => {
+            navigation.navigate('ManageEventScreen');
+          }}
           text="Manage Events"
           iconLeft={<Calendar size={22} color="black" />}
           iconRight={<ArrowCircleRight size={22} color="black" />}
@@ -210,7 +229,10 @@ const MyProfileScreen = ({route, navigation}: any) => {
             marginVertical: 10,
           }}
         />
-        <ButtonComponent onPress={() => {navigation.navigate("EditProfileScreen", userData)}}
+        <ButtonComponent
+          onPress={() => {
+            navigation.navigate('EditProfileScreen', userData);
+          }}
           text="Profile"
           iconLeft={<Profile size={22} color="black" />}
           iconRight={<ArrowCircleRight size={22} color="black" />}
@@ -261,6 +283,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
           textStyle={{fontFamily: fontFamilies.medium}}
         />
         <ButtonComponent
+          onPress={test}
           text="Dark Mode"
           iconLeft={<Eye size={22} color="black" />}
           iconRight={<ArrowCircleRight size={22} color="black" />}
@@ -280,7 +303,8 @@ const MyProfileScreen = ({route, navigation}: any) => {
           styles={localStyle.button}
           textStyle={{fontFamily: fontFamilies.medium}}
         />
-        <ButtonComponent onPress={handleLogOut}
+        <ButtonComponent
+          onPress={handleLogOut}
           text="Logout"
           iconLeft={<Logout size={22} color="red" />}
           // iconRight={<ArrowCircleRight size={22} color="black" />}

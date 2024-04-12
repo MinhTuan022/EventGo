@@ -1712,10 +1712,10 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/geolocation/-/geolocation-3.2.0.tgz#d5350339deeb775a748b5cbba2e25cf1352e7a28"
   integrity sha512-WkOjeDRBOdbor6YlKusEPkBx64x+Qf4enldF2tvCHyaXr0YcqdWXPZMMePIXUvQvyyuP5atnfPT5D2Q9VSx5mQ==
 
-"@react-native-firebase/app@^19.1.1":
-  version "19.1.1"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-19.1.1.tgz#374bd6d37476782fda7dda3b91fac21cfab0c606"
-  integrity sha512-G2FoNV+Z9kIv739fEzqEX6T6liPrHWr/bue3YsxvbaKdCpMvjwLi80+50ZlMyd40N5FV6BNoC5oLCnXoZLpk5Q==
+"@react-native-firebase/app@^19.2.1":
+  version "19.2.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-19.2.1.tgz#4571886eb467df43ed48960a7b69edd8fb2b67d1"
+  integrity sha512-3oKJEmB4qhW8MiwP4nR4ddTkbXlvQqcYhZmIUoLPb3/Zc+3hUxjKIrsaKNqxkIfRhMMXDPfPVF1IJj/S4l30+g==
   dependencies:
     opencollective-postinstall "^2.0.3"
     superstruct "^0.6.2"
@@ -1725,10 +1725,10 @@
   resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-19.2.1.tgz#1a68f596bef147263df0d767d876380c7ce51afb"
   integrity sha512-LPQqsZ356sFnI4Et8zff/d2LCBpw6TqNeik5Jf0lPXbkDEmF7L/e40f9bXyeFyzkun5mh3zEz1Hh//6Fqd2DMw==
 
-"@react-native-firebase/storage@^19.1.1":
-  version "19.1.1"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/storage/-/storage-19.1.1.tgz#55cc32719b47c4c98a6abc3970d0d597e3613d5a"
-  integrity sha512-aNpcZS8opfPjCAhJ5HIr5xeLJqk9djZnfTrhAVRLp+VTbhczzBk9ytAeW8NFQYZ/G+LKZwZ9clkPBGB9bB+YBg==
+"@react-native-firebase/storage@^19.2.1":
+  version "19.2.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/storage/-/storage-19.2.1.tgz#cf7af184a8be1db4e9ed049db6a857b6f1a61224"
+  integrity sha512-5Ax8aezM7f1wW5IRIut5J6TdGBc16quHqrruAndBhbDkwTjShd+h+N9Uzx9XvKLvocu+EDfM5tvQSR79/vzT/g==
 
 "@react-native-google-signin/google-signin@^11.0.0":
   version "11.0.0"

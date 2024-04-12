@@ -41,6 +41,7 @@ import CategoriesList from '../../components/CategoriesList';
 import {CurrentLocation} from '..';
 import LodingModal from '../../components/modals/LoadingModal';
 import SkeletonContent from 'react-native-skeleton-content';
+import { HandleNotification } from '../../utils/handleNotification';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -59,7 +60,9 @@ const HomeScreen = ({navigation}: any) => {
     setSelectedCategory(categoryKey);
     // console.log('Selected Category:', categoryKey);
   };
-
+// useEffect(() => {
+//   HandleNotification.checkNoticationPersion();
+// }, [])
   const limit = 5;
   useEffect(() => {
     // Lấy vị trí hiện tại của người dùng khi component được mount

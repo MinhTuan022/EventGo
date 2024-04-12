@@ -1,29 +1,27 @@
-import {Add, ArrowLeft, Key, Minus} from 'iconsax-react-native';
-import React, {useEffect, useState} from 'react';
-import {StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
+import { Add, ArrowLeft, Minus } from 'iconsax-react-native';
+import React, { useEffect, useState } from 'react';
+import { StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useSelector } from 'react-redux';
+import orderAPI from '../../apis/orderApi';
 import {
   ButtonComponent,
   RowComponent,
   SectionComponent,
   ShapeComponent,
-  SpaceComponent,
-  TextComponent,
+  TextComponent
 } from '../../components';
-import {globalStyles} from '../../styles/globalStyles';
-import {appColors} from '../../utils/constants/appColors';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
-import App from '../../../App';
-import {convertToUSD} from '../../utils/convertToUSD';
-import {useNavigation} from '@react-navigation/native';
-import orderAPI from '../../apis/orderApi';
-import {useSelector} from 'react-redux';
-import {authSelector} from '../../redux/reducers/authReducer';
+import { authSelector } from '../../redux/reducers/authReducer';
+import { globalStyles } from '../../styles/globalStyles';
+import { appColors } from '../../utils/constants/appColors';
+import { fontFamilies } from '../../utils/constants/fontFamilies';
 
 const OrderTickets = ({route, navigation}: any) => {
   const item = route.params;
   const user = useSelector(authSelector);
-
   const [quantityBuy, setQuantityBuy] = useState(1);
+  const [quantityAvailable, setQuantityAvailble] = useState(
+    item.tickets.length > 0 ? item.tickets[0].quantity : 0,
+  );
   const [selectedType, setSelectedType] = useState(0);
   const [ticketType, setTicketType] = useState(
     item.tickets.length > 0 ?? item.tickets[0].ticketType,
@@ -31,27 +29,33 @@ const OrderTickets = ({route, navigation}: any) => {
   const [ticketPrice, setTicketPrice] = useState(
     item.tickets.length > 0 ? item.tickets[0].price : 0,
   );
-  const [ticketId, setTicketId] = useState(item.tickets.length > 0 ? item.tickets[0]._id : "");
+  const [ticketId, setTicketId] = useState(
+    item.tickets.length > 0 ? item.tickets[0]._id : '',
+  );
   const newItem = {
     ...item,
     quantityBuy: quantityBuy,
     ticketPrice: ticketPrice,
     ticketId: ticketId,
   };
-  console.log(newItem);
+  // console.log(newItem);
   const handleType = (
     index: any,
     typeTicket: any,
     ticketPrice: any,
     id: any,
+    quantity: any,
   ) => {
     setSelectedType(index);
     setTicketPrice(ticketPrice);
     setTicketType(typeTicket);
     setTicketId(id);
+    setQuantityAvailble(quantity);
   };
   const increaseQuantity = () => {
-    setQuantityBuy(quantityBuy + 1);
+    if (quantityBuy < quantityAvailable) {
+      setQuantityBuy(quantityBuy + 1);
+    }
   };
 
   const decreaseQuantity = () => {
@@ -59,9 +63,9 @@ const OrderTickets = ({route, navigation}: any) => {
       setQuantityBuy(quantityBuy - 1);
     }
   };
-useEffect(() => {
-console.log(ticketId)
-},[ticketId])
+  useEffect(() => {
+    console.log(quantityAvailable);
+  }, [quantityAvailable]);
   const handleOrder = async () => {
     try {
       const res = await orderAPI.HandleOrder(
@@ -76,7 +80,10 @@ console.log(ticketId)
         'post',
       );
 
-      navigation.navigate('OrderDetail', {eventData: newItem, orderId: res.data._id});
+      navigation.navigate('OrderDetail', {
+        eventData: newItem,
+        orderId: res.data._id,
+      });
       console.log(res);
     } catch (error) {
       console.log(error);
@@ -110,6 +117,7 @@ console.log(ticketId)
                       ticket.ticketType,
                       ticket.price,
                       ticket._id,
+                      ticket.quantity,
                     )
                   }
                   style={[
@@ -182,10 +190,7 @@ console.log(ticketId)
         }}>
         <ButtonComponent
           disable={quantityBuy === 0 ? true : false}
-          onPress={
-            handleOrder
-            
-          }
+          onPress={handleOrder}
           styles={{width: '70%', padding: 12}}
           text={`Continue - ${ticketPrice * quantityBuy} VNĐ`}
           type="primary"

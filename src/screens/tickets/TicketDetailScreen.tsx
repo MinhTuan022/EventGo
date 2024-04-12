@@ -89,7 +89,7 @@ const TicketDetailScreen = ({route, navigation}: any) => {
             />
             <TextComponent text="Event Location" />
             <TextComponent
-              text={`${ticketInfo.eventId.location}`}
+              text={`${ticketInfo.eventId.address}`}
               title
               size={20}
               styles={{paddingVertical: 10}}
@@ -122,15 +122,10 @@ const TicketDetailScreen = ({route, navigation}: any) => {
               <TextComponent text={`${ticketInfo.quantity} Seat`} />
               <TextComponent text="$4.00" title size={16} />
             </RowComponent>
-            <RowComponent
-              styles={{justifyContent: 'space-between', paddingVertical: 10}}>
-              <TextComponent text="Tax" />
-              <TextComponent text="$0.00" title size={16} />
-            </RowComponent>
             <RowComponent styles={{justifyContent: 'space-between'}}>
               <TextComponent text="Total" />
               <TextComponent
-                text={`$${ticketInfo.totalPrice}`}
+                text={`${ticketInfo.totalPrice}`}
                 title
                 size={16}
               />

@@ -38,7 +38,7 @@ const TicketComponent = (props: Props) => {
               // padding: 15,
             }}>
             <Image
-              source={{uri: item.eventId.photoUrl}}
+              source={{uri: item.eventId.photoEvent}}
               style={{width: '100%', borderRadius: 12, flex: 1}}
               resizeMode="cover"
             />
@@ -57,7 +57,7 @@ const TicketComponent = (props: Props) => {
             <RowComponent>
               <Location size={16} color={appColors.primary} />
               <TextComponent
-                text={item.eventId.location}
+                text={item.eventId.address}
                 styles={{flex: 1, paddingHorizontal: 2}}
               />
               <View

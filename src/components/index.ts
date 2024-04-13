@@ -13,6 +13,7 @@ import ShapeComponent from './ShapeComponent';
 import SocialComponent from './SocialComponent';
 import SpaceComponent from './SpaceComponent';
 import TextComponent from './TextComponent';
+import HeaderComponent from './HeaderComponent';
 
 export {
   SpaceComponent,
@@ -29,5 +30,6 @@ export {
   EventItem,
   AvataGroup,
   DateTimePicker,
-  UserList
+  UserList,
+  HeaderComponent
 };

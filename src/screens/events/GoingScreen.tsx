@@ -2,6 +2,7 @@ import { ArrowLeft } from 'iconsax-react-native';
 import React from 'react';
 import { FlatList, StatusBar, TouchableOpacity, View } from 'react-native';
 import {
+  HeaderComponent,
   RowComponent,
   SectionComponent,
   TextComponent,
@@ -19,16 +20,7 @@ const GoingScreen = ({route, navigation}: any) => {
   return (
     <View
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
-      <SectionComponent>
-        <RowComponent>
-          <TouchableOpacity
-            style={{marginRight: 20}}
-            onPress={() => navigation.goBack()}>
-            <ArrowLeft size={22} color="black" />
-          </TouchableOpacity>
-          <TextComponent text={`${attendees.length} Going`} size={18} title />
-        </RowComponent>
-      </SectionComponent>
+      <HeaderComponent title={`${attendees.length} Going`} goBack/>
 
       {attendees.length > 0 ? (
         <SectionComponent>

@@ -6,6 +6,7 @@ import {
   KeyboardType,
   StyleProp,
   ViewStyle,
+  KeyboardAvoidingView,
 } from 'react-native';
 import React, {ReactNode, useState} from 'react';
 import {Eye, EyeSlash} from 'iconsax-react-native';

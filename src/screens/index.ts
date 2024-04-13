@@ -20,6 +20,7 @@ import EditProfileScreen from './profiles/EditProfileScreen';
 import CurrentLocation from './home/components/CurrentLocation';
 import TicketDetailScreen from './tickets/TicketDetailScreen';
 import ManageEventScreen from './manage/ManageEventScreen';
+import SeeAllEvent from './home/SeeAllEvent';
 
 export {
   HomeScreen,
@@ -44,4 +45,5 @@ export {
   CurrentLocation,
   TicketDetailScreen,
   ManageEventScreen,
+  SeeAllEvent
 };

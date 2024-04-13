@@ -9,6 +9,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import {
   ButtonComponent,
   EventItem,
+  HeaderComponent,
   RowComponent,
   SectionComponent,
   SpaceComponent,
@@ -60,7 +61,7 @@ const FavoriteScreen = () => {
   return (
     <View
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
-      <SectionComponent>
+      {/* <SectionComponent>
         <RowComponent styles={{justifyContent: 'space-between'}}>
           <TextComponent text="Favorites" title size={22} />
           <RowComponent>
@@ -69,7 +70,8 @@ const FavoriteScreen = () => {
             <FilterSearch size={22} color="black" />
           </RowComponent>
         </RowComponent>
-      </SectionComponent>
+      </SectionComponent> */}
+      <HeaderComponent title='Favorites'/>
       <SectionComponent >
         <TextComponent text={`${eventFavorites.length} favorites`} title size={18}/>
       </SectionComponent>

@@ -8,7 +8,12 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {globalStyles} from '../../styles/globalStyles';
-import {RowComponent, SectionComponent, TextComponent} from '../../components';
+import {
+  HeaderComponent,
+  RowComponent,
+  SectionComponent,
+  TextComponent,
+} from '../../components';
 import {SearchNormal} from 'iconsax-react-native';
 import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
@@ -77,14 +82,22 @@ const TicketScreen = ({navigation}: any) => {
   return (
     <View
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
-      <SectionComponent>
+      {/* <SectionComponent>
         <RowComponent styles={{justifyContent: 'space-between'}}>
           <TextComponent text="Tickets" title size={20} />
           <TouchableOpacity>
             <SearchNormal size={20} color="black" />
           </TouchableOpacity>
         </RowComponent>
-      </SectionComponent>
+      </SectionComponent> */}
+      <HeaderComponent styles={{justifyContent: 'space-between'}}
+        title="Tickets"
+        children={
+          <TouchableOpacity>
+            <SearchNormal size={20} color="black" />
+          </TouchableOpacity>
+        }
+      />
       <SectionComponent>
         <RowComponent styles={{justifyContent: 'center'}}>
           {data.map((item: any, index: any) => (

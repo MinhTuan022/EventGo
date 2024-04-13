@@ -6,12 +6,15 @@ import {
   TextInput,
   ScrollView,
   Image,
+  FlatList,
+  Dimensions,
 } from 'react-native';
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {globalStyles} from '../../styles/globalStyles';
 import {
   ButtonComponent,
   CardComponent,
+  EventItem,
   InputComponent,
   RowComponent,
   SectionComponent,
@@ -24,6 +27,7 @@ import {
   ArrowLeft,
   ArrowLeft2,
   Calendar,
+  FilterSearch,
   Location,
   Music,
   SearchNormal,
@@ -33,13 +37,36 @@ import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import CategoriesFilter from './components/CategoriesFilter';
+import CategoriesList from '../../components/CategoriesList';
+import eventAPI from '../../apis/eventApi';
 
 const SearchScreen = ({navigation}: any) => {
   const inputRef = useRef<any>();
   const refRBSheet = useRef<any>();
+  const [isFocused, setIsFocused] = useState(false);
+  const [textSearch, setTextSearch] = useState('');
+  const [events, setEvents] = useState([]);
   useEffect(() => {
     inputRef.current.focus();
-  }, []);
+    handleSearch();
+  }, [textSearch]);
+
+  const handleSearch = async () => {
+    try {
+      const res = await eventAPI.HandleEvent(`/search?title=${textSearch}`);
+      console.log(res);
+      setEvents(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
   return (
     <View
       style={[
@@ -47,32 +74,44 @@ const SearchScreen = ({navigation}: any) => {
         {paddingTop: StatusBar.currentHeight, paddingHorizontal: 16},
       ]}>
       <StatusBar barStyle={'dark-content'}></StatusBar>
-      <RowComponent>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ArrowLeft size={24} color="black" variant="Linear" />
-        </TouchableOpacity>
-
-        <TextComponent text="Search" title styles={{paddingLeft: 10}} />
-      </RowComponent>
-      <RowComponent styles={{marginTop: '4%'}}>
-        <RowComponent styles={{flex: 1}}>
-          <SearchNormal size={22} color={appColors.primary} variant="TwoTone" />
-          <View
-            style={{
-              width: 2,
-              height: 24,
-              marginHorizontal: 12,
-              backgroundColor: appColors.primary,
-            }}
-          />
-          <TextInput
-            ref={inputRef}
-            placeholder="Search..."
-            placeholderTextColor={appColors.gray2}
-            focusable
-            style={{fontSize: 20, flex: 1}}></TextInput>
+      <RowComponent styles={{marginVertical: 20}}>
+        <RowComponent>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <ArrowLeft size={24} color="black" variant="Linear" />
+          </TouchableOpacity>
+          <RowComponent
+            styles={{
+              backgroundColor: !isFocused
+                ? appColors.whiteBg
+                : appColors.purple2,
+              marginHorizontal: 10,
+              flex: 1,
+              borderRadius: 12,
+              paddingHorizontal: 15,
+              borderColor: isFocused ? appColors.primary : appColors.whiteBg,
+              borderWidth: 1,
+            }}>
+            <SearchNormal
+              size={22}
+              color={!isFocused ? appColors.gray : appColors.primary}
+            />
+            <SpaceComponent width={10} />
+            <TextInput
+              ref={inputRef}
+              onChangeText={val => setTextSearch(val)}
+              placeholder="Search..."
+              placeholderTextColor={appColors.gray2}
+              focusable
+              style={{fontSize: 20, flex: 1}}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+            />
+            <TouchableOpacity>
+              <FilterSearch size={22} color={appColors.primary} />
+            </TouchableOpacity>
+          </RowComponent>
         </RowComponent>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => refRBSheet.current.open()}
           style={{
             flexDirection: 'row',
@@ -87,7 +126,7 @@ const SearchScreen = ({navigation}: any) => {
           </ShapeComponent>
           <SpaceComponent width={5} />
           <TextComponent text="Filters" color="white" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <RBSheet
           animationType="slide"
           openDuration={2000}
@@ -102,7 +141,7 @@ const SearchScreen = ({navigation}: any) => {
               borderTopStartRadius: 38,
             },
             wrapper: {
-              backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
             },
             draggableIcon: {
               backgroundColor: appColors.gray2,
@@ -240,71 +279,24 @@ const SearchScreen = ({navigation}: any) => {
           </RowComponent>
         </RBSheet>
       </RowComponent>
-      <ScrollView>
-        <CardComponent styles={{}}>
-          <RowComponent>
-            <Image
-              source={require('../../assets/images/luffi.jpg')}
-              style={{width: 60, height: 80, borderRadius: 12}}
-            />
-            <View style={{flex: 1, marginLeft: 20}}>
-              <TextComponent
-                text="1ST MAY-SAT -2:00 PM"
-                color={appColors.primary}
-                size={12}
-                font={fontFamilies.medium}
-              />
-              <TextComponent
-                text="A virtual evening of smooth jazz"
-                title
-                size={19}
-              />
-            </View>
-          </RowComponent>
-        </CardComponent>
-        <CardComponent styles={{}}>
-          <RowComponent>
-            <Image
-              source={require('../../assets/images/luffi.jpg')}
-              style={{width: 60, height: 80, borderRadius: 12}}
-            />
-            <View style={{flex: 1, marginLeft: 20}}>
-              <TextComponent
-                text="1ST MAY-SAT -2:00 PM"
-                color={appColors.primary}
-                size={12}
-                font={fontFamilies.medium}
-              />
-              <TextComponent
-                text="A virtual evening of smooth jazz"
-                title
-                size={19}
-              />
-            </View>
-          </RowComponent>
-        </CardComponent>
-        <CardComponent styles={{}}>
-          <RowComponent>
-            <Image
-              source={require('../../assets/images/luffi.jpg')}
-              style={{width: 60, height: 80, borderRadius: 12}}
-            />
-            <View style={{flex: 1, marginLeft: 20}}>
-              <TextComponent
-                text="1ST MAY-SAT -2:00 PM"
-                color={appColors.primary}
-                size={12}
-                font={fontFamilies.medium}
-              />
-              <TextComponent
-                text="A virtual evening of smooth jazz"
-                title
-                size={19}
-              />
-            </View>
-          </RowComponent>
-        </CardComponent>
-      </ScrollView>
+      <CategoriesList onSelectCategory={() => {}} />
+      <TextComponent
+        text={`${events.length} Found`}
+        title
+        size={18}
+        styles={{paddingVertical: 10}}
+      />
+      <FlatList
+        data={events}
+        renderItem={({item, index}) => (
+          <EventItem
+            item={item}
+            type="list"
+            styles={{width: Dimensions.get('window').width * 0.86}}
+            key={index}
+          />
+        )}
+      />
     </View>
   );
 };

@@ -1,6 +1,6 @@
 import Geolocation from '@react-native-community/geolocation';
 import messaging from '@react-native-firebase/messaging';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 import {
   Filter,
@@ -8,7 +8,7 @@ import {
   Notification,
   SearchNormal,
 } from 'iconsax-react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Animated,
   Button,
@@ -17,10 +17,10 @@ import {
   SafeAreaView,
   ScrollView,
   StatusBar,
-  View
+  View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import categoryAPI from '../../apis/categoryApi';
 import eventAPI from '../../apis/eventApi';
 import userAPI from '../../apis/userApi';
@@ -35,13 +35,13 @@ import {
 } from '../../components';
 import CategoriesList from '../../components/CategoriesList';
 import LodingModal from '../../components/modals/LoadingModal';
-import { AddressModel } from '../../models/AddressModel';
-import { EventModel } from '../../models/EventModel';
-import { authSelector } from '../../redux/reducers/authReducer';
-import { globalStyles } from '../../styles/globalStyles';
-import { appColors } from '../../utils/constants/appColors';
-import { appInfo } from '../../utils/constants/appInfos';
-import { fontFamilies } from '../../utils/constants/fontFamilies';
+import {AddressModel} from '../../models/AddressModel';
+import {EventModel} from '../../models/EventModel';
+import {authSelector} from '../../redux/reducers/authReducer';
+import {globalStyles} from '../../styles/globalStyles';
+import {appColors} from '../../utils/constants/appColors';
+import {appInfo} from '../../utils/constants/appInfos';
+import {fontFamilies} from '../../utils/constants/fontFamilies';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -59,9 +59,9 @@ const HomeScreen = ({navigation}: any) => {
   const handleSelectCategory = (categoryKey: any) => {
     setSelectedCategory(categoryKey);
   };
-// useEffect(() => {
-//   HandleNotification.checkNoticationPersion();
-// }, [])
+  // useEffect(() => {
+  //   HandleNotification.checkNoticationPersion();
+  // }, [])
   const limit = 5;
   useEffect(() => {
     // Lấy vị trí hiện tại của người dùng khi component được mount
@@ -75,7 +75,6 @@ const HomeScreen = ({navigation}: any) => {
       (error: any) => console.log('Error getting location: ', error),
       {},
     );
-
   }, []);
   useEffect(() => {
     messaging().onMessage(async (mess: any) => {
@@ -90,7 +89,7 @@ const HomeScreen = ({navigation}: any) => {
         },
       });
     });
-  },[])
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -120,7 +119,7 @@ const HomeScreen = ({navigation}: any) => {
           }&category=${category}`
         : `/?limit=${limit}&date=${currentTime}&category=${selectedCategory}`;
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       const res = await eventAPI.HandleEvent(api);
       if (res && res.data && lat && long) {
         setEventNear(res.data);
@@ -128,12 +127,10 @@ const HomeScreen = ({navigation}: any) => {
         setEventUpcoming(res.data);
       }
       // console.log(events);
-      setIsLoading(false)
-
+      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching events:', error);
-      setIsLoading(false)
-
+      setIsLoading(false);
     }
   };
   const reverseGeoCode = async (lat: number, long: number) => {
@@ -327,8 +324,11 @@ const HomeScreen = ({navigation}: any) => {
               </View>
             </ShapeComponent>
           </RowComponent>
-          
+
           <ButtonComponent
+            onPress={() => {
+              navigation.navigate('SearchScreen');
+            }}
             text="What event are looking for"
             iconLeft={<SearchNormal size={22} color={appColors.gray2} />}
             iconRight={<Filter size={22} color={appColors.primary} />}
@@ -353,10 +353,16 @@ const HomeScreen = ({navigation}: any) => {
               // paddingHorizontal: 16,
             }}>
             <TextComponent text="Upcomming Events" title size={20} />
-            <TextComponent text="See All" />
+            <ButtonComponent
+              onPress={() => navigation.navigate('SeeAll')}
+              type="link"
+              text="See All"
+              textColor={appColors.primary}
+              textStyle={{fontFamily: fontFamilies.medium}}
+            />
           </RowComponent>
         </SectionComponent>
-        <Toast  />
+        <Toast />
 
         <FlatList
           showsHorizontalScrollIndicator={false}
@@ -374,7 +380,13 @@ const HomeScreen = ({navigation}: any) => {
             paddingHorizontal: 16,
           }}>
           <TextComponent text="NearBy" title size={20} />
-          <TextComponent text="See All" />
+          <ButtonComponent
+            onPress={() => navigation.navigate('SeeAll')}
+            type="link"
+            text="See All"
+            textColor={appColors.primary}
+            textStyle={{fontFamily: fontFamilies.medium}}
+          />
         </RowComponent>
 
         <FlatList
@@ -433,10 +445,8 @@ const HomeScreen = ({navigation}: any) => {
             font={fontFamilies.medium}
           />
         </Animated.View>
-        
       </View>
-      <LodingModal visible={isLoading}/>
-     
+      <LodingModal visible={isLoading} />
     </SafeAreaView>
   );
 };

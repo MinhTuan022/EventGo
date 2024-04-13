@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import orderAPI from '../../apis/orderApi';
 import {
   ButtonComponent,
+  HeaderComponent,
   RowComponent,
   SectionComponent,
   ShapeComponent,
@@ -93,18 +94,7 @@ const OrderTickets = ({route, navigation}: any) => {
     <View style={globalStyles.container}>
       <View
         style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
-        <SectionComponent>
-          <RowComponent>
-            <TouchableOpacity>
-              <ArrowLeft size={20} color="black" />
-            </TouchableOpacity>
-            <TextComponent
-              text="Book Event"
-              size={22}
-              font={fontFamilies.medium}
-            />
-          </RowComponent>
-        </SectionComponent>
+        <HeaderComponent title='Book Ticket' goBack/>
 
         {item.tickets.length > 0 && (
           <SectionComponent>

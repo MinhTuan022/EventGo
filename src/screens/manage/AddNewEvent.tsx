@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
+  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -185,7 +186,7 @@ const AddNewEvent = () => {
   };
 
   return (
-    <>
+    <SafeAreaView style={{flex:1}}>
       <ChoicePictureModal
         modalVisible={modalVisible}
         closeModal={closeModal}
@@ -493,7 +494,7 @@ const AddNewEvent = () => {
           />
         </View>
       )}
-    </>
+    </SafeAreaView>
   );
 };
 

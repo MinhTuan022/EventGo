@@ -28,7 +28,8 @@ interface Props {
   label?: string;
   editable?: boolean;
   onChangeText?: () => void;
-  mandatory?:boolean
+  mandatory?: boolean;
+  flex?: boolean;
   //   onEnd?: () => void;
 }
 
@@ -47,24 +48,31 @@ const InputComponent = (props: Props) => {
     label,
     editable,
     onChangeText,
-    mandatory
+    mandatory,
+    flex,
     //  onEnd
   } = props;
   const [isShowPass, setIsShowPass] = useState(isPassword ?? false);
+  const [isFocus, setIsFocus] = useState(false);
+
   return (
-    <View>
+    <View style={{flex: flex ? 1 : 0}}>
       <RowComponent>
         {label && <TextComponent text={label} styles={{paddingBottom: 7}} />}
-        {mandatory && <TextComponent text={"*"} styles={{paddingBottom: 7}} color='red'/>}
+        {mandatory && (
+          <TextComponent text={'*'} styles={{paddingBottom: 7}} color="red" />
+        )}
       </RowComponent>
       <View
         style={[
           globalStyles.inputContainer,
-          {backgroundColor: editable === false ? appColors.gray2 : 'white'},
+          {backgroundColor: editable === false ? appColors.gray2 : 'white', borderColor:isFocus ? appColors.primary : appColors.gray2},
           styles,
         ]}>
         {affix ?? affix}
         <TextInput
+          onFocus={() => setIsFocus(true)}
+          onBlur={() => setIsFocus(false)}
           editable={editable}
           style={[
             globalStyles.input,

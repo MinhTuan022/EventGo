@@ -79,7 +79,8 @@ const ButtonComponent = (props: Props) => {
       {iconRight && iconRight}
     </TouchableOpacity>
   ) : (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} style={[globalStyles.button]}>
+      {iconLeft && iconLeft}
       <TextComponent
         text={text}
         color={type === 'link' ? appColors.primary : appColors.text}

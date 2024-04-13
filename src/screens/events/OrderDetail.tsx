@@ -15,6 +15,7 @@ import ticketAPI from '../../apis/ticketApi';
 import {
   ButtonComponent,
   EventItem,
+  HeaderComponent,
   RowComponent,
   SectionComponent,
   ShapeComponent,
@@ -64,15 +65,24 @@ const OrderDetail = ({route, navigation}: any) => {
 
   const handleResponse = (navState: any) => {
     const {url} = navState;
-    if (url.includes('http://192.168.76.235:3001/paypal/success')) {
+    if (url.includes('http://192.168.1.106:3001/paypal/success')) {
       setShowModal(false);
       setPaymentSuccess(true);
-    } else if (url.includes('http://192.168.76.235:3001/paypal/cancel')) {
+    } else if (url.includes('http://192.168.1.106:3001/paypal/cancel')) {
       setShowModal(false);
       setPaymentFail(true);
     }
   };
 
+  const handleGoBack = async () => {
+    try {
+      const res = await orderAPI.HandleOrder("/delete", {orderId}, 'delete');
+      console.log(res);
+      navigation.goBack();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       {paymentSuccess && (
@@ -200,18 +210,7 @@ const OrderDetail = ({route, navigation}: any) => {
           />
         </Modal>
         <View style={globalStyles.container}>
-          <SectionComponent>
-            <RowComponent>
-              <TouchableOpacity>
-                <ArrowLeft size={20} color="black" />
-              </TouchableOpacity>
-              <TextComponent
-                text="Order Detail"
-                size={22}
-                font={fontFamilies.medium}
-              />
-            </RowComponent>
-          </SectionComponent>
+          <HeaderComponent goBack onPress={handleGoBack} title='Order Detail'/>
           <EventItem item={eventData} type="list" disible={true} />
           <SectionComponent>
             <TextComponent title text="Order Summary" size={20} />

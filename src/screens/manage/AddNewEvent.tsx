@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
+  Modal,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -27,7 +28,14 @@ import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import {useNavigation} from '@react-navigation/native';
-import {ArrowLeft, DollarCircle, DollarSquare} from 'iconsax-react-native';
+import {
+  AddCircle,
+  ArrowLeft,
+  BagCross,
+  DollarCircle,
+  DollarSquare,
+  Trash,
+} from 'iconsax-react-native';
 import userAPI from '../../apis/userApi';
 import {useSelector} from 'react-redux';
 import {authSelector} from '../../redux/reducers/authReducer';
@@ -37,27 +45,96 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import storage from '@react-native-firebase/storage';
 import ChoicePictureModal from '../../components/modals/ChoicePictureModal';
-
-const AddNewEvent = () => {
+import {DateTime} from '../../utils/convertDateTime';
+import categoryAPI from '../../apis/categoryApi';
+import {Dropdown} from 'react-native-element-dropdown';
+import eventAPI from '../../apis/eventApi';
+interface Ticket {
+  ticketType: string;
+  price: string;
+  quantity: string;
+}
+const AddNewEvent = ({navigation}: any) => {
   const user = useSelector(authSelector);
   const [currentStep, setCurrentStep] = useState(1);
-  const [friends, setFriends] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
+  const [suggest, setSuggest] = useState(true);
+  const [press, setPress] = useState(false);
+  const [selectedType, setselectedType] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [isFocus, setIsFocus] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  const [imageUrl, setImageUrl] = useState<any>(null);
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState<any>();
+  const [description, setDescription] = useState('');
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [startTime, setStartTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date());
   const [fullAddress, setFullAddress] = useState('');
   const [address, setAddress] = useState('');
   const [coordinates, setCoordinates] = useState<number[]>([
     105.763791, 21.012379,
   ]);
-  const [suggest, setSuggest] = useState(true);
-  const [press, setPress] = useState(false);
-  const [quantity, setQuantity] = useState('');
-  const [nameTicket, setNameTicket] = useState('');
-  const [priceTicket, setPriceTicket] = useState('');
-  const [selectedType, setselectedType] = useState('');
-  const navigation = useNavigation();
-  const [modalVisible, setModalVisible] = useState(false);
-  const [imageUrl, setImageUrl] = useState<any>(null);
-  const [timeDate, setTimeDate] = useState(new Date());
+  const [tickets, setTickets] = useState([
+    {ticketType: '', price: '', quantity: ''},
+  ]);
+
+  const [eventId, setEventId] = useState('');
+  const handleAddTicket = () => {
+    setTickets([...tickets, {ticketType: '', price: '', quantity: ''}]);
+  };
+
+  const handleRemoveTicket = (index: number) => {
+    const updatedTickets = [...tickets];
+    updatedTickets.splice(index, 1); // Xóa vé tại chỉ mục đã cho
+    setTickets(updatedTickets);
+  };
+
+  const handleTicketChange = (
+    index: number,
+    field: keyof Ticket,
+    value: string,
+  ) => {
+    const updatedTickets = [...tickets];
+    updatedTickets[index][field] = value;
+    setTickets(updatedTickets);
+  };
+  const getCategories = async () => {
+    try {
+      const res = await categoryAPI.HandleCategory('/list');
+      setCategories(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleCreateEvent = async () => {
+    try {
+      const data = {
+        category,
+        title,
+        description,
+        address,
+        fullAddress,
+        geometry: {
+          coordinates,
+          type: 'Point',
+        },
+        startTime: DateTime.MergeDate(startDate, startTime),
+        endTime: DateTime.MergeDate(endDate, endTime),
+        organizer: user.id,
+        photoEvent: imageUrl,
+        tickets,
+      };
+      const res = await eventAPI.HandleEvent('/add', data, 'post');
+      setEventId(res.data);
+      navigation.navigate("ManageEventScreen")
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const openModal = () => {
     setModalVisible(true);
@@ -125,18 +202,17 @@ const AddNewEvent = () => {
     }
   };
   useEffect(() => {
-    getFriend(user.id);
-    // console.log(coordinates);
     if (press) {
       handleReverse(coordinates);
     }
+    getCategories();
   }, [user.id, press, coordinates]);
-  const getFriend = async (id: any) => {
-    try {
-      const res = await userAPI.HandleUser(`/friend?userId=${id}`);
-      setFriends(res.data);
-    } catch (error) {}
-  };
+  // const getFriend = async (id: any) => {
+  //   try {
+  //     const res = await userAPI.HandleUser(`/friend?userId=${id}`);
+  //     setFriends(res.data);
+  //   } catch (error) {}
+  // };
 
   const handleSearch = async (query: any) => {
     try {
@@ -186,7 +262,63 @@ const AddNewEvent = () => {
   };
 
   return (
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{flex: 1}}>
+      {eventId && (
+        <Modal transparent={true}>
+          <StatusBar backgroundColor="rgba(0, 0, 0, 0.5)" translucent={true} />
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            }}>
+            <View
+              style={{
+                backgroundColor: appColors.white,
+                width: '80%',
+                height: '60%',
+                borderRadius: 50,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <TextComponent
+                text="Chúc mừng"
+                color={appColors.primary}
+                title
+                size={20}
+              />
+              <View
+                style={{
+                  paddingHorizontal: 30,
+                  paddingVertical: 20,
+                  alignItems: 'center',
+                }}>
+                <TextComponent
+                  text="Bạn đã tạo sự kiệm mới thành công. "
+                  size={16}
+                />
+                <TextComponent text="hãy mời mọi người tham gia sự kiện!" size={16} />
+              </View>
+              <ButtonComponent
+                onPress={() => {
+                  navigation.navigate('EventDetail', {id: eventId});
+                }}
+                text="Xem Sự Kiện"
+                type="primary"
+                styles={{marginVertical: 10}}
+              />
+              <ButtonComponent
+                text="Trang Chủ"
+                type="primary"
+                onPress={() => navigation.navigate('Menu')}
+                color={appColors.purple2}
+                textColor={appColors.primary}
+              />
+            </View>
+          </View>
+        </Modal>
+      )}
       <ChoicePictureModal
         modalVisible={modalVisible}
         closeModal={closeModal}
@@ -253,19 +385,32 @@ const AddNewEvent = () => {
               styles={{paddingBottom: 7}}
             />
             <InputComponent
-              onChange={() => {}}
-              value=""
+              onChange={val => {
+                setTitle(val);
+              }}
+              value={title}
               placeHolder="Title"></InputComponent>
             <TextComponent
-              text="Event Type"
+              text="Category"
               title
               size={16}
               styles={{paddingBottom: 7}}
             />
-            <InputComponent
-              onChange={() => {}}
-              value=""
-              placeHolder="Title"></InputComponent>
+            <Dropdown
+              style={[
+                localStyle.dropdown,
+                isFocus && {borderColor: appColors.primary},
+              ]}
+              data={categories}
+              labelField={'categoryName'}
+              valueField={'_id'}
+              onChange={(item: any) => {
+                setCategory(item._id);
+              }}
+              // value={category?.categoryName}
+              onFocus={() => setIsFocus(true)}
+              onBlur={() => setIsFocus(false)}
+            />
             <TextComponent
               text="Event Description"
               title
@@ -273,8 +418,10 @@ const AddNewEvent = () => {
               styles={{paddingBottom: 7}}
             />
             <InputComponent
-              onChange={() => {}}
-              value=""
+              onChange={val => {
+                setDescription(val);
+              }}
+              value={description}
               placeHolder="Write your event description"></InputComponent>
             <TextComponent
               text="Event Timing"
@@ -283,14 +430,38 @@ const AddNewEvent = () => {
               styles={{paddingBottom: 7}}
             />
             <RowComponent styles={{justifyContent: 'space-between'}}>
-              <DateTimePicker label="Start Date: " mode="date" onSelect={val =>setTimeDate(val)} selected={timeDate}/>
+              <DateTimePicker
+                label="Start Date: "
+                mode="date"
+                onSelect={val => {
+                  setStartDate(val);
+                }}
+                selected={startDate}
+              />
               <SpaceComponent width={16} />
-              <DateTimePicker label="Start at: " mode="time" onSelect={val => setTimeDate(val)} selected={timeDate}/>
+              <DateTimePicker
+                label="Start at: "
+                mode="time"
+                onSelect={val => {
+                  setStartTime(val);
+                }}
+                selected={startTime}
+              />
             </RowComponent>
             <RowComponent styles={{justifyContent: 'space-between'}}>
-              <DateTimePicker label="End date: " mode="date" onSelect={val => setTimeDate(val)} selected={timeDate}/>
+              <DateTimePicker
+                label="End date: "
+                mode="date"
+                onSelect={val => setEndDate(val)}
+                selected={endDate}
+              />
               <SpaceComponent width={16} />
-              <DateTimePicker label="End at: " mode="time" onSelect={val => setTimeDate(val)} selected={timeDate}/>
+              <DateTimePicker
+                label="End at: "
+                mode="time"
+                onSelect={val => setEndTime(val)}
+                selected={endTime}
+              />
             </RowComponent>
           </SectionComponent>
         </ScrollView>
@@ -379,57 +550,84 @@ const AddNewEvent = () => {
         </View>
       )}
       {currentStep === 3 && (
-        <View style={globalStyles.container}>
-          <SectionComponent>
-            <RowComponent>
-              <TouchableOpacity
-                style={
-                  selectedType === 'Paid'
-                    ? localStyle.buttonSelected
-                    : localStyle.button
-                }
-                onPress={() => {
-                  setselectedType('Paid');
-                }}>
-                <TextComponent text="Paid" size={18} />
-              </TouchableOpacity>
-              <SpaceComponent width={20} />
-              <TouchableOpacity
-                style={
-                  selectedType === 'Free'
-                    ? localStyle.buttonSelected
-                    : localStyle.button
-                }
-                onPress={() => {
-                  setselectedType('Free');
-                  setPriceTicket('0');
-                }}>
-                <TextComponent text="Free" size={18} />
-              </TouchableOpacity>
-            </RowComponent>
-          </SectionComponent>
-          <SectionComponent>
-            <InputComponent
-              value={nameTicket}
-              onChange={val => setNameTicket(val)}
-              label="Name"
+        <ScrollView style={[globalStyles.container, {paddingHorizontal: 16}]}>
+          <RowComponent styles={{paddingVertical: 20}}>
+            <TouchableOpacity
+              style={
+                selectedType === 'Paid'
+                  ? localStyle.buttonSelected
+                  : localStyle.button
+              }
+              onPress={() => {
+                setselectedType('Paid');
+              }}>
+              <TextComponent text="Paid" size={18} />
+            </TouchableOpacity>
+            <SpaceComponent width={20} />
+            <TouchableOpacity
+              style={
+                selectedType === 'Free'
+                  ? localStyle.buttonSelected
+                  : localStyle.button
+              }
+              onPress={() => {
+                setselectedType('Free');
+              }}>
+              <TextComponent text="Free" size={18} />
+            </TouchableOpacity>
+          </RowComponent>
+          {tickets.map((ticket, index) => (
+            <SectionComponent
+              key={index}
+              styles={{
+                borderRadius: 12,
+                borderColor: appColors.primary,
+                borderWidth: 1,
+                marginBottom: 20,
+              }}>
+              {tickets.length > 1 && index !== 0 && (
+                <TouchableOpacity
+                  onPress={() => handleRemoveTicket(index)}
+                  style={{justifyContent: 'flex-end', flexDirection: 'row'}}>
+                  <Trash size={22} color={'red'} />
+                </TouchableOpacity>
+              )}
+              <InputComponent
+                value={ticket.ticketType}
+                onChange={val => handleTicketChange(index, 'ticketType', val)}
+                label="Name"
+              />
+              <RowComponent>
+                <InputComponent
+                  flex
+                  value={ticket.quantity}
+                  onChange={val => handleTicketChange(index, 'quantity', val)}
+                  label="Available quantity"
+                />
+                <SpaceComponent width={10} />
+                <InputComponent
+                  flex
+                  affix={<DollarSquare size={20} color="black" />}
+                  value={selectedType === 'Free' ? 'Free' : ticket.price}
+                  onChange={val => {
+                    handleTicketChange(index, 'price', val);
+                  }}
+                  label="Price"
+                  editable={selectedType === 'Free' ? false : true}
+                />
+              </RowComponent>
+            </SectionComponent>
+          ))}
+          {selectedType === 'Paid' && (
+            <ButtonComponent
+              type="link"
+              text="Add Ticket"
+              onPress={handleAddTicket}
+              iconLeft={<AddCircle size={22} color={appColors.primary} />}
             />
-            <InputComponent
-              value={quantity}
-              onChange={val => setQuantity(val)}
-              label="Available quantity"
-            />
-            <InputComponent
-              affix={<DollarSquare size={20} color="black" />}
-              value={selectedType === 'Free' ? 'Free' : priceTicket}
-              onChange={val => {
-                setPriceTicket(val);
-              }}
-              label="Price"
-              editable={selectedType === 'Free' ? false : true}
-            />
-          </SectionComponent>
-        </View>
+          )}
+          <SpaceComponent height={20} />
+        </ScrollView>
       )}
       {currentStep === 1 && (
         <View
@@ -481,12 +679,8 @@ const AddNewEvent = () => {
             width: '100%',
           }}>
           <ButtonComponent
-            disable={
-              quantity && nameTicket && selectedType && priceTicket
-                ? false
-                : true
-            }
-            onPress={handleNext}
+            disable={tickets ? false : true}
+            onPress={handleCreateEvent}
             styles={{width: '70%', padding: 12}}
             text={`Save`}
             type="primary"
@@ -519,6 +713,16 @@ const localStyle = StyleSheet.create({
     borderColor: appColors.primary,
     flex: 1,
     alignItems: 'center',
+  },
+  dropdown: {
+    height: 50,
+    borderColor: appColors.gray2,
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 15,
+    // paddingVertical: 12,
+    minHeight: 56,
+    marginBottom: 19,
   },
 });
 

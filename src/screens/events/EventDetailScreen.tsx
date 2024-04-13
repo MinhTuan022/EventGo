@@ -406,7 +406,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
                   font={fontFamilies.medium}
                   size={16}
                 />
-                <TextComponent text={item.address} size={12} />
+                <TextComponent text={item.fullAddress} size={12} />
               </View>
             </RowComponent>
             <SpaceComponent height={20} />

@@ -16,22 +16,27 @@ const CategoriesList = ({onSelectCategory}: CategoriesListProps) => {
   const size = 20;
   const categories = [
     {
-      key: 'sports',
+      key: '',
+      title: 'All',
+      icon: <MemoSports width={size} height={size} />,
+    },
+    {
+      key: 'Sports',
       title: 'Sports',
       icon: <MemoSports width={size} height={size} />,
     },
     {
-      key: 'music',
+      key: 'Music',
       title: 'Music',
       icon: <MemoMusic width={size} height={size} />,
     },
     {
-      key: 'food',
+      key: 'Food',
       title: 'Food',
       icon: <MemoFood width={size} height={size} />,
     },
     {
-      key: 'art',
+      key: 'Art',
       title: 'Art',
       icon: <MemoArt width={size} height={size} />,
     },

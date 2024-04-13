@@ -23,6 +23,16 @@ const ManageEventScreen = ({navigation}:any) => {
         textStyle={{fontFamily: fontFamilies.medium}}
       />
       <ButtonComponent
+        text="Sự kiện của tôi"
+        iconLeft={<TrendUp size={22} color="black" />}
+        iconRight={<ArrowCircleRight size={22} color="black" />}
+        type="primary"
+        color="white"
+        textColor="black"
+        styles={localStyle.button}
+        textStyle={{fontFamily: fontFamilies.medium}}
+      />
+      <ButtonComponent
         text="Báo cáo, thống kê"
         iconLeft={<TrendUp size={22} color="black" />}
         iconRight={<ArrowCircleRight size={22} color="black" />}

@@ -15,23 +15,26 @@ import { authSelector } from '../../redux/reducers/authReducer';
 import { globalStyles } from '../../styles/globalStyles';
 import { appColors } from '../../utils/constants/appColors';
 import { fontFamilies } from '../../utils/constants/fontFamilies';
+import ticketAPI from '../../apis/ticketApi';
+import { formatCurrency } from '../../utils/util';
 
 const OrderTickets = ({route, navigation}: any) => {
-  const item = route.params;
+  const {item, tickets} = route.params;
   const user = useSelector(authSelector);
   const [quantityBuy, setQuantityBuy] = useState(1);
+  // const [ticketData, setTicketData] = useState<any>();
   const [quantityAvailable, setQuantityAvailble] = useState(
-    item.tickets.length > 0 ? item.tickets[0].quantity : 0,
+    tickets.length > 0 ? tickets[0].quantity : 0,
   );
   const [selectedType, setSelectedType] = useState(0);
   const [ticketType, setTicketType] = useState(
-    item.tickets.length > 0 ?? item.tickets[0].ticketType,
+    tickets.length > 0 ?? tickets[0].ticketType,
   );
   const [ticketPrice, setTicketPrice] = useState(
-    item.tickets.length > 0 ? item.tickets[0].price : 0,
+    tickets.length > 0 ? tickets[0].price : 0,
   );
   const [ticketId, setTicketId] = useState(
-    item.tickets.length > 0 ? item.tickets[0]._id : '',
+    tickets.length > 0 ? tickets[0]._id : '',
   );
   const newItem = {
     ...item,
@@ -67,6 +70,7 @@ const OrderTickets = ({route, navigation}: any) => {
   useEffect(() => {
     console.log(quantityAvailable);
   }, [quantityAvailable]);
+
   const handleOrder = async () => {
     try {
       const res = await orderAPI.HandleOrder(
@@ -96,10 +100,10 @@ const OrderTickets = ({route, navigation}: any) => {
         style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
         <HeaderComponent title='Book Ticket' goBack/>
 
-        {item.tickets.length > 0 && (
+        {tickets.length > 0 && (
           <SectionComponent>
             <RowComponent styles={{justifyContent: 'center'}}>
-              {item.tickets.map((ticket: any, index: any) => (
+              {tickets.map((ticket: any, index: any) => (
                 <TouchableOpacity
                   onPress={() =>
                     handleType(
@@ -182,7 +186,7 @@ const OrderTickets = ({route, navigation}: any) => {
           disable={quantityBuy === 0 ? true : false}
           onPress={handleOrder}
           styles={{width: '70%', padding: 12}}
-          text={`Continue - ${ticketPrice * quantityBuy} VNĐ`}
+          text={`Tiếp tục - ${formatCurrency(ticketPrice * quantityBuy)}`}
           type="primary"
           textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
         />

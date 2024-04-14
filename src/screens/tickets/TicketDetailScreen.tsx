@@ -21,6 +21,7 @@ import {appColors} from '../../utils/constants/appColors';
 import QRCode from 'react-native-qrcode-svg';
 import ViewShot from 'react-native-view-shot';
 import RNFS from 'react-native-fs';
+import { formatCurrency } from '../../utils/util';
 
 const TicketDetailScreen = ({route, navigation}: any) => {
   const ticketInfo = route.params;
@@ -120,7 +121,7 @@ const TicketDetailScreen = ({route, navigation}: any) => {
           <SectionComponent styles={localStyle.section}>
             <RowComponent styles={{justifyContent: 'space-between'}}>
               <TextComponent text={`${ticketInfo.quantity} Seat`} />
-              <TextComponent text="$4.00" title size={16} />
+              <TextComponent text={formatCurrency(1000000)} title size={16} />
             </RowComponent>
             <RowComponent styles={{justifyContent: 'space-between'}}>
               <TextComponent text="Total" />

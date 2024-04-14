@@ -9,6 +9,7 @@ import {
 } from '../../components';
 import {Location} from 'iconsax-react-native';
 import {appColors} from '../../utils/constants/appColors';
+import { DateTime } from '../../utils/convertDateTime';
 
 interface Props {
   item: any;
@@ -22,10 +23,10 @@ const TicketComponent = (props: Props) => {
     <>
       <View
         style={{
-          backgroundColor: '#F6F6F6',
+          backgroundColor: appColors.white,
           marginHorizontal: 16,
           marginVertical: 8,
-          borderRadius: 12,
+          borderRadius: 20,
           padding: 15,
         }}>
         <RowComponent>
@@ -52,8 +53,8 @@ const TicketComponent = (props: Props) => {
               paddingLeft: 15,
               justifyContent: 'space-around',
             }}>
-            <TextComponent text={item.eventId.title} />
-            <TextComponent text={item.eventId.startTime} />
+            <TextComponent text={item.eventId.title} title size={18}/>
+            <TextComponent text={`${DateTime.GetDate(item.eventId.startTime)}`} />
             <RowComponent>
               <Location size={16} color={appColors.primary} />
               <TextComponent
@@ -64,12 +65,25 @@ const TicketComponent = (props: Props) => {
                 style={{
                   padding: 4,
                   borderWidth: 1,
-                  borderColor: item.status === 'Completed' ? 'green' : 'red',
-                  borderRadius: 5,
+                  borderColor:
+                    item.status === 'Completed'
+                      ? 'green'
+                      : item.status === 'Paid' || item.status === 'Pending'
+                      ? appColors.primary
+                      : 'red',
+                  borderRadius: 7,
+                  paddingHorizontal:10
                 }}>
                 <TextComponent
+                size={12}
                   text={item.status}
-                  color={item.status === 'Completed' ? 'green' : 'red'}
+                  color={
+                    item.status === 'Completed'
+                      ? 'green'
+                      : item.status === 'Paid' || item.status === 'Pending'
+                      ? appColors.primary
+                      : 'red'
+                  }
                 />
               </View>
             </RowComponent>
@@ -124,7 +138,7 @@ const TicketComponent = (props: Props) => {
                   borderColor: appColors.primary,
                   borderWidth: 1,
                 }}
-                text="Cancelled Booking"
+                text="Hủy Vé"
                 type="primary"
                 textColor={appColors.primary}
                 color={appColors.white}
@@ -134,7 +148,42 @@ const TicketComponent = (props: Props) => {
               <SpaceComponent width={10} />
               <ButtonComponent
                 styles={{flex: 1, paddingVertical: 8}}
-                text="View E-Ticket"
+                text="Xem E-Ticket"
+                type="primary"
+                textStyle={{fontSize: 14}}
+                onPress={onPressView}
+              />
+            </RowComponent>
+          </>
+        )}
+        {item.status === 'Pending' && (
+          <>
+            <View
+              style={{
+                height: 0.8,
+                backgroundColor: appColors.gray2,
+                marginVertical: 10,
+              }}
+            />
+            <RowComponent styles={{flex: 1}}>
+              <ButtonComponent
+                styles={{
+                  flex: 1,
+                  paddingVertical: 8,
+                  borderColor: appColors.primary,
+                  borderWidth: 1,
+                }}
+                text="Hủy vé"
+                type="primary"
+                textColor={appColors.primary}
+                color={appColors.white}
+                textStyle={{fontSize: 14}}
+                onPress={onPressCancelled}
+              />
+              <SpaceComponent width={10} />
+              <ButtonComponent
+                styles={{flex: 1, paddingVertical: 8}}
+                text="Thanh toán"
                 type="primary"
                 textStyle={{fontSize: 14}}
                 onPress={onPressView}

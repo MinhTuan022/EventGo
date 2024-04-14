@@ -44,29 +44,11 @@ import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import {DateTime} from '../../utils/convertDateTime';
+import ticketAPI from '../../apis/ticketApi';
+import {formatCurrency} from '../../utils/util';
 
 const EventDetailScreen = ({navigation, route}: any) => {
   const {id} = route.params;
-  // console.log(id);
-  // const data = {
-  //   geometry: {
-  //     type: '',
-  //     coordinates: [],
-  //   },
-  //   address: '',
-  //   title: '',
-  //   description: '',
-  //   fullAddress: '',
-  //   photoEvent:
-  //     'https://th.bing.com/th/id/R.3663a6a0645024b783dfaba0e16eca2f?rik=RmACL83QdOI4tw&riu=http%3a%2f%2fwww.thedalejrfoundation.org%2fwidgets%2fstatic%2fimages%2fdefaultimage.png&ehk=%2fCMinQQyGjCzek1QICfIMogrKSbDKrXuYS5P5agBNFQ%3d&risl=&pid=ImgRaw&r=0',
-  //   startTime: new Date(),
-  //   endTime: new Date(),
-  //   organizer: '',
-  //   category: '',
-  //   attendees: [],
-  //   tickets: [],
-  //   __v: 0,
-  // };
   const user = useSelector(authSelector);
   const [item, setItem] = useState<EventModel>();
   const [showMap, setShowMap] = useState(false);
@@ -77,7 +59,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
   const dispatch = useDispatch();
   const [organizer, setOrganizer] = useState<UserModel>();
   const [attendees, setAttendees] = useState<any>([]);
-
+  const [ticketData, setTicketData] = useState<any>();
   useEffect(() => {
     getEventbyId();
   }, [id]);
@@ -90,7 +72,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
               `/check-relationship?userId=${userId}&targetUserId=${item.organizer}`,
             );
             setRelationship(res.data);
-            console.log(res);
+            // console.log(res);
           } catch (error) {
             console.log(error);
           }
@@ -104,6 +86,10 @@ const EventDetailScreen = ({navigation, route}: any) => {
           getGoing(item.attendees);
           // console.log("fjf", userGoing)
         }
+        if (item.tickets) {
+          getTicket(item.tickets);
+          console.log(item.tickets);
+        }
         if (user.favorites && user.favorites.includes(id)) {
           setFavorite(true);
         }
@@ -115,14 +101,13 @@ const EventDetailScreen = ({navigation, route}: any) => {
     }, [item, user]),
   );
   useEffect(() => {
-    console.log(organizer)
-
-  }, [organizer]);
+    console.log(ticketData);
+  }, [ticketData]);
 
   const getEventbyId = async () => {
     try {
       const res = await eventAPI.HandleEvent(`/byId?id=${id}`);
-      console.log(res);
+      // console.log(res);
       setItem(res.data);
     } catch (error) {
       console.log(error);
@@ -140,6 +125,14 @@ const EventDetailScreen = ({navigation, route}: any) => {
     try {
       const res = await eventAPI.HandleEvent(`/going?ids=${ids}`);
       setAttendees(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getTicket = async (ids: any) => {
+    try {
+      const res = await ticketAPI.HandleTicket(`?ids=${ids}`);
+      setTicketData(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -417,7 +410,25 @@ const EventDetailScreen = ({navigation, route}: any) => {
               </ShapeComponent>
               <SpaceComponent width={10} />
               <View>
-                <TextComponent text={``} font={fontFamilies.medium} size={16} />
+                {ticketData && (
+                  <TextComponent
+                    text={
+                      ticketData[0].price === 0
+                        ? `Free`
+                        : `${formatCurrency(
+                            Math.min(
+                              ...ticketData.map((ticket: any) => ticket.price),
+                            ),
+                          )} - ${formatCurrency(
+                            Math.max(
+                              ...ticketData.map((ticket: any) => ticket.price),
+                            ),
+                          )}`
+                    }
+                    font={fontFamilies.medium}
+                    size={16}
+                  />
+                )}
                 <TextComponent
                   text={'Ticket price depends on package'}
                   size={12}
@@ -634,9 +645,9 @@ const EventDetailScreen = ({navigation, route}: any) => {
             paddingVertical: 20,
           }}>
           <ButtonComponent
-            onPress={() => navigation.navigate('OrderTickets', item)}
+            onPress={() => navigation.navigate('OrderTickets', {item: item, tickets: ticketData})}
             styles={{width: '70%', padding: 12}}
-            text={`GET TICKET`}
+            text={`Đặt Vé`}
             type="primary"
             textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
           />

@@ -6,10 +6,12 @@ import {
   StyleSheet,
   FlatList,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {globalStyles} from '../../styles/globalStyles';
 import {
+  ButtonComponent,
   HeaderComponent,
+  ModalBottom,
   RowComponent,
   SectionComponent,
   TextComponent,
@@ -23,16 +25,18 @@ import {useSelector} from 'react-redux';
 import {authSelector} from '../../redux/reducers/authReducer';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import orderAPI from '../../apis/orderApi';
+import RBSheet from 'react-native-raw-bottom-sheet';
 
 const TicketScreen = ({navigation}: any) => {
   // const navigation = useNavigation();
+  const refRBSheet = useRef<any>();
   const [selected, setSelected] = useState(0);
   const [ticket, setTicket] = useState([]);
   const user = useSelector(authSelector);
   const data = [
-    {name: 'Upcoming', val: 'Paid'},
-    {name: 'Completed', val: 'Completed'},
-    {name: 'Cancelled', val: 'Cancelled'},
+    {name: 'Sắp diễn ra', val: 'Paid'},
+    {name: 'Hoàn Thành', val: 'Completed'},
+    {name: 'Đã Hủy', val: 'Cancelled'},
   ];
   const [status, setStatus] = useState('Paid');
   // useEffect(() => {
@@ -52,7 +56,7 @@ const TicketScreen = ({navigation}: any) => {
       );
       console.log(`?userId=${user.id}&status=${status}`);
       setTicket(res.data);
-      console.log(res.data);
+      // console.log(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -64,33 +68,84 @@ const TicketScreen = ({navigation}: any) => {
   useEffect(() => {
     console.log(status);
   }, [status]);
-  const handleCancelled = async (timeEvent: any) => {
-    console.log(timeEvent);
-    const currentTime = new Date();
-    const targetTime = new Date(timeEvent);
-
-    if (currentTime == targetTime) {
-      console.log('Thời gian hiện tại bằng thời gian mục tiêu.');
-    }
+  const handleCancelled = async (id: any) => {
+    refRBSheet.current.open();
+    console.log(id);
   };
   const handleReview = async () => {
     console.log('first');
   };
-  const handleView = () => {
-    // navigation.navigate("Screen")
-  };
+
   return (
     <View
-      style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
-      {/* <SectionComponent>
-        <RowComponent styles={{justifyContent: 'space-between'}}>
-          <TextComponent text="Tickets" title size={20} />
-          <TouchableOpacity>
-            <SearchNormal size={20} color="black" />
-          </TouchableOpacity>
-        </RowComponent>
-      </SectionComponent> */}
-      <HeaderComponent styles={{justifyContent: 'space-between'}}
+      style={[
+        globalStyles.container,
+        {
+          paddingTop: StatusBar.currentHeight,
+          backgroundColor: appColors.whiteBg,
+        },
+      ]}>
+      {/* <ModalBottom/> */}
+      <RBSheet
+        animationType="slide"
+        // openDuration={2000}
+        ref={refRBSheet}
+        closeOnDragDown={true}
+        closeOnPressMask={true}
+        customStyles={{
+          container: {
+            backgroundColor: 'white',
+            // height: '90%',
+            borderTopEndRadius: 38,
+            borderTopStartRadius: 38,
+            // paddingVertical:20,
+            flex: 1,
+          },
+          wrapper: {
+            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+          },
+          draggableIcon: {
+            backgroundColor: appColors.gray2,
+          },
+        }}>
+        <View style={{flex: 1, alignItems: 'center'}}>
+          <TextComponent text="Hủy Vé" title />
+          <View
+            style={{
+              height: 1,
+              backgroundColor: appColors.gray2,
+              width: '90%',
+              marginVertical: 20,
+            }}></View>
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingHorizontal: 20,
+              paddingVertical: 20,
+            }}>
+            <TextComponent
+              text="Bạn có chắc chắn muốn hủy vé sự kiện này?"
+              font={fontFamilies.medium}
+              size={18}
+            />
+            <TextComponent
+              text="Số tiền bạn đã thanh toán sẽ được hoàn lại trong thời gian sớm nhất"
+              size={18}
+            />
+          </View>
+          <RowComponent>
+            <ButtonComponent
+              text="Không, Không Hủy"
+              type="primary"
+              styles={{flex: 1}}
+            />
+            <ButtonComponent text="Có, Hủy" type="primary" styles={{flex: 1}} />
+          </RowComponent>
+        </View>
+      </RBSheet>
+      <HeaderComponent
+        styles={{justifyContent: 'space-between'}}
         title="Tickets"
         children={
           <TouchableOpacity>
@@ -124,7 +179,7 @@ const TicketScreen = ({navigation}: any) => {
           <TicketComponent
             key={index}
             item={item}
-            onPressCancelled={() => handleCancelled(item.eventId.startTime)}
+            onPressCancelled={() => handleCancelled(item._id)}
             onPressReview={handleReview}
             onPressView={() => {
               navigation.navigate('TicketDetail', item);

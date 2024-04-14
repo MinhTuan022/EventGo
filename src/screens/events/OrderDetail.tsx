@@ -26,7 +26,7 @@ import {authSelector} from '../../redux/reducers/authReducer';
 import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
-import {convertToUSD} from '../../utils/convertToUSD';
+import {convertToUSD, formatCurrency} from '../../utils/util';
 import orderAPI from '../../apis/orderApi';
 
 const OrderDetail = ({route, navigation}: any) => {
@@ -218,7 +218,7 @@ const OrderDetail = ({route, navigation}: any) => {
             <RowComponent
               styles={{justifyContent: 'space-between', paddingBottom: 10}}>
               <TextComponent text="Ticket Price" size={16} />
-              <TextComponent text={`${eventData.ticketPrice}đ`} size={16} />
+              <TextComponent text={`${formatCurrency(eventData.ticketPrice)}`} size={16} />
             </RowComponent>
             <RowComponent
               styles={{justifyContent: 'space-between', paddingBottom: 10}}>
@@ -245,7 +245,7 @@ const OrderDetail = ({route, navigation}: any) => {
                 font={fontFamilies.medium}
               />
               <TextComponent
-                text={`${eventData.ticketPrice * eventData.quantityBuy}đ`}
+                text={`${formatCurrency(eventData.ticketPrice * eventData.quantityBuy)}`}
                 size={18}
                 font={fontFamilies.medium}
               />

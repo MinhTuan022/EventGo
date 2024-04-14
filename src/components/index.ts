@@ -14,6 +14,7 @@ import SocialComponent from './SocialComponent';
 import SpaceComponent from './SpaceComponent';
 import TextComponent from './TextComponent';
 import HeaderComponent from './HeaderComponent';
+import ModalBottom from './modals/ModalBottom';
 
 export {
   SpaceComponent,
@@ -31,5 +32,6 @@ export {
   AvataGroup,
   DateTimePicker,
   UserList,
-  HeaderComponent
+  HeaderComponent,
+  ModalBottom,
 };

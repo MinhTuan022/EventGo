@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import messaging from '@react-native-firebase/messaging';
 import React, {useState} from 'react';
 import {LoginManager, Profile, Settings} from 'react-native-fbsdk-next';
 import {Path, Rect, Svg} from 'react-native-svg';
@@ -26,13 +27,30 @@ const SocialComponent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const api = '/login-social';
+
+  
+  
+
   const handleLoginWithGoogle = async () => {
     setIsLoading(true);
     try {
+
       await GoogleSignin.hasPlayServices({
         showPlayServicesUpdateDialog: true,
       });
       const userInfo = await GoogleSignin.signIn();
+      const currentToken = await messaging().getToken();
+
+      await AsyncStorage.setItem('fcmToken', JSON.stringify(currentToken))
+    
+      // Lấy tất cả các token FCM đã lưu trước đó (nếu có)
+      // const storedTokens = await AsyncStorage.getItem('fcmTokens');
+      // console.log("hahahah",storedTokens)
+      // const parsedStoredTokens = storedTokens ? JSON.parse(storedTokens) : [];
+      
+      // // Thêm token FCM mới vào mảng
+      // const updatedTokens = [...parsedStoredTokens, currentToken];
+      // await AsyncStorage.setItem('fcmTokens', JSON.stringify(updatedTokens));
       const profile = userInfo.user;
       const data = {
         name: profile.name,
@@ -40,12 +58,15 @@ const SocialComponent = () => {
         lastname: profile.familyName,
         email: profile.email,
         photo: profile.photo,
+        fcmTokens: currentToken
       };
-      const res: any = await authenticationAPI.HandleAuthentication(
+      const res = await authenticationAPI.HandleAuthentication(
         api,
         data,
         'post',
       );
+      console.log("aa",res.data);
+
       dispatch(
         addAuth({
           accessToken: res.data.accessToken,
@@ -64,10 +85,15 @@ const SocialComponent = () => {
           email: res.data.email,
           id: res.data.id,
           favorites: res.data.favorites,
-          fcmTokens: res.data.fcmTokens
-
         }),
       );
+      await AsyncStorage.setItem(
+        'auth',
+        JSON.stringify({
+          // fcmTokens: 
+        }),
+      );
+
     } catch (error) {
       console.log(error);
       setIsLoading(false);
@@ -94,12 +120,12 @@ const SocialComponent = () => {
             photo: profile.imageURL,
           };
           //   console.log(data);
-          const res: any = await authenticationAPI.HandleAuthentication(
+          const res = await authenticationAPI.HandleAuthentication(
             api,
             data,
             'post',
           );
-          console.log(res.data);
+          console.log("aa",res.data);
           dispatch(
             addAuth({
               accessToken: res.data.accessToken,

@@ -9,7 +9,7 @@ import FavoriteScreen from './favorites/FavoriteScreen';
 import HomeScreen from './home/HomeScreen';
 import MapScreen from './map/MapScreen';
 import ProfileScreen from './profiles/ProfileScreen';
-import NotificationScreen from './NotificationScreen';
+import NotificationScreen from './notification/NotificationScreen';
 import SearchScreen from './search/SearchScreen';
 import MyProfileScreen from './profiles/MyProfileScreen';
 import GoingScreen from './events/GoingScreen';

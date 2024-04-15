@@ -27,6 +27,7 @@ const AppRouters = () => {
   const checkLogin = async () => {
     try {
       const res = await getItem();
+      // console.log(res)
       if (res) {
         if (isJSONString(res)) {
           dispatch(addAuth(JSON.parse(res)));
@@ -34,7 +35,7 @@ const AppRouters = () => {
         }
       }
       
-      console.log(res);
+      console.log("cc",res);
     } catch (error) {
       if (error instanceof SyntaxError) {
         // Xử lý trường hợp parse JSON không thành công

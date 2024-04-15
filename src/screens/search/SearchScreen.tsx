@@ -106,27 +106,11 @@ const SearchScreen = ({navigation}: any) => {
               onFocus={handleFocus}
               onBlur={handleBlur}
             />
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => refRBSheet.current.open()}>
               <FilterSearch size={22} color={appColors.primary} />
             </TouchableOpacity>
           </RowComponent>
         </RowComponent>
-        {/* <TouchableOpacity
-          onPress={() => refRBSheet.current.open()}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            backgroundColor: appColors.gray3,
-            borderRadius: 100,
-            paddingHorizontal: 12,
-            paddingVertical: 8,
-          }}>
-          <ShapeComponent styles={{width: 22, height: 22}} color="white">
-            <Sort size={17} color={appColors.primary} />
-          </ShapeComponent>
-          <SpaceComponent width={5} />
-          <TextComponent text="Filters" color="white" />
-        </TouchableOpacity> */}
         <RBSheet
           animationType="slide"
           openDuration={2000}
@@ -136,7 +120,7 @@ const SearchScreen = ({navigation}: any) => {
           customStyles={{
             container: {
               backgroundColor: 'white',
-              height: '90%',
+              height: 'auto',
               borderTopEndRadius: 38,
               borderTopStartRadius: 38,
             },
@@ -147,12 +131,17 @@ const SearchScreen = ({navigation}: any) => {
               backgroundColor: appColors.gray2,
             },
           }}>
-          <View style={{flex: 1}}>
+          <View style={{alignItems: 'center'}}>
             <TextComponent text="Filter" title />
-            <SectionComponent>
-              <CategoriesFilter />
-            </SectionComponent>
-            <SectionComponent>
+            <View
+              style={{
+                height: 1,
+                backgroundColor: appColors.gray2,
+                width: '90%',
+                marginVertical: 20,
+              }}
+            />
+            <SectionComponent styles={{width:"100%"}}>
               <TextComponent
                 text="Time & Date"
                 font={fontFamilies.medium}
@@ -202,29 +191,8 @@ const SearchScreen = ({navigation}: any) => {
                   }}
                 />
               </RowComponent>
-              <RowComponent
-                onPress={() => {}}
-                styles={{
-                  borderRadius: 12,
-                  //   justifyContent: 'flex-start',
-                  borderColor: appColors.gray2,
-                  borderWidth: 1,
-                  marginTop: 10,
-                  paddingVertical: 12,
-                  paddingHorizontal: 5,
-                  //   width:'60%',
-                  //   flex:1
-                }}>
-                <Calendar size={24} color={appColors.primary} variant="Bold" />
-                <TextComponent
-                  text="Choose from calender"
-                  styles={{paddingHorizontal: 10}}
-                  color={appColors.gray2}
-                />
-                <ArrowCircleRight size={24} color={appColors.primary} />
-              </RowComponent>
             </SectionComponent>
-            <SectionComponent>
+            <SectionComponent styles={{width:"100%"}}>
               <TextComponent
                 text="Location"
                 font={fontFamilies.medium}
@@ -254,7 +222,7 @@ const SearchScreen = ({navigation}: any) => {
                 <ArrowCircleRight size={24} color={appColors.primary} />
               </RowComponent>
             </SectionComponent>
-            <SectionComponent>
+            <SectionComponent styles={{width:"100%"}}>
               <RowComponent styles={{justifyContent: 'space-between'}}>
                 <TextComponent
                   size={18}
@@ -266,16 +234,20 @@ const SearchScreen = ({navigation}: any) => {
               <TextComponent text="HAHAHAHAHAHA" />
             </SectionComponent>
           </View>
-          <RowComponent styles={{paddingHorizontal: 16}}>
+          <RowComponent styles={{paddingHorizontal: 16, marginVertical:20}}>
             <ButtonComponent
-              styles={{flex: 1, borderWidth: 1, borderColor: appColors.primary}}
+              styles={{flex: 1, borderRadius: 28}}
               text="RESET"
               type="primary"
-              color="white"
+              color={appColors.purple2}
               textColor="black"
             />
             <SpaceComponent width={10} />
-            <ButtonComponent styles={{flex: 1}} text="APPLY" type="primary" />
+            <ButtonComponent
+              styles={{flex: 1, borderRadius: 28}}
+              text="APPLY"
+              type="primary"
+            />
           </RowComponent>
         </RBSheet>
       </RowComponent>

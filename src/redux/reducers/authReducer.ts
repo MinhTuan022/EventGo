@@ -5,7 +5,7 @@ export interface AuthState {
   email: string;
   accessToken: string;
   favorites: string[];
-  fcmTokens?: string[];
+  fcmTokens: string[];
 }
 
 const intialStase: AuthState = {
@@ -13,6 +13,7 @@ const intialStase: AuthState = {
   email: '',
   accessToken: '',
   favorites: [],
+  fcmTokens: [],
 };
 
 const authSlice = createSlice({
@@ -36,11 +37,20 @@ const authSlice = createSlice({
         state.authData.favorites.splice(index, 1);
       }
     },
+    addFcmToken: (state, action: PayloadAction<string>) => {
+      state.authData.fcmTokens.push(action.payload);
+    },
+    removeFcmToken: (state, action: PayloadAction<string>) => {
+      const index = state.authData.fcmTokens.indexOf(action.payload);
+      if (index !== -1) {
+        state.authData.fcmTokens.splice(index, 1);
+      }
+    },
   },
 });
 
 export const authReducer = authSlice.reducer;
-export const {addAuth, removeAuth, addFavoriteEvent, removeFavoriteEvent} =
+export const {addAuth, removeAuth, addFavoriteEvent, removeFavoriteEvent, addFcmToken} =
   authSlice.actions;
 export const authSelector = (state: any) => state.authReducer.authData;
 // { authReducer: { authData: AuthState } }

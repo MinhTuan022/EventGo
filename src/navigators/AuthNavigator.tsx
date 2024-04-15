@@ -8,6 +8,7 @@ import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 import ResetPasswordScreen from '../screens/auth/ResetPasswordScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SplashScreen} from '../screens';
+import { HandleNotification } from '../utils/handleNotification';
 
 const AuthNavigator = () => {
   const Stack = createNativeStackNavigator();

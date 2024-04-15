@@ -6232,6 +6232,11 @@ react-native-pager-view@^6.2.3:
   resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-6.2.3.tgz#698f6387fdf06cecc3d8d4792604419cb89cb775"
   integrity sha512-dqVpXWFtPNfD3D2QQQr8BP+ullS5MhjRJuF8Z/qml4QTILcrWaW8F5iAxKkQR3Jl0ikcEryG/+SQlNcwlo0Ggg==
 
+react-native-portalize@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/react-native-portalize/-/react-native-portalize-1.0.7.tgz#8b3c742a06f863654d526ea1075a8596625f8482"
+  integrity sha512-icqopPh9ZSV+I8C5LlZN9pQJ0OMeBDNqHhP80+qDx0hOGEcsDC09wgjogbEMfJE0GcMDM7PDYtyQkqa9gIqd1g==
+
 react-native-qrcode-svg@^6.3.0:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/react-native-qrcode-svg/-/react-native-qrcode-svg-6.3.0.tgz#2b03826b7bd0c95d9c3fb669cb0fb5091f98d687"

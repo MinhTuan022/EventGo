@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import userAPI from '../apis/userApi';
+
 export class HandleNotification {
   static checkNoticationPersion = async () => {
     const authStatus = await messaging().requestPermission();
@@ -9,38 +10,44 @@ export class HandleNotification {
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL
     ) {
-      // console.log(authStatus);
+      console.log(authStatus)
       this.getFcmToken();
     }
   };
 
-
   static getFcmToken = async () => {
-    const fcmtoken = await AsyncStorage.getItem('fcmtoken');
-
-    if (!fcmtoken) {
+    const fcmTokens = await AsyncStorage.getItem('fcmTokens');
+console.log("ngu")
+    if (!fcmTokens) {
       const token = await messaging().getToken();
+      console.log("d")
 
       if (token) {
-        await AsyncStorage.setItem('fcmtoken', token);
+        await AsyncStorage.setItem('fcmTokens', token);
         this.updateTokenForUser(token);
       }
     } else {
-      this.updateTokenForUser(fcmtoken);
+      console.log("mo")
+
+      this.updateTokenForUser(fcmTokens);
     }
   };
-  
+
   static updateTokenForUser = async (token: string) => {
     const res = await AsyncStorage.getItem('auth');
+    console.log("lo", res)
+
     if (res) {
       const auth = JSON.parse(res);
+
       const {fcmTokens} = auth;
 
       if (fcmTokens && !fcmTokens.includes(token)) {
         fcmTokens.push(token);
 
+
         await this.Update(auth.id, fcmTokens);
-      }
+      }else{console.log("cuttt")}
     }
   };
 
@@ -58,5 +65,4 @@ export class HandleNotification {
       console.log(`Can not update tokens ${error}`);
     }
   };
-
 }

@@ -10,15 +10,15 @@ import {Provider} from 'react-redux';
 import store from './src/redux/store';
 import Mapbox from '@rnmapbox/maps';
 import {HandleNotification} from './src/utils/handleNotification';
+import Toast from 'react-native-toast-message';
+import {Host} from 'react-native-portalize';
 
 const token: string =
   'pk.eyJ1IjoidHVhbmh5MjAyNCIsImEiOiJjbHR6enJrMnMwNWgyMmttcXV1bmllZWx1In0._QHVjgvwYlqrW5rW2b9JDw';
 Mapbox.setAccessToken(token);
 
 const App = () => {
-  useEffect(() => {
-    HandleNotification.checkNoticationPersion();
-  }, []);
+
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <Provider store={store}>
@@ -27,14 +27,13 @@ const App = () => {
           backgroundColor="transparent"
           translucent
         />
-        {/* {isShowSplash ? (
-          <SplashScreen />
-        ) : ( */}
-        <NavigationContainer>
-          <AppRouters />
-        </NavigationContainer>
-        {/* )} */}
+        <Host>
+          <NavigationContainer>
+            <AppRouters />
+          </NavigationContainer>
+        </Host>
       </Provider>
+      <Toast />
     </GestureHandlerRootView>
   );
 };

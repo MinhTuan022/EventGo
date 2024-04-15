@@ -14,6 +14,7 @@ import {
   ModalBottom,
   RowComponent,
   SectionComponent,
+  SpaceComponent,
   TextComponent,
 } from '../../components';
 import {SearchNormal} from 'iconsax-react-native';
@@ -26,12 +27,14 @@ import {authSelector} from '../../redux/reducers/authReducer';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import orderAPI from '../../apis/orderApi';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import paypalApi from '../../apis/paypalApi';
 
 const TicketScreen = ({navigation}: any) => {
   // const navigation = useNavigation();
   const refRBSheet = useRef<any>();
   const [selected, setSelected] = useState(0);
   const [ticket, setTicket] = useState([]);
+  const [orderIdSelected, setOrderIdSelected] = useState('');
   const user = useSelector(authSelector);
   const data = [
     {name: 'Sắp diễn ra', val: 'Paid'},
@@ -39,9 +42,6 @@ const TicketScreen = ({navigation}: any) => {
     {name: 'Đã Hủy', val: 'Cancelled'},
   ];
   const [status, setStatus] = useState('Paid');
-  // useEffect(() => {
-  //   getTicket();
-  // }, []);
   useFocusEffect(
     React.useCallback(() => {
       if (status) {
@@ -68,9 +68,25 @@ const TicketScreen = ({navigation}: any) => {
   useEffect(() => {
     console.log(status);
   }, [status]);
-  const handleCancelled = async (id: any) => {
+  const openModal = (id: any) => {
     refRBSheet.current.open();
     console.log(id);
+    setOrderIdSelected(id);
+  };
+  const closeModal = () => {
+    refRBSheet.current.close();
+  };
+  const handleCancelled = async (orderId: any) => {
+    try {
+      console.log(orderId);
+      await paypalApi.HandlePaypal("/refund", {orderId}, "post")
+
+      const res = await orderAPI.HandleOrder('/delete', {orderId}, 'delete');
+      refRBSheet.current.close();
+      getTicket();
+    } catch (error) {
+      console.log(error);
+    }
   };
   const handleReview = async () => {
     console.log('first');
@@ -88,18 +104,15 @@ const TicketScreen = ({navigation}: any) => {
       {/* <ModalBottom/> */}
       <RBSheet
         animationType="slide"
-        // openDuration={2000}
         ref={refRBSheet}
         closeOnDragDown={true}
         closeOnPressMask={true}
         customStyles={{
           container: {
             backgroundColor: 'white',
-            // height: '90%',
             borderTopEndRadius: 38,
             borderTopStartRadius: 38,
-            // paddingVertical:20,
-            flex: 1,
+            height: 'auto',
           },
           wrapper: {
             backgroundColor: 'rgba(0, 0, 0, 0.3)',
@@ -108,7 +121,7 @@ const TicketScreen = ({navigation}: any) => {
             backgroundColor: appColors.gray2,
           },
         }}>
-        <View style={{flex: 1, alignItems: 'center'}}>
+        <View style={{alignItems: 'center'}}>
           <TextComponent text="Hủy Vé" title />
           <View
             style={{
@@ -121,26 +134,46 @@ const TicketScreen = ({navigation}: any) => {
             style={{
               alignItems: 'center',
               justifyContent: 'center',
-              paddingHorizontal: 20,
-              paddingVertical: 20,
+              paddingHorizontal: 40,
             }}>
             <TextComponent
+              styles={{textAlign: 'center'}}
               text="Bạn có chắc chắn muốn hủy vé sự kiện này?"
               font={fontFamilies.medium}
-              size={18}
+              size={20}
             />
+            <SpaceComponent height={10} />
             <TextComponent
+              styles={{textAlign: 'center'}}
               text="Số tiền bạn đã thanh toán sẽ được hoàn lại trong thời gian sớm nhất"
               size={18}
             />
           </View>
-          <RowComponent>
+
+          <RowComponent
+            styles={{
+              width: '100%',
+              paddingHorizontal: 20,
+              marginVertical: 20,
+            }}>
             <ButtonComponent
-              text="Không, Không Hủy"
+              onPress={closeModal}
+              text="Không Hủy"
               type="primary"
-              styles={{flex: 1}}
+              color={appColors.purple2}
+              textColor={appColors.primary}
+              textStyle={{fontFamily: fontFamilies.medium}}
+              styles={{flex: 1, borderRadius: 30}}
             />
-            <ButtonComponent text="Có, Hủy" type="primary" styles={{flex: 1}} />
+            <SpaceComponent width={10} />
+
+            <ButtonComponent
+              onPress={() => handleCancelled(orderIdSelected)}
+              text="Có Hủy"
+              type="primary"
+              styles={{flex: 1, borderRadius: 30}}
+              textStyle={{fontFamily: fontFamilies.medium}}
+            />
           </RowComponent>
         </View>
       </RBSheet>
@@ -179,7 +212,9 @@ const TicketScreen = ({navigation}: any) => {
           <TicketComponent
             key={index}
             item={item}
-            onPressCancelled={() => handleCancelled(item._id)}
+            onPressCancelled={() => {
+              openModal(item._id);
+            }}
             onPressReview={handleReview}
             onPressView={() => {
               navigation.navigate('TicketDetail', item);

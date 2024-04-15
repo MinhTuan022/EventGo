@@ -7,6 +7,7 @@ import MemoMusic from '../assets/svg/Music';
 import MemoSports from '../assets/svg/Sports';
 import {appColors} from '../utils/constants/appColors';
 import {fontFamilies} from '../utils/constants/fontFamilies';
+import MemoDone from '../assets/svg/Done';
 
 interface CategoriesListProps {
   onSelectCategory: (key: string) => void;
@@ -18,7 +19,7 @@ const CategoriesList = ({onSelectCategory}: CategoriesListProps) => {
     {
       key: '',
       title: 'All',
-      icon: <MemoSports width={size} height={size} />,
+      icon: <MemoDone width={size} height={size} />,
     },
     {
       key: 'Sports',

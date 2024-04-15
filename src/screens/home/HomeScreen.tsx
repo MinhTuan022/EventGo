@@ -12,6 +12,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {
   Animated,
   Button,
+  Dimensions,
   FlatList,
   Image,
   SafeAreaView,
@@ -37,11 +38,14 @@ import CategoriesList from '../../components/CategoriesList';
 import LodingModal from '../../components/modals/LoadingModal';
 import {AddressModel} from '../../models/AddressModel';
 import {EventModel} from '../../models/EventModel';
-import {authSelector} from '../../redux/reducers/authReducer';
+import {addFcmToken, authSelector} from '../../redux/reducers/authReducer';
 import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
 import {appInfo} from '../../utils/constants/appInfos';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
+import { HandleNotification } from '../../utils/handleNotification';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -61,6 +65,10 @@ const HomeScreen = ({navigation}: any) => {
   };
   // useEffect(() => {
   //   HandleNotification.checkNoticationPersion();
+  //   // if (user) {
+  //   // dispatch(addFcmToken(user.fcmTokens))
+      
+  //   // }
   // }, [])
   const limit = 5;
   useEffect(() => {
@@ -103,7 +111,7 @@ const HomeScreen = ({navigation}: any) => {
   //   }, [currentLocation, selectedCategory]),
   // );
   useEffect(() => {
-    console.log(selectedCategory)
+    console.log(selectedCategory);
     fetchEvents(selectedCategory);
     fetchEvents(
       selectedCategory,
@@ -278,7 +286,6 @@ const HomeScreen = ({navigation}: any) => {
             />
           </RowComponent>
         </SectionComponent>
-        <Toast />
 
         <FlatList
           showsHorizontalScrollIndicator={false}
@@ -310,17 +317,25 @@ const HomeScreen = ({navigation}: any) => {
             textStyle={{fontFamily: fontFamilies.medium}}
           />
         </RowComponent>
+        <View>
         <FlatList
-          showsHorizontalScrollIndicator={false}
-          horizontal
+          numColumns={2}
           data={eventNear}
+          nestedScrollEnabled
+          scrollEnabled={false}
           renderItem={({index, item}) => (
-            <EventItem key={index} item={item} type="card" />
+            <EventItem
+              key={index}
+              item={item}
+              type="card"
+              styles={{width: Dimensions.get('window').width * 0.44}}
+            />
           )}
         />
+        </View>
+        
       </ScrollView>
-      {/* <CurrentLocation/>
-       */}
+
       <View style={{alignItems: 'center'}}>
         <Animated.View
           style={[

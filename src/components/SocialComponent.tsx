@@ -41,7 +41,7 @@ const SocialComponent = () => {
       const userInfo = await GoogleSignin.signIn();
       const currentToken = await messaging().getToken();
 
-      await AsyncStorage.setItem('fcmToken', JSON.stringify(currentToken))
+      await AsyncStorage.setItem('fcmToken', currentToken)
     
       // Lấy tất cả các token FCM đã lưu trước đó (nếu có)
       // const storedTokens = await AsyncStorage.getItem('fcmTokens');
@@ -65,7 +65,7 @@ const SocialComponent = () => {
         data,
         'post',
       );
-      console.log("aa",res.data);
+      // console.log("aa",res.data);
 
       dispatch(
         addAuth({
@@ -87,12 +87,12 @@ const SocialComponent = () => {
           favorites: res.data.favorites,
         }),
       );
-      await AsyncStorage.setItem(
-        'auth',
-        JSON.stringify({
-          // fcmTokens: 
-        }),
-      );
+      // await AsyncStorage.setItem(
+      //   'auth',
+      //   JSON.stringify({
+      //     // fcmTokens: 
+      //   }),
+      // );
 
     } catch (error) {
       console.log(error);

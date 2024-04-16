@@ -54,20 +54,8 @@ const MyProfileScreen = ({route, navigation}: any) => {
     }, [user.id]),
   );
   const handleLogOut = async () => {
-    const fcmtoken = await AsyncStorage.getItem('fcmToken');
-    console.log(fcmtoken)
-    if (fcmtoken) {
-      if (user.fcmTokens && user.fcmTokens.length > 0) {
-        const items = [...user.fcmTokens];
-        console.log("first", items)
-        const index = items.findIndex(element => element === fcmtoken);
-
-        if (index !== -1) {
-          items.splice(index, 1);
-        }
-        await HandleNotification.Update(user.id, items);
-      }
-    }
+    const fcmToken = await AsyncStorage.getItem('fcmToken');
+    await userAPI.HandleUser("/delete-fcmToken", {fcmToken, userId: user.id}, 'delete')
     await GoogleSignin.signOut();
     LoginManager.logOut();
     dispatch(removeAuth());

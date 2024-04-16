@@ -99,27 +99,27 @@ const HomeScreen = ({navigation}: any) => {
     });
   }, []);
 
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     fetchEvents(selectedCategory);
-  //     fetchEvents(
-  //       selectedCategory,
-  //       currentLocation?.position.lat,
-  //       currentLocation?.position.lng,
-  //     );
-  //     getUser();
-  //   }, [currentLocation, selectedCategory]),
-  // );
-  useEffect(() => {
-    console.log(selectedCategory);
-    fetchEvents(selectedCategory);
-    fetchEvents(
-      selectedCategory,
-      currentLocation?.position.lat,
-      currentLocation?.position.lng,
-    );
-    getUser();
-  }, [currentLocation, selectedCategory]);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchEvents(selectedCategory);
+      fetchEvents(
+        selectedCategory,
+        currentLocation?.position.lat,
+        currentLocation?.position.lng,
+      );
+      getUser();
+    }, [currentLocation, selectedCategory]),
+  );
+  // useEffect(() => {
+  //   console.log(selectedCategory);
+  //   fetchEvents(selectedCategory);
+  //   fetchEvents(
+  //     selectedCategory,
+  //     currentLocation?.position.lat,
+  //     currentLocation?.position.lng,
+  //   );
+  //   getUser();
+  // }, [currentLocation, selectedCategory]);
   const fetchEvents = async (
     category?: string,
     lat?: number,
@@ -133,7 +133,8 @@ const HomeScreen = ({navigation}: any) => {
           }&category=${category}`
         : `/?limit=${limit}&date=${currentTime}&category=${selectedCategory}`;
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
+      // console.log(api)
       const res = await eventAPI.HandleEvent(api);
       if (res && res.data && lat && long) {
         setEventNear(res.data);
@@ -141,10 +142,10 @@ const HomeScreen = ({navigation}: any) => {
         setEventUpcoming(res.data);
       }
       // console.log(events);
-      setIsLoading(false);
+      // setIsLoading(false);
     } catch (error) {
       console.error('Error fetching events:', error);
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   };
   const reverseGeoCode = async (lat: number, long: number) => {

@@ -21,6 +21,7 @@ import CurrentLocation from './home/components/CurrentLocation';
 import TicketDetailScreen from './tickets/TicketDetailScreen';
 import ManageEventScreen from './manage/ManageEventScreen';
 import SeeAllEvent from './home/SeeAllEvent';
+import NotificationItem from './notification/NotificationItem';
 
 export {
   HomeScreen,
@@ -45,5 +46,6 @@ export {
   CurrentLocation,
   TicketDetailScreen,
   ManageEventScreen,
-  SeeAllEvent
+  SeeAllEvent,
+  NotificationItem
 };

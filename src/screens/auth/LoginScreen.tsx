@@ -1,9 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ArrowCircleRight, Lock1, Sms } from 'iconsax-react-native';
-import React, { useState } from 'react';
-import { Image, StyleSheet, Switch } from 'react-native';
-import { useDispatch } from 'react-redux';
+import {ArrowCircleRight, Lock1, Sms} from 'iconsax-react-native';
+import React, {useState} from 'react';
+import {Image, StyleSheet, Switch} from 'react-native';
+import {useDispatch} from 'react-redux';
 import authenticationAPI from '../../apis/authApi';
+import messaging from '@react-native-firebase/messaging';
+
 import {
   ButtonComponent,
   ContainerComponent,
@@ -15,8 +17,8 @@ import {
   TextComponent,
 } from '../../components';
 import LoadingModal from '../../components/modals/LoadingModal';
-import { addAuth, addFavoriteEvent } from '../../redux/reducers/authReducer';
-import { appColors } from '../../utils/constants/appColors';
+import {addAuth, addFavoriteEvent} from '../../redux/reducers/authReducer';
+import {appColors} from '../../utils/constants/appColors';
 
 interface Errors {
   email?: string;
@@ -57,17 +59,35 @@ const LoginScreen = ({navigation}: any) => {
     if (validateForm()) {
       setIsLoading(true);
       try {
+        const currentToken = await messaging().getToken();
+
+        await AsyncStorage.setItem('fcmToken', currentToken);
         const res = await authenticationAPI.HandleAuthentication(
           '/login',
-          {email, password},
+          {email, password, fcmToken: currentToken},
           'post',
         );
-        console.log(res)
-        dispatch(addAuth(res.data));
+        console.log(res);
+        dispatch(
+          addAuth({
+            accessToken: res.data.accessToken,
+            email: res.data.email,
+            id: res.data.id,
+            favorites: res.data.favorites,
+            fcmTokens: res.data.fcmTokens,
+          }),
+        );
         setIsLoading(false);
         await AsyncStorage.setItem(
           'auth',
-          isRemember ? JSON.stringify(res.data) : email,
+          isRemember
+            ? JSON.stringify({
+                accessToken: res.data.accessToken,
+                email: res.data.email,
+                id: res.data.id,
+                favorites: res.data.favorites,
+              })
+            : email,
         );
       } catch (error) {
         setIsLoading(false);
@@ -96,7 +116,10 @@ const LoginScreen = ({navigation}: any) => {
           <TextComponent text="Sign in" title />
           <SpaceComponent height={3} />
           <InputComponent
-            styles= { [localStyle.input, errors.email ? {borderColor: 'red'} : {}]}
+            styles={[
+              localStyle.input,
+              errors.email ? {borderColor: 'red'} : {},
+            ]}
             value={email}
             onChange={val => setEmail(val)}
             placeHolder="Email"
@@ -108,7 +131,10 @@ const LoginScreen = ({navigation}: any) => {
           />
 
           <InputComponent
-            styles={[localStyle.input, errors.password ? {borderColor: 'red'} : {}]}
+            styles={[
+              localStyle.input,
+              errors.password ? {borderColor: 'red'} : {},
+            ]}
             value={password}
             onChange={val => setPassword(val)}
             placeHolder="Password"
@@ -172,9 +198,9 @@ const LoginScreen = ({navigation}: any) => {
 };
 
 const localStyle = StyleSheet.create({
-    input : {
-        marginTop:19
-    }
-})
+  input: {
+    marginTop: 19,
+  },
+});
 
 export default LoginScreen;

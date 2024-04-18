@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {
   RowComponent,
@@ -12,13 +12,17 @@ import {appColors} from '../../utils/constants/appColors';
 import {NotificationModel} from '../../models/NotificationModel';
 interface Props {
   item: NotificationModel;
+  onPress?: () => void
 }
 const NotificationItem = (props: Props) => {
-  const {item} = props;
+  const {item, onPress} = props;
   return (
-    <View>
-      <SectionComponent>
-        <RowComponent>
+    <TouchableOpacity onPress={onPress}>
+      <SectionComponent
+        styles={{
+          backgroundColor: item.isRead ? appColors.whiteBg : appColors.white,
+        }}>
+        <RowComponent styles={{justifyContent: 'space-between'}}>
           <RowComponent>
             <ShapeComponent size={55} color={appColors.purple2}>
               <MaterialIcons
@@ -34,11 +38,23 @@ const NotificationItem = (props: Props) => {
               <TextComponent text="20 Dec, 2024 | 20:49 PM" />
             </View>
           </RowComponent>
+          {item.isRead ? (
+            <></>
+          ) : (
+            <View
+              style={{
+                width: 7,
+                height: 7,
+                backgroundColor: appColors.primary,
+                borderRadius: 100,
+              }}
+            />
+          )}
         </RowComponent>
         <SpaceComponent height={15} />
         <TextComponent text={item.body} />
       </SectionComponent>
-    </View>
+    </TouchableOpacity>
   );
 };
 

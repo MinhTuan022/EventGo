@@ -64,6 +64,7 @@ const AddNewEvent = ({navigation}: any) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isFocus, setIsFocus] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [showUrl, setShowUrl] = useState(false);
 
   const [imageUrl, setImageUrl] = useState<any>(null);
   const [title, setTitle] = useState('');
@@ -79,7 +80,7 @@ const AddNewEvent = ({navigation}: any) => {
     105.763791, 21.012379,
   ]);
   const [tickets, setTickets] = useState([
-    {ticketType: '', price: '', quantity: ''},
+    {ticketType: '', price: '0', quantity: ''},
   ]);
 
   const [eventId, setEventId] = useState('');
@@ -130,7 +131,7 @@ const AddNewEvent = ({navigation}: any) => {
       };
       const res = await eventAPI.HandleEvent('/add', data, 'post');
       setEventId(res.data);
-      navigation.navigate("ManageEventScreen")
+      navigation.navigate('ManageEventScreen');
     } catch (error) {
       console.log(error);
     }
@@ -151,7 +152,7 @@ const AddNewEvent = ({navigation}: any) => {
         height: 300,
         cropping: true,
       });
-      console.log(image.path);
+      // console.log(image.path);
 
       await uploadImage(image.path);
     } catch (error) {
@@ -167,7 +168,7 @@ const AddNewEvent = ({navigation}: any) => {
         height: 300,
         cropping: true,
       });
-      console.log(image.path);
+      // console.log(image.path);
     } catch (error) {
       console.log(error);
       closeModal();
@@ -200,6 +201,10 @@ const AddNewEvent = ({navigation}: any) => {
     } else {
       setCurrentStep(currentStep - 1);
     }
+  };
+  const uploadUrl = () => {
+    closeModal();
+    setShowUrl(true);
   };
   useEffect(() => {
     if (press) {
@@ -298,7 +303,10 @@ const AddNewEvent = ({navigation}: any) => {
                   text="Bạn đã tạo sự kiệm mới thành công. "
                   size={16}
                 />
-                <TextComponent text="hãy mời mọi người tham gia sự kiện!" size={16} />
+                <TextComponent
+                  text="hãy mời mọi người tham gia sự kiện!"
+                  size={16}
+                />
               </View>
               <ButtonComponent
                 onPress={() => {
@@ -324,7 +332,36 @@ const AddNewEvent = ({navigation}: any) => {
         closeModal={closeModal}
         captureFromCamera={captureFromCamera}
         selectFromLibrary={selectFromLibrary}
+        uploadUrl={uploadUrl}
       />
+      {showUrl && (
+        <Modal transparent>
+          <View
+            style={{
+              backgroundColor: 'rgba(0,0,0,0.2)',
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <SectionComponent
+              styles={{
+                backgroundColor: appColors.white,
+                width: '90%',
+                borderRadius: 12,
+              }}>
+              <InputComponent onChange={(val) => {setImageUrl(val)}} value={imageUrl} label="URL" />
+              <View style={{}}>
+                <ButtonComponent onPress={() => setShowUrl(false)}
+                  text="Save"
+                  type="link"
+                  textStyle={{fontFamily: fontFamilies.medium}}
+                  styles={{alignItems: 'flex-end', justifyContent: 'flex-end'}}
+                />
+              </View>
+            </SectionComponent>
+          </View>
+        </Modal>
+      )}
       <View
         style={{
           paddingTop: Number(StatusBar.currentHeight) + 10,

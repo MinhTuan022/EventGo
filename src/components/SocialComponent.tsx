@@ -42,15 +42,6 @@ const SocialComponent = () => {
       const currentToken = await messaging().getToken();
 
       await AsyncStorage.setItem('fcmToken', currentToken)
-    
-      // Lấy tất cả các token FCM đã lưu trước đó (nếu có)
-      // const storedTokens = await AsyncStorage.getItem('fcmTokens');
-      // console.log("hahahah",storedTokens)
-      // const parsedStoredTokens = storedTokens ? JSON.parse(storedTokens) : [];
-      
-      // // Thêm token FCM mới vào mảng
-      // const updatedTokens = [...parsedStoredTokens, currentToken];
-      // await AsyncStorage.setItem('fcmTokens', JSON.stringify(updatedTokens));
       const profile = userInfo.user;
       const data = {
         name: profile.name,

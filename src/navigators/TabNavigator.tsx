@@ -20,7 +20,7 @@ import MapNavigator from './MapNavigator';
 import  FavoriteNavigator from './FavoriteNavigator';
 import ProfileNavigator from './ProfileNavigator';
 import {appColors} from '../utils/constants/appColors';
-import {AddNewScreen, MyProfileScreen, TicketScreen} from '../screens';
+import {MyProfileScreen, TicketScreen} from '../screens';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {View} from 'react-native';
 import {TextComponent} from '../components';
@@ -35,7 +35,7 @@ const TabNavigator = () => {
     <Tab.Navigator
       screenOptions={({route}) => ({
         headerShown: false,
-
+        // tabBarShowLabel: false,
         tabBarStyle: {
           height: 54,
           justifyContent: 'center',
@@ -50,19 +50,19 @@ const TabNavigator = () => {
           size = 23;
           variant = focused ? 'Bold' : 'Linear';
           switch (route.name) {
-            case 'Explore':
+            case 'Trang Chủ':
               icon = <Home color={color} size={size} variant={variant} />;
               break;
-            case 'Favorites':
+            case 'Ưu Thích':
               icon = <Heart color={color} size={size} variant={variant} />;
               break;
-            case 'Map':
-              icon = <Location color={color} size={size} variant={variant} />;
+            case 'Khám Phá':
+              icon = <Discover color={color} size={size} variant={variant} />;
               break;
-            case 'Profile':
+            case 'Hồ Sơ':
               icon = <Profile color={color} size={size} variant={variant} />;
               break;
-            case 'Tickets':
+            case 'Vé':
               icon = <Ticket color={color} size={size} variant={variant} />;
               break;
               // case 'Add':
@@ -101,11 +101,11 @@ const TabNavigator = () => {
         //   );
         // },
       })}>
-      <Tab.Screen name="Explore" component={HomeNavigator} />
-      <Tab.Screen name="Favorites" component={FavoriteNavigator} />
-      <Tab.Screen name="Tickets" component={TicketScreen} />
-      <Tab.Screen name="Map" component={MapNavigator} />
-      <Tab.Screen name="Profile" component={MyProfileNavigator} />
+      <Tab.Screen name="Trang Chủ" component={HomeNavigator} />
+      <Tab.Screen name="Ưu Thích" component={FavoriteNavigator} />
+      <Tab.Screen name="Vé" component={TicketScreen} />
+      <Tab.Screen name="Khám Phá" component={MapNavigator} />
+      <Tab.Screen name="Hồ Sơ" component={MyProfileNavigator} />
     </Tab.Navigator>
   );
 };

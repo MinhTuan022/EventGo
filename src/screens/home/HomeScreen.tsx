@@ -43,14 +43,16 @@ import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
 import {appInfo} from '../../utils/constants/appInfos';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
-import { HandleNotification } from '../../utils/handleNotification';
+import {HandleNotification} from '../../utils/handleNotification';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import LoadingComponent from '../../components/LoadingComponent';
+import notificationAPI from '../../apis/notificationApi';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
   const auth = useSelector(authSelector);
   // console.log(user)
+  const [greeting, setGreeting] = useState<string>('');
   const [user, setUser] = useState<any>();
   const [categories, setCategories] = useState([]);
   const [eventUpcoming, setEventUpcoming] = useState<EventModel[]>([]);
@@ -60,19 +62,12 @@ const HomeScreen = ({navigation}: any) => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const animatedValue = useRef(new Animated.Value(0)).current;
   const [isLoading, setIsLoading] = useState(false);
+  const [isRead, setIsRead] = useState(false);
   const handleSelectCategory = (categoryKey: any) => {
     setSelectedCategory(categoryKey);
   };
-  // useEffect(() => {
-  //   HandleNotification.checkNoticationPersion();
-  //   // if (user) {
-  //   // dispatch(addFcmToken(user.fcmTokens))
-      
-  //   // }
-  // }, [])
   const limit = 5;
   useEffect(() => {
-    // Lấy vị trí hiện tại của người dùng khi component được mount
     Geolocation.getCurrentPosition(
       (position: any) => {
         // Lấy thông tin vị trí từ position
@@ -83,6 +78,8 @@ const HomeScreen = ({navigation}: any) => {
       (error: any) => console.log('Error getting location: ', error),
       {},
     );
+
+    
   }, []);
   useEffect(() => {
     messaging().onMessage(async (mess: any) => {
@@ -101,25 +98,38 @@ const HomeScreen = ({navigation}: any) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      fetchEvents(selectedCategory);
-      fetchEvents(
-        selectedCategory,
-        currentLocation?.position.lat,
-        currentLocation?.position.lng,
-      );
+      checkNoti();
+      handleGreeting(currentTime)
       getUser();
-    }, [currentLocation, selectedCategory]),
+    }, []),
   );
-  // useEffect(() => {
-  //   console.log(selectedCategory);
-  //   fetchEvents(selectedCategory);
-  //   fetchEvents(
-  //     selectedCategory,
-  //     currentLocation?.position.lat,
-  //     currentLocation?.position.lng,
-  //   );
-  //   getUser();
-  // }, [currentLocation, selectedCategory]);
+  useEffect(() => {
+    console.log(selectedCategory);
+    fetchEvents(selectedCategory);
+    fetchEvents(
+      selectedCategory,
+      currentLocation?.position.lat,
+      currentLocation?.position.lng,
+    );
+    // getUser();
+  }, [currentLocation, selectedCategory]);
+  const handleGreeting = async(time : Date) => {
+    const currentHour = time.getHours();
+    const timeOfDay =
+      currentHour < 12 ? 'sáng' : currentHour < 18 ? 'chiều' : 'tối';
+    const greetingMessage = `Chào buổi ${timeOfDay}`;
+    setGreeting(greetingMessage);
+  }
+  const checkNoti = async () => {
+    try {
+      const res = await notificationAPI.HandleNotification(
+        `/check?userId=${auth.id}`,
+      );
+      setIsRead(res.data);
+    } catch (error) {
+      console.log('vv', error);
+    }
+  };
   const fetchEvents = async (
     category?: string,
     lat?: number,
@@ -133,7 +143,7 @@ const HomeScreen = ({navigation}: any) => {
           }&category=${category}`
         : `/?limit=${limit}&date=${currentTime}&category=${selectedCategory}`;
     try {
-      // setIsLoading(true);
+      setIsLoading(true);
       // console.log(api)
       const res = await eventAPI.HandleEvent(api);
       if (res && res.data && lat && long) {
@@ -142,10 +152,10 @@ const HomeScreen = ({navigation}: any) => {
         setEventUpcoming(res.data);
       }
       // console.log(events);
-      // setIsLoading(false);
+      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching events:', error);
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
   const reverseGeoCode = async (lat: number, long: number) => {
@@ -176,7 +186,7 @@ const HomeScreen = ({navigation}: any) => {
       const res = await userAPI.HandleUser(`/userId?userId=${auth.id}`);
       setUser(res.data);
     } catch (error) {
-      console.log(error);
+      console.log('ff', error);
     }
   };
 
@@ -203,9 +213,10 @@ const HomeScreen = ({navigation}: any) => {
             <RowComponent>
               <Image
                 source={{
-                  uri: user
-                    ? user.photo
-                    : 'https://th.bing.com/th/id/OIP.DxdqBFLVLPcWsjkds8636QHaHf?rs=1&pid=ImgDetMain',
+                  uri:
+                    user && user.photo
+                      ? user.photo
+                      : 'https://th.bing.com/th/id/OIP.DxdqBFLVLPcWsjkds8636QHaHf?rs=1&pid=ImgDetMain',
                 }}
                 style={{
                   width: 40,
@@ -215,7 +226,7 @@ const HomeScreen = ({navigation}: any) => {
                 }}
               />
               <View>
-                <TextComponent text="Good Morning" />
+                <TextComponent text={greeting} />
                 <TextComponent
                   text={String(user?.name)}
                   font={fontFamilies.medium}
@@ -232,16 +243,18 @@ const HomeScreen = ({navigation}: any) => {
               onPress={() => navigation.navigate('NotificationScreen')}>
               <View>
                 <Notification size={18} color="black" />
-                <View
-                  style={{
-                    backgroundColor: '#02E9FE',
-                    width: 6,
-                    height: 6,
-                    borderRadius: 100,
-                    position: 'absolute',
-                    top: 1,
-                    right: 1,
-                  }}></View>
+                {isRead && (
+                  <View
+                    style={{
+                      backgroundColor: '#02E9FE',
+                      width: 6,
+                      height: 6,
+                      borderRadius: 100,
+                      position: 'absolute',
+                      top: 1,
+                      right: 1,
+                    }}></View>
+                )}
               </View>
             </ShapeComponent>
           </RowComponent>
@@ -250,7 +263,7 @@ const HomeScreen = ({navigation}: any) => {
             onPress={() => {
               navigation.navigate('SearchScreen');
             }}
-            text="What event are looking for"
+            text="Sự kiện nào bạn đang tìm kiếm"
             iconLeft={<SearchNormal size={22} color={appColors.gray2} />}
             iconRight={<Filter size={22} color={appColors.primary} />}
             type="primary"
@@ -273,7 +286,7 @@ const HomeScreen = ({navigation}: any) => {
               justifyContent: 'space-between',
               // paddingHorizontal: 16,
             }}>
-            <TextComponent text="Upcomming Events" title size={20} />
+            <TextComponent text="Sự kiện sắp diễn ra" title size={20} />
             <ButtonComponent
               onPress={() =>
                 navigation.navigate('SeeAll', {
@@ -281,29 +294,35 @@ const HomeScreen = ({navigation}: any) => {
                 })
               }
               type="link"
-              text="See All"
+              text="Xem tất cả"
               textColor={appColors.primary}
               textStyle={{fontFamily: fontFamilies.medium}}
             />
           </RowComponent>
         </SectionComponent>
-
-        <FlatList
-          showsHorizontalScrollIndicator={false}
-          horizontal
-          data={eventUpcoming}
-          renderItem={({item, index}) => (
-            <EventItem key={index} item={item} type="card" />
-          )}
-        />
-
+        {eventUpcoming.length > 0 ? (
+          <FlatList
+            showsHorizontalScrollIndicator={false}
+            horizontal
+            data={eventUpcoming}
+            renderItem={({item, index}) => (
+              <EventItem key={index} item={item} type="card" />
+            )}
+          />
+        ) : (
+          <LoadingComponent
+            isLoading={isLoading}
+            values={eventUpcoming.length}
+            mess="Chưa có sự kiện nào sắp diễn ra"
+          />
+        )}
         <RowComponent
           styles={{
             // marginTop: 40,
             justifyContent: 'space-between',
             paddingHorizontal: 16,
           }}>
-          <TextComponent text="NearBy" title size={20} />
+          <TextComponent text="Sự kiện gần bạn" title size={20} />
           <ButtonComponent
             onPress={() =>
               navigation.navigate('SeeAll', {
@@ -313,28 +332,33 @@ const HomeScreen = ({navigation}: any) => {
               })
             }
             type="link"
-            text="See All"
+            text="Xem tất cả"
             textColor={appColors.primary}
             textStyle={{fontFamily: fontFamilies.medium}}
           />
         </RowComponent>
-        <View>
-        <FlatList
-          numColumns={2}
-          data={eventNear}
-          nestedScrollEnabled
-          scrollEnabled={false}
-          renderItem={({index, item}) => (
-            <EventItem
-              key={index}
-              item={item}
-              type="card"
-              styles={{width: Dimensions.get('window').width * 0.44}}
-            />
-          )}
-        />
-        </View>
-        
+        {eventNear.length > 0 ? (
+          <FlatList
+            numColumns={2}
+            data={eventNear}
+            nestedScrollEnabled
+            scrollEnabled={false}
+            renderItem={({index, item}) => (
+              <EventItem
+                key={index}
+                item={item}
+                type="card"
+                styles={{width: Dimensions.get('window').width * 0.44}}
+              />
+            )}
+          />
+        ) : (
+          <LoadingComponent
+            isLoading={isLoading}
+            values={eventNear.length}
+            mess="Chưa có sự kiện nào gần bạn"
+          />
+        )}
       </ScrollView>
 
       <View style={{alignItems: 'center'}}>
@@ -367,7 +391,7 @@ const HomeScreen = ({navigation}: any) => {
           />
         </Animated.View>
       </View>
-      <LodingModal visible={isLoading} />
+      {/* <LodingModal visible={isLoading} /> */}
     </SafeAreaView>
   );
 };

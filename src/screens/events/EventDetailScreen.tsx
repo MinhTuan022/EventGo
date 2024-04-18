@@ -48,7 +48,7 @@ import ticketAPI from '../../apis/ticketApi';
 import {formatCurrency} from '../../utils/util';
 
 const EventDetailScreen = ({navigation, route}: any) => {
-  const {id} = route.params;
+  const {id}: {id: string} = route.params;
   const user = useSelector(authSelector);
   const [item, setItem] = useState<EventModel>();
   const [showMap, setShowMap] = useState(false);
@@ -61,53 +61,52 @@ const EventDetailScreen = ({navigation, route}: any) => {
   const [attendees, setAttendees] = useState<any>([]);
   const [ticketData, setTicketData] = useState<any>();
   useEffect(() => {
-    getEventbyId();
+    getEventbyId(id);
   }, [id]);
+
+  useEffect(() => {
+    if (item) {
+      if (item.attendees) {
+        getGoing(item.attendees);
+      }
+
+      if (item.organizer) {
+        getOrganizer(item.organizer);
+      }
+
+      if (item.tickets) {
+        getTicket(item.tickets);
+      }
+    }
+
+    if (user.favorites && user.favorites.includes(id)) {
+      setFavorite(true);
+    }
+    if (user) {
+      AsyncStorage.setItem('auth', JSON.stringify(user));
+      // console.log('user', user);
+    }
+  }, [item, user]);
   useFocusEffect(
     React.useCallback(() => {
       if (item) {
-        const checkRelationship = async () => {
-          try {
-            const res = await userAPI.HandleUser(
-              `/check-relationship?userId=${userId}&targetUserId=${item.organizer}`,
-            );
-            setRelationship(res.data);
-            // console.log(res);
-          } catch (error) {
-            console.log(error);
-          }
-        };
-        checkRelationship();
-
-        if (item.organizer) {
-          getOrganizer(item.organizer);
-        }
-        if (item.attendees) {
-          getGoing(item.attendees);
-          // console.log("fjf", userGoing)
-        }
-        if (item.tickets) {
-          getTicket(item.tickets);
-          console.log(item.tickets);
-        }
-        if (user.favorites && user.favorites.includes(id)) {
-          setFavorite(true);
-        }
-        if (user) {
-          AsyncStorage.setItem('auth', JSON.stringify(user));
-          // console.log(user);
-        }
+        checkRelationship(item.organizer);
       }
-    }, [item, user]),
+    }, [item]),
   );
-  useEffect(() => {
-    console.log(ticketData);
-  }, [ticketData]);
-
-  const getEventbyId = async () => {
+  const checkRelationship = async (targetId: any) => {
     try {
-      const res = await eventAPI.HandleEvent(`/byId?id=${id}`);
-      // console.log(res);
+      const res = await userAPI.HandleUser(
+        `/check-relationship?userId=${userId}&targetUserId=${targetId}`,
+      );
+      setRelationship(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getEventbyId = async (eventId: any) => {
+    try {
+      const res = await eventAPI.HandleEvent(`/byId?id=${eventId}`);
       setItem(res.data);
     } catch (error) {
       console.log(error);
@@ -126,7 +125,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
       const res = await eventAPI.HandleEvent(`/going?ids=${ids}`);
       setAttendees(res.data);
     } catch (error) {
-      console.log(error);
+      console.log('going', error);
     }
   };
   const getTicket = async (ids: any) => {
@@ -146,15 +145,13 @@ const EventDetailScreen = ({navigation, route}: any) => {
         {userId, eventId: id},
         'post',
       );
-      // console.log(res);
+      console.log(res);
 
       if (favorite) {
         dispatch(removeFavoriteEvent(id));
       } else {
         dispatch(addFavoriteEvent(id));
       }
-      // console.log(favorite);
-      // await AsyncStorage.setItem('auth', JSON.stringify(user));
     } catch (error) {
       console.log(error);
     }
@@ -509,7 +506,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
 
           <View style={{paddingTop: 20}}>
             <TextComponent
-              text="About Event"
+              text="Thông tin sự kiện "
               size={18}
               font={fontFamilies.medium}
             />
@@ -530,10 +527,10 @@ const EventDetailScreen = ({navigation, route}: any) => {
             }}></View>
           <View style={{paddingTop: 20, flex: 1}}>
             <RowComponent styles={{justifyContent: 'space-between'}}>
-              <TextComponent text="Location" title size={20} />
+              <TextComponent text="Địa điểm" title size={20} />
               <ButtonComponent
                 onPress={handleShowMap}
-                text={!showMap ? 'Show map' : 'Hide map'}
+                text={!showMap ? 'Xem bản đồ' : 'Ẩn bản đồ'}
                 type="link"
                 textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
               />
@@ -645,7 +642,12 @@ const EventDetailScreen = ({navigation, route}: any) => {
             paddingVertical: 20,
           }}>
           <ButtonComponent
-            onPress={() => navigation.navigate('OrderTickets', {item: item, tickets: ticketData})}
+            onPress={() =>
+              navigation.navigate('OrderTickets', {
+                item: item,
+                tickets: ticketData,
+              })
+            }
             styles={{width: '70%', padding: 12}}
             text={`Đặt Vé`}
             type="primary"

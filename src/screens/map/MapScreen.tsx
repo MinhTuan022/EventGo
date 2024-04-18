@@ -30,6 +30,7 @@ import {appColors} from '../../utils/constants/appColors';
 import {appInfo} from '../../utils/constants/appInfos';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import userAPI from '../../apis/userApi';
+import { UserModel } from '../../models/UserModel';
 
 const MapScreen = ({navigation}: any) => {
   const [events, setEvents] = useState([]);
@@ -41,7 +42,7 @@ const MapScreen = ({navigation}: any) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isPress, setIsPress] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [user, setUser] = useState<any>();
+  const [user, setUser] = useState<UserModel>();
   const auth = useSelector(authSelector);
 
   const flatListRef = useRef<any>(null);
@@ -125,9 +126,9 @@ const MapScreen = ({navigation}: any) => {
             }}>
             <Image
               source={{
-                uri: user
-                  ? user.photo
-                  : 'https://www.pexels.com/photo/shallow-focus-photography-of-gray-cat-in-box-3389528/',
+                uri: user && user.photo
+                  ? user.photo 
+                  : 'https://th.bing.com/th/id/OIP.DxdqBFLVLPcWsjkds8636QHaHf?rs=1&pid=ImgDetMain',
               }}
               style={{width: 50, height: 50, borderRadius: 100}}
             />

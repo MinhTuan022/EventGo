@@ -10,9 +10,10 @@ interface Props {
   closeModal?: () => void;
   captureFromCamera?: () => void;
   selectFromLibrary?: () => void;
+  uploadUrl?: () => void
 }
 const ChoicePictureModal = (props: Props) => {
-  const {modalVisible, closeModal, captureFromCamera, selectFromLibrary} =
+  const {modalVisible, closeModal, captureFromCamera, selectFromLibrary, uploadUrl} =
     props;
   return (
     <Modal visible={modalVisible} transparent animationType="slide">
@@ -61,7 +62,7 @@ const ChoicePictureModal = (props: Props) => {
             textColor="black"
             color="white"
           />
-          <ButtonComponent
+          <ButtonComponent onPress={uploadUrl}
             text="Upload from URL"
             type="primary"
             styles={{width: '100%'}}

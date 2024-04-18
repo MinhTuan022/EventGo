@@ -1,7 +1,7 @@
-import { Add, ArrowLeft, Minus } from 'iconsax-react-native';
-import React, { useEffect, useState } from 'react';
-import { StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { useSelector } from 'react-redux';
+import {Add, ArrowLeft, Minus} from 'iconsax-react-native';
+import React, {useEffect, useState} from 'react';
+import {StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {useSelector} from 'react-redux';
 import orderAPI from '../../apis/orderApi';
 import {
   ButtonComponent,
@@ -9,19 +9,19 @@ import {
   RowComponent,
   SectionComponent,
   ShapeComponent,
-  TextComponent
+  TextComponent,
 } from '../../components';
-import { authSelector } from '../../redux/reducers/authReducer';
-import { globalStyles } from '../../styles/globalStyles';
-import { appColors } from '../../utils/constants/appColors';
-import { fontFamilies } from '../../utils/constants/fontFamilies';
+import {authSelector} from '../../redux/reducers/authReducer';
+import {globalStyles} from '../../styles/globalStyles';
+import {appColors} from '../../utils/constants/appColors';
+import {fontFamilies} from '../../utils/constants/fontFamilies';
 import ticketAPI from '../../apis/ticketApi';
-import { formatCurrency } from '../../utils/util';
+import {formatCurrency} from '../../utils/util';
 
 const OrderTickets = ({route, navigation}: any) => {
   const {item, tickets} = route.params;
   const user = useSelector(authSelector);
-  const [quantityBuy, setQuantityBuy] = useState(1);
+  const [quantityBuy, setQuantityBuy] = useState(0);
   // const [ticketData, setTicketData] = useState<any>();
   const [quantityAvailable, setQuantityAvailble] = useState(
     tickets.length > 0 ? tickets[0].quantity : 0,
@@ -94,11 +94,30 @@ const OrderTickets = ({route, navigation}: any) => {
       console.log(error);
     }
   };
+
+  const handleOrderFree = async () => {
+    try {
+      const res = await orderAPI.HandleOrder(
+        '/',
+        {
+          userId: user.id,
+          eventId: item._id,
+          ticketId: ticketId,
+          quantity: quantityBuy,
+          totalPrice: ticketPrice * quantityBuy,
+          status: 'Paid',
+        },
+        'post',
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <View style={globalStyles.container}>
       <View
         style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
-        <HeaderComponent title='Book Ticket' goBack/>
+        <HeaderComponent title="Đặt Vé" goBack />
 
         {tickets.length > 0 && (
           <SectionComponent>
@@ -128,6 +147,7 @@ const OrderTickets = ({route, navigation}: any) => {
                         : appColors.gray2
                     }
                     font={fontFamilies.medium}
+                    size={20}
                   />
                 </TouchableOpacity>
               ))}
@@ -135,7 +155,7 @@ const OrderTickets = ({route, navigation}: any) => {
           </SectionComponent>
         )}
         <SectionComponent>
-          <TextComponent text="Choice number of tickets" title size={22} />
+          <TextComponent text="Chọn số lượng vé muốn mua" title size={22} />
           <RowComponent
             styles={{
               alignItems: 'center',
@@ -182,14 +202,23 @@ const OrderTickets = ({route, navigation}: any) => {
           alignItems: 'center',
           paddingVertical: 20,
         }}>
-        <ButtonComponent
-          disable={quantityBuy === 0 ? true : false}
-          onPress={handleOrder}
-          styles={{width: '70%', padding: 12}}
-          text={`Tiếp tục - ${formatCurrency(ticketPrice * quantityBuy)}`}
-          type="primary"
-          textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
-        />
+        {ticketPrice === 0 ? (
+          <ButtonComponent
+            text="Nhận Vé"
+            styles={{width: '70%', padding: 12}}
+            type="primary"
+            disable={quantityBuy === 0 ? true : false}
+          />
+        ) : (
+          <ButtonComponent
+            disable={quantityBuy === 0 ? true : false}
+            onPress={handleOrder}
+            styles={{width: '70%', padding: 12}}
+            text={`Tiếp tục - ${formatCurrency(ticketPrice * quantityBuy)}`}
+            type="primary"
+            textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
+          />
+        )}
       </View>
     </View>
   );
@@ -197,7 +226,7 @@ const OrderTickets = ({route, navigation}: any) => {
 const localStyle = StyleSheet.create({
   touchableOpacity: {
     flex: 1,
-    paddingVertical: 7,
+    paddingVertical: 4,
     paddingHorizontal: 10,
     alignItems: 'center',
     borderBottomColor: appColors.gray2,

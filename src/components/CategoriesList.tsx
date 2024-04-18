@@ -18,27 +18,27 @@ const CategoriesList = ({onSelectCategory}: CategoriesListProps) => {
   const categories = [
     {
       key: '',
-      title: 'All',
+      title: 'Tất cả',
       icon: <MemoDone width={size} height={size} />,
     },
     {
       key: 'Sports',
-      title: 'Sports',
+      title: 'Thể Thao',
       icon: <MemoSports width={size} height={size} />,
     },
     {
       key: 'Music',
-      title: 'Music',
+      title: 'Âm Nhạc',
       icon: <MemoMusic width={size} height={size} />,
     },
     {
       key: 'Food',
-      title: 'Food',
+      title: 'Ẩm Thực',
       icon: <MemoFood width={size} height={size} />,
     },
     {
       key: 'Art',
-      title: 'Art',
+      title: 'Mĩ Thuật',
       icon: <MemoArt width={size} height={size} />,
     },
   ];

@@ -1,4 +1,4 @@
-import {View, Text, StatusBar} from 'react-native';
+import {View, Text, StatusBar, AppState} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SplashScreen} from './src/screens';
 import {NavigationContainer} from '@react-navigation/native';
@@ -18,7 +18,24 @@ const token: string =
 Mapbox.setAccessToken(token);
 
 const App = () => {
+  const [appState, setAppState] = useState(AppState.currentState);
 
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState:any) => {
+      if (appState.match(/inactive|background/) && nextAppState === 'active') {
+        // Ứng dụng trở lại sau khi người dùng tạm dừng hoặc thoát
+        console.log('Ứng dụng đã quay lại từ nền hoặc tạm dừng.');
+      } else if (appState === 'active' && nextAppState.match(/inactive|background/)) {
+        // Ứng dụng vào chế độ nền hoặc bị tạm dừng
+        console.log('Ứng dụng đã vào chế độ nền hoặc tạm dừng.');
+      }
+      setAppState(nextAppState);
+    };
+
+    AppState.addEventListener('change', handleAppStateChange);
+
+   
+  }, [appState]);
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <Provider store={store}>

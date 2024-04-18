@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 import authenticationAPI from '../../apis/authApi';
+import messaging from '@react-native-firebase/messaging';
 import {
   ButtonComponent,
   RowComponent,
@@ -82,11 +83,14 @@ const VerificationScreen = ({navigation, route}: any) => {
       verificationCode == currentCode
     ) {
       console.log('Verification Successfully !');
+      const currentToken = await messaging().getToken();
 
+      await AsyncStorage.setItem('fcmToken', currentToken)
       const data = {
         email,
         password,
         name: name ? name : '',
+        fcmTokens: currentToken
       };
       try {
         const res = await authenticationAPI.HandleAuthentication(
@@ -95,9 +99,26 @@ const VerificationScreen = ({navigation, route}: any) => {
           'post',
         );
         //   console.log(res.data.verificationCode)
-        dispatch(addAuth(res.data));
-          // console.log(res.data);
-        await AsyncStorage.setItem('auth', JSON.stringify(res.data));
+        dispatch(
+          addAuth({
+            accessToken: res.data.accessToken,
+            email: res.data.email,
+            id: res.data.id,
+            favorites: res.data.favorites,
+            fcmTokens: res.data.fcmTokens
+  
+          }),
+        );
+
+        await AsyncStorage.setItem(
+        'auth',
+        JSON.stringify({
+          accessToken: res.data.accessToken,
+          email: res.data.email,
+          id: res.data.id,
+          favorites: res.data.favorites,
+        }),
+      );
         setIsLoading(false);
       } catch (error) {
         console.log(error);

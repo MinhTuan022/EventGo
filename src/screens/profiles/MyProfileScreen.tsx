@@ -55,6 +55,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
   );
   const handleLogOut = async () => {
     const fcmToken = await AsyncStorage.getItem('fcmToken');
+    console.log(fcmToken)
     await userAPI.HandleUser("/delete-fcmToken", {fcmToken, userId: user.id}, 'delete')
     await GoogleSignin.signOut();
     LoginManager.logOut();
@@ -87,7 +88,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
     <View
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
       <StatusBar barStyle="dark-content" />
-      <HeaderComponent title="My Profile" />
+      <HeaderComponent title="Hồ Sơ" />
       <View
         style={{
           paddingHorizontal: 20,
@@ -98,9 +99,9 @@ const MyProfileScreen = ({route, navigation}: any) => {
           <View style={{alignItems: 'center', justifyContent: 'center'}}>
             <Image
               source={{
-                uri: userData
+                uri: userData && userData.photo
                   ? userData.photo
-                  : 'https://www.pexels.com/photo/shallow-focus-photography-of-gray-cat-in-box-3389528/',
+                  : 'https://th.bing.com/th/id/OIP.DxdqBFLVLPcWsjkds8636QHaHf?rs=1&pid=ImgDetMain',
               }}
               style={{borderRadius: 100, width: 96, height: 96}}
             />
@@ -155,7 +156,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
             onPress={() => {
               navigation.navigate('ManageEventScreen');
             }}
-            text="Manage Events"
+            text="Quản lý sự kiện"
             iconLeft={<Calendar size={22} color="black" />}
             iconRight={<ArrowCircleRight size={22} color="black" />}
             type="primary"
@@ -165,7 +166,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
             textStyle={{fontFamily: fontFamilies.medium}}
           />
           <ButtonComponent
-            text="Message Center"
+            text="Trung tâm tin nhắn"
             iconLeft={<Message size={22} color="black" />}
             iconRight={<ArrowCircleRight size={22} color="black" />}
             type="primary"
@@ -185,7 +186,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
             onPress={() => {
               navigation.navigate('EditProfileScreen', userData);
             }}
-            text="Profile"
+            text="Thông tin cá nhân"
             iconLeft={<Profile size={22} color="black" />}
             iconRight={<ArrowCircleRight size={22} color="black" />}
             type="primary"
@@ -195,7 +196,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
             textStyle={{fontFamily: fontFamilies.medium}}
           />
           <ButtonComponent
-            text="Notification"
+            text="Thông báo"
             iconLeft={<Notification size={22} color="black" />}
             iconRight={<ArrowCircleRight size={22} color="black" />}
             type="primary"
@@ -215,7 +216,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
             textStyle={{fontFamily: fontFamilies.medium}}
           />
           <ButtonComponent
-            text="Security"
+            text="Bảo mật"
             iconLeft={<Security size={22} color="black" />}
             iconRight={<ArrowCircleRight size={22} color="black" />}
             type="primary"
@@ -225,7 +226,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
             textStyle={{fontFamily: fontFamilies.medium}}
           />
           <ButtonComponent
-            text="Language"
+            text="Ngôn ngữ"
             iconLeft={<LanguageCircle size={22} color="black" />}
             iconRight={<ArrowCircleRight size={22} color="black" />}
             type="primary"
@@ -236,7 +237,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
           />
           <ButtonComponent
             onPress={test}
-            text="Dark Mode"
+            text="Chế độ"
             iconLeft={<Eye size={22} color="black" />}
             iconRight={<ArrowCircleRight size={22} color="black" />}
             type="primary"
@@ -246,7 +247,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
             textStyle={{fontFamily: fontFamilies.medium}}
           />
           <ButtonComponent
-            text="Help Center"
+            text="Trung tâm trợ giúp"
             iconLeft={<Information size={22} color="black" />}
             iconRight={<ArrowCircleRight size={22} color="black" />}
             type="primary"
@@ -257,7 +258,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
           />
           <ButtonComponent
             onPress={handleLogOut}
-            text="Logout"
+            text="Đăng xuất"
             iconLeft={<Logout size={22} color="red" />}
             // iconRight={<ArrowCircleRight size={22} color="black" />}
             type="primary"

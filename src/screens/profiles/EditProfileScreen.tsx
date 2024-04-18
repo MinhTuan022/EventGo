@@ -141,9 +141,9 @@ const EditProfileScreen = ({route}: any) => {
               source={{
                 uri: imageUrl
                   ? imageUrl
-                  : userData
+                  : userData.photo
                   ? userData.photo
-                  : 'https://www.pexels.com/photo/shallow-focus-photography-of-gray-cat-in-box-3389528/',
+                  : 'https://th.bing.com/th/id/OIP.DxdqBFLVLPcWsjkds8636QHaHf?rs=1&pid=ImgDetMain',
               }}
               style={{flex: 1, resizeMode: 'cover', borderRadius: 100}}
             />

@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
-import { AddNewEvent, EventDetailScreen, GoingScreen, NotificationScreen, OrderDetail, OrderTickets, SearchScreen, SeeAllEvent, TicketDetailScreen } from '../screens';
+import { AddNewEvent, EventDetailScreen, GoingScreen, InviteScreen, NotificationScreen, OrderDetail, OrderTickets, SearchScreen, SeeAllEvent, TicketDetailScreen } from '../screens';
 import DrawerNavigator from './DrawerNavigator';
 import ProfileNavigator from './ProfileNavigator';
 import TabNavigator from './TabNavigator';
@@ -26,6 +26,7 @@ const MainNavigator = () => {
       <Stack.Screen name='TicketDetail' component={TicketDetailScreen}/>
       <Stack.Screen name='AddNewEvent' component={AddNewEvent}/>
       <Stack.Screen name='SeeAll' component={SeeAllEvent}/>
+      <Stack.Screen name='Invite' component={InviteScreen}/>
 
 
 

@@ -22,6 +22,7 @@ import TicketDetailScreen from './tickets/TicketDetailScreen';
 import ManageEventScreen from './manage/ManageEventScreen';
 import SeeAllEvent from './home/SeeAllEvent';
 import NotificationItem from './notification/NotificationItem';
+import InviteScreen from './events/InviteScreen';
 
 export {
   HomeScreen,
@@ -47,5 +48,6 @@ export {
   TicketDetailScreen,
   ManageEventScreen,
   SeeAllEvent,
-  NotificationItem
+  NotificationItem,
+  InviteScreen
 };

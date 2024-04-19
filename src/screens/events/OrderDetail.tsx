@@ -1,17 +1,8 @@
-import {ArrowLeft} from 'iconsax-react-native';
 import React, {useState} from 'react';
-import {
-  Image,
-  Modal,
-  StatusBar,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Image, Modal, StatusBar, StyleSheet, View} from 'react-native';
 import WebView from 'react-native-webview';
-import {useSelector} from 'react-redux';
-import paypalApi from '../../apis/paypalApi';
-import ticketAPI from '../../apis/ticketApi';
+import orderAPI from '../../apis/orderApi';
+import paymentApi from '../../apis/paymentApi';
 import {
   ButtonComponent,
   EventItem,
@@ -22,16 +13,14 @@ import {
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {authSelector} from '../../redux/reducers/authReducer';
 import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import {convertToUSD, formatCurrency} from '../../utils/util';
-import orderAPI from '../../apis/orderApi';
 
 const OrderDetail = ({route, navigation}: any) => {
   const {dataDetail} = route.params;
-  console.log(dataDetail)
+  console.log(dataDetail);
   const [showModal, setShowModal] = useState(false);
   const [paypalUrl, setPaypalUrl] = useState('');
   const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -43,8 +32,8 @@ const OrderDetail = ({route, navigation}: any) => {
   };
   const handlePaypal = async () => {
     try {
-      const res = await paypalApi.HandlePaypal(
-        '/',
+      const res = await paymentApi.HandlePayment(
+        '/paypal',
         {
           orderId: dataDetail._id,
           name: dataDetail.eventId.title,
@@ -62,13 +51,35 @@ const OrderDetail = ({route, navigation}: any) => {
       console.log(error);
     }
   };
+  const handleVnPay = async () => {
+    try {
+      const res = await paymentApi.HandlePayment(
+        '/vnpay',
+        {
+          orderId: dataDetail._id,
+          price: dataDetail.ticketId.price,
+          quantity: dataDetail.quantity,
+        },
+        'post',
+      );
+      setPaypalUrl(res.data);
+      setShowModal(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleResponse = (navState: any) => {
     const {url} = navState;
-    if (url.includes('http://192.168.1.106:3001/paypal/success')) {
+    if (url.includes('http://192.168.1.106:3001/payment/paypal-success')) {
       setShowModal(false);
       setPaymentSuccess(true);
-    } else if (url.includes('http://192.168.1.106:3001/paypal/cancel')) {
+    } else if (
+      url.includes('http://192.168.1.106:3001/payment/vnpay-success')
+    ) {
+      setShowModal(false);
+      setPaymentSuccess(true);
+    } else if (url.includes('http://192.168.1.106:3001/payment/cancel')) {
       setShowModal(false);
       setPaymentFail(true);
     }
@@ -76,7 +87,11 @@ const OrderDetail = ({route, navigation}: any) => {
 
   const handleGoBack = async () => {
     try {
-      const res = await orderAPI.HandleOrder("/delete", {orderId: dataDetail._id}, 'delete');
+      const res = await orderAPI.HandleOrder(
+        '/delete',
+        {orderId: dataDetail._id},
+        'delete',
+      );
       console.log(res);
       navigation.goBack();
     } catch (error) {
@@ -210,7 +225,7 @@ const OrderDetail = ({route, navigation}: any) => {
           />
         </Modal>
         <View style={globalStyles.container}>
-          <HeaderComponent goBack onPress={handleGoBack} title='Order Detail'/>
+          <HeaderComponent goBack onPress={handleGoBack} title="Order Detail" />
           <EventItem item={dataDetail.eventId} type="list" disible={true} />
           <SectionComponent>
             <TextComponent title text="Order Summary" size={20} />
@@ -218,7 +233,10 @@ const OrderDetail = ({route, navigation}: any) => {
             <RowComponent
               styles={{justifyContent: 'space-between', paddingBottom: 10}}>
               <TextComponent text="Ticket Price" size={16} />
-              <TextComponent text={`${formatCurrency(dataDetail.ticketId.price)}`} size={16} />
+              <TextComponent
+                text={`${formatCurrency(dataDetail.ticketId.price)}`}
+                size={16}
+              />
             </RowComponent>
             <RowComponent
               styles={{justifyContent: 'space-between', paddingBottom: 10}}>
@@ -264,18 +282,18 @@ const OrderDetail = ({route, navigation}: any) => {
             </RowComponent>
             <RowComponent
               styles={{paddingTop: 15}}
-              onPress={() => handlePaymentMethodChange('momo')}>
+              onPress={() => handlePaymentMethodChange('vnpay')}>
               <RowComponent styles={{flex: 1}}>
                 <ShapeComponent radius={12} color={appColors.white4} size={36}>
                   <Image
-                    source={require('../../assets/images/momo.png')}
+                    source={require('../../assets/images/vnpay.png')}
                     style={{width: 24, height: 24}}
                   />
                 </ShapeComponent>
                 <SpaceComponent width={15} />
-                <TextComponent text="Momo" size={16} />
+                <TextComponent text="VnPay" size={16} />
               </RowComponent>
-              <Radio selected={paymentMethod === 'momo'} />
+              <Radio selected={paymentMethod === 'vnpay'} />
             </RowComponent>
           </SectionComponent>
         </View>
@@ -287,13 +305,7 @@ const OrderDetail = ({route, navigation}: any) => {
             paddingVertical: 20,
           }}>
           <ButtonComponent
-            onPress={
-              paymentMethod === 'paypal'
-                ? handlePaypal
-                : () => {
-                    console.log('first');
-                  }
-            }
+            onPress={paymentMethod === 'paypal' ? handlePaypal : handleVnPay}
             styles={{width: '70%', padding: 12}}
             text="Checkout"
             type="primary"

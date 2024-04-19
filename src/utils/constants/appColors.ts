@@ -11,6 +11,8 @@ export const appColors ={
    textInput: '#747688',
    gray: '#807A7A',
    gray2: '#B8B6BE',
-   gray3: '#5C56EE'
+   gray3: '#5C56EE',
+   cam: '#FD9C12',
+   cam2:"#FFF7EB"
 
 };

@@ -140,7 +140,7 @@ const EventItem = (props: Props) => {
               color="white"
               styles={{margin: 12}}>
               <Heart
-                color={appColors.primary}
+                color={"red"}
                 size={18}
                 variant={
                   user.favorites && item && user.favorites.includes(item._id)

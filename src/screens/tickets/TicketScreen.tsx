@@ -27,7 +27,8 @@ import {authSelector} from '../../redux/reducers/authReducer';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import orderAPI from '../../apis/orderApi';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import paypalApi from '../../apis/paypalApi';
+import paypalApi from '../../apis/paymentApi';
+import paymentApi from '../../apis/paymentApi';
 
 const TicketScreen = ({navigation}: any) => {
   // const navigation = useNavigation();
@@ -94,7 +95,7 @@ const TicketScreen = ({navigation}: any) => {
   const handleCancelled = async (orderId: any) => {
     try {
       console.log(orderId);
-      await paypalApi.HandlePaypal("/refund", {orderId}, "post")
+      await paymentApi.HandlePayment("/payment-refund", {orderId}, "post")
 
       const res = await orderAPI.HandleOrder('/delete', {orderId}, 'delete');
       refRBSheet.current.close();

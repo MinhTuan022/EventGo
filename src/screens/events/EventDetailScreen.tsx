@@ -62,6 +62,8 @@ const EventDetailScreen = ({navigation, route}: any) => {
   const [ticketData, setTicketData] = useState<any>();
   const [isEnd, setIsEnd] = useState(false);
   const [isOutStock, setIsOutStock] = useState(false);
+  const [friend, setFriend] = useState<any>([]);
+
   // const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -89,8 +91,8 @@ const EventDetailScreen = ({navigation, route}: any) => {
   }, [item, ticketData]);
 
   useEffect(() => {
-    console.log('stock', isOutStock);
-  }, [isOutStock]);
+    getFriend();
+  }, []);
   useEffect(() => {
     if (item) {
       if (item.attendees) {
@@ -121,6 +123,14 @@ const EventDetailScreen = ({navigation, route}: any) => {
       }
     }, [item]),
   );
+  const getFriend = async () => {
+    try {
+      const res = await userAPI.HandleUser(`/friend?userId=${user.id}`)
+      setFriend(res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const checkRelationship = async (targetId: any) => {
     try {
       const res = await userAPI.HandleUser(
@@ -373,7 +383,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
                     text={`${attendees.length} Đang tham dự`}
                   />
                 </RowComponent>
-                <TouchableOpacity
+                <TouchableOpacity onPress={() => {navigation.navigate("Invite", {friend})}}
                   style={{
                     backgroundColor: appColors.primary,
                     paddingHorizontal: 18,

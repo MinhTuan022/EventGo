@@ -37,6 +37,14 @@ const NotificationScreen = ({navigation}: any) => {
       console.log(error);
     }
   };
+
+  const setRead = async (id:string) => {
+    try {
+      await notificationAPI.HandleNotification("/isRead", {id}, 'put')
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <View
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
@@ -44,14 +52,10 @@ const NotificationScreen = ({navigation}: any) => {
       <HeaderComponent title="Notification" goBack />
       {notiList.length > 0 ? (
         <View style={{flex: 1}}>
-          {/* <Image source={require('../../assets/images/noti.png')} /> */}
-
-          {/* <TextComponent text={`${notiList[0]?.body}`} /> */}
-
           <FlatList
             data={notiList}
             renderItem={({item, index}) => (
-              <NotificationItem item={item} key={index} />
+              <NotificationItem item={item} key={index} onPress={()=>setRead(item._id)} />
             )}
           />
         </View>

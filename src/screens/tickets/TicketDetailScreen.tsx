@@ -26,7 +26,7 @@ import {useSelector} from 'react-redux';
 import {authSelector} from '../../redux/reducers/authReducer';
 import userAPI from '../../apis/userApi';
 import {UserModel} from '../../models/UserModel';
-import paypalApi from '../../apis/paypalApi';
+import paypalApi from '../../apis/paymentApi';
 
 const TicketDetailScreen = ({route, navigation}: any) => {
   const ticketInfo = route.params;

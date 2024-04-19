@@ -8,14 +8,36 @@ import {
   TextComponent,
 } from '../../components';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import {appColors} from '../../utils/constants/appColors';
 import {NotificationModel} from '../../models/NotificationModel';
+import {User} from 'iconsax-react-native';
 interface Props {
   item: NotificationModel;
-  onPress?: () => void
+  onPress?: () => void;
 }
 const NotificationItem = (props: Props) => {
   const {item, onPress} = props;
+  const renderIcon = (type: string) => {
+    let icon = <></>;
+    let size = 25
+    switch (type) {
+      case 'payment-success':
+        icon = (
+          <MaterialIcons name="payment" size={size} color={appColors.primary} />
+        );
+        break;
+        case 'ticket':
+        icon = (
+          <MaterialCommunityIcons name="ticket" size={size} color={appColors.cam} />
+        );
+        break;
+      default:
+        icon = <User color={'#F0635A'} size={size} />;
+        break;
+    }
+    return icon;
+  };
   return (
     <TouchableOpacity onPress={onPress}>
       <SectionComponent
@@ -25,11 +47,7 @@ const NotificationItem = (props: Props) => {
         <RowComponent styles={{justifyContent: 'space-between'}}>
           <RowComponent>
             <ShapeComponent size={55} color={appColors.purple2}>
-              <MaterialIcons
-                name="payment"
-                size={25}
-                color={appColors.primary}
-              />
+              {renderIcon(item.type)}
             </ShapeComponent>
             <SpaceComponent width={10} />
             <View>

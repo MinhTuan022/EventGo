@@ -72,6 +72,7 @@ const LoginScreen = ({navigation}: any) => {
           addAuth({
             accessToken: res.data.accessToken,
             email: res.data.email,
+            name: res.data.name,
             id: res.data.id,
             favorites: res.data.favorites,
             fcmTokens: res.data.fcmTokens,
@@ -84,6 +85,7 @@ const LoginScreen = ({navigation}: any) => {
             ? JSON.stringify({
                 accessToken: res.data.accessToken,
                 email: res.data.email,
+                name: res.data.name,
                 id: res.data.id,
                 favorites: res.data.favorites,
               })

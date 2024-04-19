@@ -52,7 +52,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
   const user = useSelector(authSelector);
   const [item, setItem] = useState<EventModel>();
   const [showMap, setShowMap] = useState(false);
-  const [isFollowing, setisFollowing] = useState(false);
+  // const [isFollowing, setisFollowing] = useState(false);
   const [relationship, setRelationship] = useState('');
   const [userId, setUserId] = useState(user.id);
   const [favorite, setFavorite] = useState(false);
@@ -60,10 +60,37 @@ const EventDetailScreen = ({navigation, route}: any) => {
   const [organizer, setOrganizer] = useState<UserModel>();
   const [attendees, setAttendees] = useState<any>([]);
   const [ticketData, setTicketData] = useState<any>();
+  const [isEnd, setIsEnd] = useState(false);
+  const [isOutStock, setIsOutStock] = useState(false);
+  // const [currentTime, setCurrentTime] = useState(new Date());
+
   useEffect(() => {
     getEventbyId(id);
   }, [id]);
+  useEffect(() => {
+    const currentTime = new Date();
+    if (item) {
+      const startEvent = new Date(item.startTime);
+      if (currentTime > startEvent) {
+        setIsEnd(true);
+      }
+    }
+    if (ticketData) {
+      let allZeroQuantity = true;
+      ticketData.forEach((ticket: any) => {
+        if (ticket.quantity !== 0) {
+          allZeroQuantity = false;
+        }
+      });
+      if (allZeroQuantity) {
+        setIsOutStock(true);
+      }
+    }
+  }, [item, ticketData]);
 
+  useEffect(() => {
+    console.log('stock', isOutStock);
+  }, [isOutStock]);
   useEffect(() => {
     if (item) {
       if (item.attendees) {
@@ -260,7 +287,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
             onPress={handleFavorite}>
             <Heart
               size={20}
-              color={'red'}
+              color={appColors.primary}
               variant={favorite ? 'Bold' : 'Linear'}
             />
           </ShapeComponent>
@@ -343,7 +370,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
                     styles={{marginLeft: 10}}
                     color={appColors.primary}
                     font={fontFamilies.medium}
-                    text={`${attendees.length} Going`}
+                    text={`${attendees.length} Đang tham dự`}
                   />
                 </RowComponent>
                 <TouchableOpacity
@@ -353,7 +380,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
                     paddingVertical: 8,
                     borderRadius: 12,
                   }}>
-                  <TextComponent text="Invite" color="white" />
+                  <TextComponent text="Mời" color="white" />
                 </TouchableOpacity>
               </RowComponent>
             </TouchableOpacity>
@@ -642,6 +669,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
             paddingVertical: 20,
           }}>
           <ButtonComponent
+            disable={isEnd ? true : isOutStock ? true : false}
             onPress={() =>
               navigation.navigate('OrderTickets', {
                 item: item,
@@ -649,7 +677,13 @@ const EventDetailScreen = ({navigation, route}: any) => {
               })
             }
             styles={{width: '70%', padding: 12}}
-            text={`Đặt Vé`}
+            text={
+              isEnd
+                ? 'Sự kiện đã kết thúc'
+                : isOutStock
+                ? 'Đã hết vé'
+                : `Đặt Vé`
+            }
             type="primary"
             textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
           />

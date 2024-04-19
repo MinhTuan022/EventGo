@@ -1,4 +1,4 @@
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {
   ArchiveTick,
   Facebook,
@@ -31,32 +31,73 @@ import {EventModel} from '../models/EventModel';
 import eventAPI from '../apis/eventApi';
 import {DateTime} from '../utils/convertDateTime';
 import userAPI from '../apis/userApi';
-import {useSelector} from 'react-redux';
-import {AuthState, authSelector} from '../redux/reducers/authReducer';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  AuthState,
+  addFavoriteEvent,
+  authSelector,
+  removeFavoriteEvent,
+} from '../redux/reducers/authReducer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Props {
   item: EventModel;
-  type: 'card' | 'list';
+  type: 'card' | 'list' | 'grid';
   disible?: boolean;
-  styles?: StyleProp<ViewStyle>
+  styles?: StyleProp<ViewStyle>;
 }
 
 const EventItem = (props: Props) => {
   const {item, type, disible, styles} = props;
   const user: AuthState = useSelector(authSelector);
+  const dispatch = useDispatch();
   const navigation: any = useNavigation();
   const [attendees, setAttendees] = useState<any>([]);
+  // const [favorite, setFavorite] = useState(
+  //   user.favorites && item && user.favorites.includes(item._id) ? true : false,
+  // );
+
+  // useEffect(() => {
+  //   console.log(favorite);
+  // }, [favorite]);
+
+  // const handleFavorite = async () => {
+  //   try {
+  //     setFavorite(!favorite);
+
+  //     const res = await userAPI.HandleUser(
+  //       `/favorite`,
+  //       {userId: user.id, eventId: item._id},
+  //       'post',
+  //     );
+  //     console.log(res);
+
+  //     if (favorite) {
+  //       dispatch(removeFavoriteEvent(item._id));
+  //     } else {
+  //       dispatch(addFavoriteEvent(item._id));
+  //     }
+  //     await AsyncStorage.setItem('auth', JSON.stringify(user));
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
   return (
     <CardComponent
-      styles={[{
-        width:
-          type === 'card'
-            ? Dimensions.get('window').width * 0.7
-            : Dimensions.get('window').width * 0.93,
-        // flex: type === "list" ? 1 : 0,
-      }, styles]}
+      styles={[
+        {
+          width:
+            type === 'card'
+              ? Dimensions.get('window').width * 0.66
+              : Dimensions.get('window').width * 0.93,
+          // flex: type === "list" ? 1 : 0,
+        },
+        styles,
+      ]}
       onPress={
-        !disible ? () => navigation.navigate('EventDetail', {id: item._id}) : undefined
+        !disible
+          ? () => navigation.navigate('EventDetail', {id: item._id})
+          : undefined
       }>
       {type === 'card' ? (
         <>
@@ -81,26 +122,25 @@ const EventItem = (props: Props) => {
               }}>
               <TextComponent
                 text={DateTime.GetOnlyDate(item.startTime)}
-                size={18}
+                size={16}
                 font={fontFamilies.medium}
                 color="red"
               />
               <TextComponent
                 text={DateTime.GetOnlyMonth(item.startTime)}
-                size={11}
+                size={9}
                 font={fontFamilies.medium}
                 color="red"
               />
             </CardComponent>
 
             <ShapeComponent
-              onPress={() => {}}
               radius={10}
               size={30}
               color="white"
               styles={{margin: 12}}>
               <Heart
-                color="red"
+                color={appColors.primary}
                 size={18}
                 variant={
                   user.favorites && item && user.favorites.includes(item._id)
@@ -111,7 +151,11 @@ const EventItem = (props: Props) => {
             </ShapeComponent>
           </ImageBackground>
           <TextComponent text={item.title} title size={18} />
-          <TextComponent text={DateTime.GetDate(item.startTime)}  size={14} color={appColors.primary}/>
+          <TextComponent
+            text={DateTime.GetDate(item.startTime)}
+            size={14}
+            color={appColors.primary}
+          />
 
           {/* <RowComponent styles={{marginVertical: 12}}>
             {Array.from({
@@ -146,7 +190,7 @@ const EventItem = (props: Props) => {
             <TextComponent text={item.address} color={appColors.gray2} />
           </RowComponent>
         </>
-      ) : (
+      ) : type === 'list' ? (
         <>
           <RowComponent>
             <Image
@@ -199,6 +243,54 @@ const EventItem = (props: Props) => {
                 </RowComponent>
               </View>
             </View>
+          </RowComponent>
+        </>
+      ) : (
+        <>
+          <ImageBackground
+            imageStyle={{padding: 10, resizeMode: 'cover', borderRadius: 12}}
+            style={{
+              flex: 1,
+              height: 131,
+              justifyContent: 'flex-end',
+              flexDirection: 'row',
+              marginBottom: 16,
+            }}
+            source={{uri: item.photoEvent ?? item.photoEvent}}>
+            {item.tickets[0].price === 0 && (
+              <View
+                style={{
+                  margin: 12,
+                  backgroundColor: appColors.primary,
+                  height: 24,
+                  paddingHorizontal: 10,
+                  borderRadius: 5,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <TextComponent text="Free" color="white" />
+              </View>
+            )}
+          </ImageBackground>
+          <TextComponent text={item.title} title size={18} />
+          <TextComponent
+            text={DateTime.GetDate(item.startTime)}
+            size={14}
+            color={appColors.primary}
+          />
+          <RowComponent styles={{justifyContent: 'space-between'}}>
+            <RowComponent>
+              <Location size={16} color={appColors.primary} variant="Bold" />
+              <SpaceComponent width={5} />
+              <TextComponent text={item.address} color={appColors.gray2} />
+            </RowComponent>
+            {/* <TouchableOpacity> */}
+              <Heart
+                size={20}
+                color={appColors.primary}
+                variant={user.favorites && item && user.favorites.includes(item._id) ? "Bold" : 'Linear'}
+              />
+            {/* </TouchableOpacity> */}
           </RowComponent>
         </>
       )}

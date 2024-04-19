@@ -86,8 +86,7 @@ const OrderTickets = ({route, navigation}: any) => {
       );
 
       navigation.navigate('OrderDetail', {
-        eventData: newItem,
-        orderId: res.data._id,
+        dataDetail: res.data
       });
       console.log(res);
     } catch (error) {

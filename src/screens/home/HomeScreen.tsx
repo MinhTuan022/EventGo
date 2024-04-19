@@ -38,7 +38,7 @@ import CategoriesList from '../../components/CategoriesList';
 import LodingModal from '../../components/modals/LoadingModal';
 import {AddressModel} from '../../models/AddressModel';
 import {EventModel} from '../../models/EventModel';
-import {addFcmToken, authSelector} from '../../redux/reducers/authReducer';
+import {authSelector} from '../../redux/reducers/authReducer';
 import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
 import {appInfo} from '../../utils/constants/appInfos';
@@ -347,7 +347,7 @@ const HomeScreen = ({navigation}: any) => {
               <EventItem
                 key={index}
                 item={item}
-                type="card"
+                type="grid"
                 styles={{width: Dimensions.get('window').width * 0.44}}
               />
             )}

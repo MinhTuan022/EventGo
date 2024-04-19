@@ -7,7 +7,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import React, {useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   ButtonComponent,
   RowComponent,
@@ -21,13 +21,44 @@ import {appColors} from '../../utils/constants/appColors';
 import QRCode from 'react-native-qrcode-svg';
 import ViewShot from 'react-native-view-shot';
 import RNFS from 'react-native-fs';
-import { formatCurrency } from '../../utils/util';
+import {formatCurrency} from '../../utils/util';
+import {useSelector} from 'react-redux';
+import {authSelector} from '../../redux/reducers/authReducer';
+import userAPI from '../../apis/userApi';
+import {UserModel} from '../../models/UserModel';
+import paypalApi from '../../apis/paypalApi';
 
 const TicketDetailScreen = ({route, navigation}: any) => {
   const ticketInfo = route.params;
   console.log(ticketInfo);
+  const auth = useSelector(authSelector);
+  const [organizer, setOrganizer] = useState<UserModel>();
+  const [payment, setPayment] = useState<any>();
   const viewShotRef = useRef<any>(null);
-
+  useEffect(() => {
+    getOrganizer();
+    getPayment();
+  }, []);
+  const getOrganizer = async () => {
+    try {
+      const res = await userAPI.HandleUser(
+        `/userId?userId=${ticketInfo.eventId.organizer}`,
+      );
+      setOrganizer(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getPayment = async () => {
+    try {
+      const res = await paypalApi.HandlePaypal(
+        `/order?orderId=${ticketInfo._id}`,
+      );
+      setPayment(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const captureTicket = async () => {
     try {
       // Chụp nội dung của viewShotRef thành hình ảnh
@@ -71,42 +102,45 @@ const TicketDetailScreen = ({route, navigation}: any) => {
         <ViewShot ref={viewShotRef} options={{format: 'jpg', quality: 1}}>
           <SectionComponent
             styles={{justifyContent: 'center', alignItems: 'center'}}>
-            <QRCode value="hihi" size={320} />
+            <QRCode
+              value={`Sự kiện : ${ticketInfo.eventId.title}, Số lượng vé: ${ticketInfo.quantity}, Người tham dự: ${auth.name}`}
+              size={320}
+            />
           </SectionComponent>
           <SectionComponent styles={localStyle.section}>
-            <TextComponent text="Event" />
+            <TextComponent text="Sự Kiện" />
             <TextComponent
               text={`${ticketInfo.eventId.title}`}
               title
-              size={20}
+              size={18}
               styles={{paddingVertical: 10}}
             />
-            <TextComponent text="Date and Hour" />
+            <TextComponent text="Thời Gian " />
             <TextComponent
               text={`${ticketInfo.eventId.startTime}`}
               title
-              size={20}
+              size={18}
               styles={{paddingVertical: 10}}
             />
-            <TextComponent text="Event Location" />
+            <TextComponent text="Địa Điểm Sự Kiện" />
             <TextComponent
               text={`${ticketInfo.eventId.address}`}
               title
-              size={20}
+              size={18}
               styles={{paddingVertical: 10}}
             />
-            <TextComponent text="Event Organizer" />
+            <TextComponent text="Tổ Chức Sự Kiện" />
             <TextComponent
-              text="Minh Tuấn"
+              text={`${organizer?.name}`}
               title
-              size={20}
+              size={18}
               styles={{paddingTop: 10}}
             />
           </SectionComponent>
           <SectionComponent styles={localStyle.section}>
             <RowComponent styles={{justifyContent: 'space-between'}}>
-              <TextComponent text="Full Name" />
-              <TextComponent text="Event" title size={16} />
+              <TextComponent text="Tên Đầy Đủ" />
+              <TextComponent text={auth.name} title size={16} />
             </RowComponent>
             <RowComponent
               styles={{justifyContent: 'space-between', paddingVertical: 10}}>
@@ -115,18 +149,22 @@ const TicketDetailScreen = ({route, navigation}: any) => {
             </RowComponent>
             <RowComponent styles={{justifyContent: 'space-between'}}>
               <TextComponent text="Email" />
-              <TextComponent text="Event" title size={16} />
+              <TextComponent text={auth.email} title size={16} />
             </RowComponent>
           </SectionComponent>
           <SectionComponent styles={localStyle.section}>
             <RowComponent styles={{justifyContent: 'space-between'}}>
-              <TextComponent text={`${ticketInfo.quantity} Seat`} />
-              <TextComponent text={formatCurrency(1000000)} title size={16} />
+              <TextComponent text={`${ticketInfo.quantity} Ghế`} />
+              <TextComponent
+                text={formatCurrency(ticketInfo.totalPrice)}
+                title
+                size={16}
+              />
             </RowComponent>
             <RowComponent styles={{justifyContent: 'space-between'}}>
-              <TextComponent text="Total" />
+              <TextComponent text="Tổng tiền" />
               <TextComponent
-                text={`${ticketInfo.totalPrice}`}
+                text={`${formatCurrency(ticketInfo.totalPrice)}`}
                 title
                 size={16}
               />
@@ -134,16 +172,20 @@ const TicketDetailScreen = ({route, navigation}: any) => {
           </SectionComponent>
           <SectionComponent styles={localStyle.section}>
             <RowComponent styles={{justifyContent: 'space-between'}}>
-              <TextComponent text="Payment Method" />
-              <TextComponent text="Paypal" title size={16} />
+              <TextComponent text="Phương thức thanh toán" />
+              <TextComponent text={`${payment?.paymentMethod}`} title size={16} />
             </RowComponent>
             <RowComponent
               styles={{justifyContent: 'space-between', paddingVertical: 10}}>
-              <TextComponent text="Order ID" />
-              <TextComponent text="111111111" title size={16} />
+              <TextComponent text="Mã đơn hàng" />
+              <TextComponent
+                text={`${payment?.transactionId}`}
+                title
+                size={16}
+              />
             </RowComponent>
             <RowComponent styles={{justifyContent: 'space-between'}}>
-              <TextComponent text="Status" />
+              <TextComponent text="Trạng thái" />
               <TextComponent text={`${ticketInfo.status}`} title size={16} />
             </RowComponent>
           </SectionComponent>

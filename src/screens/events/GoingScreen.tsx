@@ -1,6 +1,6 @@
-import { ArrowLeft } from 'iconsax-react-native';
+import {ArrowLeft} from 'iconsax-react-native';
 import React from 'react';
-import { FlatList, StatusBar, TouchableOpacity, View } from 'react-native';
+import {FlatList, StatusBar, TouchableOpacity, View} from 'react-native';
 import {
   HeaderComponent,
   RowComponent,
@@ -8,26 +8,32 @@ import {
   TextComponent,
   UserList,
 } from '../../components';
-import { globalStyles } from '../../styles/globalStyles';
-import { appColors } from '../../utils/constants/appColors';
+import {globalStyles} from '../../styles/globalStyles';
+import {appColors} from '../../utils/constants/appColors';
 
 const GoingScreen = ({route, navigation}: any) => {
-
   const {attendees} = route.params;
-  // console.log(attendees);
-
+  console.log(attendees);
 
   return (
     <View
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
-      <HeaderComponent title={`${attendees.length} Going`} goBack/>
+      <HeaderComponent title={`${attendees.length} Đang tham dự`} goBack />
 
       {attendees.length > 0 ? (
         <SectionComponent>
           <FlatList
             data={attendees}
             renderItem={({item, index}) => (
-              <UserList item={item} key={index} />
+              <UserList
+                item={item}
+                key={index}
+                onPressProfile={() => {
+                  navigation.navigate('ProfileNavigator', {
+                    profiledata: item,
+                  });
+                }}
+              />
             )}></FlatList>
         </SectionComponent>
       ) : (

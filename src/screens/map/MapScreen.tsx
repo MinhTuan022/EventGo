@@ -179,7 +179,7 @@ const MapScreen = ({navigation}: any) => {
               <RowComponent styles={{paddingBottom: 10}}>
                 <Location size={14} color={appColors.primary} variant="Bold" />
                 <TextComponent
-                  text={`Location (within ${distance} km)`}
+                  text={`Khoảng cách ${distance} km`}
                   styles={{paddingLeft: 10}}
                 />
               </RowComponent>
@@ -226,7 +226,7 @@ const MapScreen = ({navigation}: any) => {
                 <RowComponent>
                   <Edit2 size={12} color={appColors.white} variant="Bold" />
                   <SpaceComponent width={7} />
-                  <TextComponent text="Change" color="white" />
+                  <TextComponent text="Thay đổi" color="white" />
                 </RowComponent>
               </TouchableOpacity>
             )}

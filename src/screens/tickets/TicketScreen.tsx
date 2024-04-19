@@ -47,6 +47,7 @@ const TicketScreen = ({navigation}: any) => {
       if (status) {
         getTicket();
       }
+
     }, [status]),
   );
   const getTicket = async () => {
@@ -54,20 +55,34 @@ const TicketScreen = ({navigation}: any) => {
       const res = await orderAPI.HandleOrder(
         `?userId=${user.id}&status=${status}`,
       );
-      console.log(`?userId=${user.id}&status=${status}`);
+      // console.log(`?userId=${user.id}&status=${status}`);
       setTicket(res.data);
       // console.log(res.data);
+      if (res.data && res.data.length > 0) {
+        res.data.forEach((ticket:any) => {
+          // console.log("dd",ticket)
+          updateComplete(ticket._id);
+        });
+      }
     } catch (error) {
       console.log(error);
     }
   };
+  const updateComplete = async (id:any) => {
+    try {
+      const res = await orderAPI.HandleOrder("/complete", {orderId: id}, "put")
+      // console.log(res)
+    } catch (error) {
+      console.log("e",error)
+    }
+  }
   const handleSelected = (index: any, val: any) => {
     setSelected(index);
     setStatus(val);
   };
-  useEffect(() => {
-    console.log(status);
-  }, [status]);
+  // useEffect(() => {
+  //   console.log(ticket);
+  // }, [ticket]);
   const openModal = (id: any) => {
     refRBSheet.current.open();
     console.log(id);
@@ -179,7 +194,7 @@ const TicketScreen = ({navigation}: any) => {
       </RBSheet>
       <HeaderComponent
         styles={{justifyContent: 'space-between'}}
-        title="Tickets"
+        title="Vé"
         children={
           <TouchableOpacity>
             <SearchNormal size={20} color="black" />

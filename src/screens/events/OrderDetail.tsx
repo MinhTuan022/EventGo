@@ -30,8 +30,8 @@ import {convertToUSD, formatCurrency} from '../../utils/util';
 import orderAPI from '../../apis/orderApi';
 
 const OrderDetail = ({route, navigation}: any) => {
-  const {eventData, orderId} = route.params;
-  // console.log(eventData)
+  const {dataDetail} = route.params;
+  console.log(dataDetail)
   const [showModal, setShowModal] = useState(false);
   const [paypalUrl, setPaypalUrl] = useState('');
   const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -46,10 +46,10 @@ const OrderDetail = ({route, navigation}: any) => {
       const res = await paypalApi.HandlePaypal(
         '/',
         {
-          orderId,
-          name: eventData.title,
-          price: convertToUSD(eventData.ticketPrice),
-          quantity: eventData.quantityBuy,
+          orderId: dataDetail._id,
+          name: dataDetail.eventId.title,
+          price: convertToUSD(dataDetail.ticketId.price),
+          quantity: dataDetail.quantity,
         },
         'post',
       );
@@ -76,7 +76,7 @@ const OrderDetail = ({route, navigation}: any) => {
 
   const handleGoBack = async () => {
     try {
-      const res = await orderAPI.HandleOrder("/delete", {orderId}, 'delete');
+      const res = await orderAPI.HandleOrder("/delete", {orderId: dataDetail._id}, 'delete');
       console.log(res);
       navigation.goBack();
     } catch (error) {
@@ -211,24 +211,20 @@ const OrderDetail = ({route, navigation}: any) => {
         </Modal>
         <View style={globalStyles.container}>
           <HeaderComponent goBack onPress={handleGoBack} title='Order Detail'/>
-          <EventItem item={eventData} type="list" disible={true} />
+          <EventItem item={dataDetail.eventId} type="list" disible={true} />
           <SectionComponent>
             <TextComponent title text="Order Summary" size={20} />
             <SpaceComponent height={10} />
             <RowComponent
               styles={{justifyContent: 'space-between', paddingBottom: 10}}>
               <TextComponent text="Ticket Price" size={16} />
-              <TextComponent text={`${formatCurrency(eventData.ticketPrice)}`} size={16} />
+              <TextComponent text={`${formatCurrency(dataDetail.ticketId.price)}`} size={16} />
             </RowComponent>
             <RowComponent
               styles={{justifyContent: 'space-between', paddingBottom: 10}}>
               <TextComponent text="Quantity" size={16} />
-              <TextComponent text={eventData.quantityBuy} size={16} />
+              <TextComponent text={dataDetail.quantity} size={16} />
             </RowComponent>
-            {/* <RowComponent styles={{justifyContent: 'space-between'}}> */}
-            {/* <TextComponent text="Fees" size={16} /> */}
-            {/* <TextComponent text="0đ" size={16} /> */}
-            {/* </RowComponent> */}
           </SectionComponent>
           <View
             style={{
@@ -245,7 +241,7 @@ const OrderDetail = ({route, navigation}: any) => {
                 font={fontFamilies.medium}
               />
               <TextComponent
-                text={`${formatCurrency(eventData.ticketPrice * eventData.quantityBuy)}`}
+                text={`${formatCurrency(dataDetail.totalPrice)}`}
                 size={18}
                 font={fontFamilies.medium}
               />

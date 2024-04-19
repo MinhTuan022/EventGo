@@ -71,7 +71,7 @@ const FavoriteScreen = () => {
           </RowComponent>
         </RowComponent>
       </SectionComponent> */}
-      <HeaderComponent title='Favorites'/>
+      <HeaderComponent title='Ưu Thích'/>
       <SectionComponent >
         <TextComponent text={`${eventFavorites.length} favorites`} title size={18}/>
       </SectionComponent>

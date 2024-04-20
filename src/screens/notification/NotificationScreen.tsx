@@ -1,26 +1,27 @@
-import {View, Text, StatusBar, Image, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {globalStyles} from '../../styles/globalStyles';
+import { User } from 'iconsax-react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Image, StatusBar, TouchableOpacity, View } from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { useSelector } from 'react-redux';
+import notificationAPI from '../../apis/notificationApi';
 import {
   HeaderComponent,
   RowComponent,
   SectionComponent,
+  ShapeComponent,
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {ArrowLeft} from 'iconsax-react-native';
-import Feather from 'react-native-vector-icons/Feather';
-import notificationAPI from '../../apis/notificationApi';
-import {useSelector} from 'react-redux';
-import {AuthState, authSelector} from '../../redux/reducers/authReducer';
+import { NotificationModel } from '../../models/NotificationModel';
+import { AuthState, authSelector } from '../../redux/reducers/authReducer';
+import { globalStyles } from '../../styles/globalStyles';
+import { appColors } from '../../utils/constants/appColors';
 import NotificationItem from './NotificationItem';
-import {FlatList} from 'react-native';
-import {NotificationModel} from '../../models/NotificationModel';
 
 const NotificationScreen = ({navigation}: any) => {
   const user: AuthState = useSelector(authSelector);
   const [notiList, setNotiList] = useState<NotificationModel[]>([]);
-
   useEffect(() => {
     if (user) {
       getNoti();
@@ -31,20 +32,21 @@ const NotificationScreen = ({navigation}: any) => {
       const res = await notificationAPI.HandleNotification(
         `/?userId=${user.id}`,
       );
-      console.log(res);
       setNotiList(res.data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const setRead = async (id:string) => {
+  const setRead = async (id: string) => {
     try {
-      await notificationAPI.HandleNotification("/isRead", {id}, 'put')
+      await notificationAPI.HandleNotification('/isRead', {id}, 'put');
+      getNoti()
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
+  
   return (
     <View
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
@@ -55,12 +57,12 @@ const NotificationScreen = ({navigation}: any) => {
           <FlatList
             data={notiList}
             renderItem={({item, index}) => (
-              <NotificationItem item={item} key={index} onPress={()=>setRead(item._id)} />
+              <NotificationItem key={index} onPress={() => setRead(item._id)} item={item}/>
             )}
           />
         </View>
       ) : (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <Image source={require('../../assets/images/noti.png')} />
         </View>
       )}

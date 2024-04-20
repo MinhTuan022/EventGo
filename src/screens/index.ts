@@ -23,6 +23,7 @@ import ManageEventScreen from './manage/ManageEventScreen';
 import SeeAllEvent from './home/SeeAllEvent';
 import NotificationItem from './notification/NotificationItem';
 import InviteScreen from './events/InviteScreen';
+import StatisticsScreen from './manage/StatisticsScreen';
 
 export {
   HomeScreen,
@@ -49,5 +50,6 @@ export {
   ManageEventScreen,
   SeeAllEvent,
   NotificationItem,
-  InviteScreen
+  InviteScreen,
+  StatisticsScreen
 };

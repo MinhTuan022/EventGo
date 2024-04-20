@@ -131,7 +131,7 @@ const AddNewEvent = ({navigation}: any) => {
       };
       const res = await eventAPI.HandleEvent('/add', data, 'post');
       setEventId(res.data);
-      navigation.navigate('ManageEventScreen');
+      // navigation.navigate('ManageEventScreen');
     } catch (error) {
       console.log(error);
     }

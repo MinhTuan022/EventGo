@@ -235,6 +235,9 @@ const TicketScreen = ({navigation}: any) => {
             onPressView={() => {
               navigation.navigate('TicketDetail', item);
             }}
+            onPayment={() => {
+              navigation.navigate('OrderDetail', {dataDetail: item});
+            }}
           />
         )}></FlatList>
     </View>

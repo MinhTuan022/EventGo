@@ -27,6 +27,7 @@ import {authSelector} from '../../redux/reducers/authReducer';
 import userAPI from '../../apis/userApi';
 import {UserModel} from '../../models/UserModel';
 import paypalApi from '../../apis/paymentApi';
+import paymentApi from '../../apis/paymentApi';
 
 const TicketDetailScreen = ({route, navigation}: any) => {
   const ticketInfo = route.params;
@@ -51,7 +52,7 @@ const TicketDetailScreen = ({route, navigation}: any) => {
   };
   const getPayment = async () => {
     try {
-      const res = await paypalApi.HandlePaypal(
+      const res = await paymentApi.HandlePayment(
         `/order?orderId=${ticketInfo._id}`,
       );
       setPayment(res.data);

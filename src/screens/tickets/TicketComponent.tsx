@@ -16,9 +16,10 @@ interface Props {
   onPressCancelled?: () => void;
   onPressView?: () => void;
   onPressReview?: () => void;
+  onPayment?: () => void
 }
 const TicketComponent = (props: Props) => {
-  const {item, onPressCancelled, onPressReview, onPressView} = props;
+  const {item, onPressCancelled, onPressReview, onPressView, onPayment} = props;
   return (
     <>
       <View
@@ -99,7 +100,7 @@ const TicketComponent = (props: Props) => {
               }}
             />
             <RowComponent styles={{flex: 1}}>
-              <ButtonComponent
+              {/* <ButtonComponent
                 styles={{
                   flex: 1,
                   paddingVertical: 8,
@@ -111,7 +112,7 @@ const TicketComponent = (props: Props) => {
                 textColor={appColors.primary}
                 color={appColors.white}
                 onPress={onPressReview}
-              />
+              /> */}
               <ButtonComponent
                 styles={{flex: 1, paddingVertical: 8}}
                 text="View E-Ticket"
@@ -181,12 +182,12 @@ const TicketComponent = (props: Props) => {
                 onPress={onPressCancelled}
               />
               <SpaceComponent width={10} />
-              <ButtonComponent
+              <ButtonComponent 
                 styles={{flex: 1, paddingVertical: 8}}
                 text="Thanh toán"
                 type="primary"
                 textStyle={{fontSize: 14}}
-                onPress={onPressView}
+                onPress={onPayment}
               />
             </RowComponent>
           </>

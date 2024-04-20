@@ -45,10 +45,11 @@ interface Props {
   type: 'card' | 'list' | 'grid';
   disible?: boolean;
   styles?: StyleProp<ViewStyle>;
+  isManage?: boolean
 }
 
 const EventItem = (props: Props) => {
-  const {item, type, disible, styles} = props;
+  const {item, type, disible, styles, isManage} = props;
   const user: AuthState = useSelector(authSelector);
   const dispatch = useDispatch();
   const navigation: any = useNavigation();
@@ -95,9 +96,9 @@ const EventItem = (props: Props) => {
         styles,
       ]}
       onPress={
-        !disible
-          ? () => navigation.navigate('EventDetail', {id: item._id})
-          : undefined
+        disible ? undefined : isManage ? () => {navigation.navigate("StatisticsScreen", item)}
+          : () => navigation.navigate('EventDetail', {id: item._id})
+
       }>
       {type === 'card' ? (
         <>

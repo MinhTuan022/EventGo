@@ -148,7 +148,7 @@ const LoginScreen = ({navigation}: any) => {
               )
             }
           />
-          <SpaceComponent height={10} />
+          {/* <SpaceComponent height={10} /> */}
           <RowComponent styles={{justifyContent: 'space-between'}}>
             <RowComponent onPress={() => setIsRemember(!isRemember)}>
               <Switch

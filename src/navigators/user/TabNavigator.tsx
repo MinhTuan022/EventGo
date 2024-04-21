@@ -14,17 +14,17 @@ import {
   Ticket2,
 } from 'iconsax-react-native';
 import React, {ReactNode} from 'react';
-import EventScreen from '../screens/favorites/FavoriteScreen';
+import EventScreen from '../../screens/favorites/FavoriteScreen';
 import HomeNavigator from './HomeNavigator';
 import MapNavigator from './MapNavigator';
 import  FavoriteNavigator from './FavoriteNavigator';
 import ProfileNavigator from './ProfileNavigator';
-import {appColors} from '../utils/constants/appColors';
-import {MyProfileScreen, TicketScreen} from '../screens';
+import {appColors} from '../../utils/constants/appColors';
+import {MyProfileScreen, TicketScreen} from '../../screens';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {View} from 'react-native';
-import {TextComponent} from '../components';
-import {globalStyles} from '../styles/globalStyles';
+import {TextComponent} from '../../components';
+import {globalStyles} from '../../styles/globalStyles';
 import MyProfileNavigator from './MyProfileNavigator';
 
 const TabNavigator = () => {

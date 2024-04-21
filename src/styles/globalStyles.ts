@@ -47,7 +47,7 @@ export const globalStyles = StyleSheet.create({
     paddingHorizontal: 15,
     alignItems: 'center',
     // width: '100%',
-    marginBottom: 19,
+    // marginBottom: 19,
     // flex:1
 
   },

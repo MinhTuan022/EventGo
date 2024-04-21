@@ -1,6 +1,12 @@
 import {Add, ArrowLeft, Minus} from 'iconsax-react-native';
 import React, {useEffect, useState} from 'react';
-import {StatusBar, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  Modal,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {useSelector} from 'react-redux';
 import orderAPI from '../../apis/orderApi';
 import {
@@ -36,6 +42,8 @@ const OrderTickets = ({route, navigation}: any) => {
   const [ticketId, setTicketId] = useState(
     tickets.length > 0 ? tickets[0]._id : '',
   );
+  const [showModal, setShowModal] = useState(false);
+
   const newItem = {
     ...item,
     quantityBuy: quantityBuy,
@@ -86,7 +94,7 @@ const OrderTickets = ({route, navigation}: any) => {
       );
 
       navigation.navigate('OrderDetail', {
-        dataDetail: res.data
+        dataDetail: res.data,
       });
       console.log(res);
     } catch (error) {
@@ -108,12 +116,69 @@ const OrderTickets = ({route, navigation}: any) => {
         },
         'post',
       );
+
+      setShowModal(true)
     } catch (error) {
       console.log(error);
     }
   };
   return (
     <View style={globalStyles.container}>
+      {showModal &&
+      <Modal transparent={true}>
+        <StatusBar backgroundColor="rgba(0, 0, 0, 0.5)" translucent={true} />
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          }}>
+          <View
+            style={{
+              backgroundColor: appColors.white,
+              width: '80%',
+              height: '60%',
+              borderRadius: 50,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <TextComponent
+              text="Congratulations"
+              color={appColors.primary}
+              title
+              size={20}
+            />
+            <View
+              style={{
+                paddingHorizontal: 30,
+                paddingVertical: 20,
+                alignItems: 'center',
+              }}>
+              <TextComponent
+                text="You have successfully placed an order for National Music Festival. "
+                size={16}
+              />
+              <TextComponent text="Enjoy the event!" size={16} />
+            </View>
+            <ButtonComponent
+              onPress={() => {
+                navigation.navigate('TicketDetail');
+              }}
+              text="View E-Ticket"
+              type="primary"
+              styles={{marginVertical: 10}}
+            />
+            <ButtonComponent
+              text="Go Home"
+              type="primary"
+              onPress={() => navigation.navigate('Menu')}
+              color={appColors.purple2}
+              textColor={appColors.primary}
+            />
+          </View>
+        </View>
+      </Modal>}
       <View
         style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
         <HeaderComponent title="Đặt Vé" goBack />
@@ -202,7 +267,7 @@ const OrderTickets = ({route, navigation}: any) => {
           paddingVertical: 20,
         }}>
         {ticketPrice === 0 ? (
-          <ButtonComponent
+          <ButtonComponent onPress={handleOrderFree}
             text="Nhận Vé"
             styles={{width: '70%', padding: 12}}
             type="primary"

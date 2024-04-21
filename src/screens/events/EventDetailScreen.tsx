@@ -464,7 +464,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
                   />
                 )}
                 <TextComponent
-                  text={'Ticket price depends on package'}
+                  text={'Giá vé tuy theo loại'}
                   size={12}
                 />
               </View>

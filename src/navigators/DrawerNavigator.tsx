@@ -1,8 +1,9 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer'
-import TabNavigator from './TabNavigator';
+import TabNavigator from './user/TabNavigator';
 import { DrawerCustom } from '../components';
+import TabOgrNavigator from './organizer/TabOgrNavigator';
 
 const DrawerNavigator = () => {
    const Drawer = createDrawerNavigator();
@@ -13,7 +14,7 @@ const DrawerNavigator = () => {
       drawerPosition: 'left',
     }} drawerContent={props => <DrawerCustom {...props} />}>
       
-      <Drawer.Screen name='Menu' component={TabNavigator} />
+      <Drawer.Screen name='Menu' component={TabOgrNavigator} />
     </Drawer.Navigator>
   )
 }

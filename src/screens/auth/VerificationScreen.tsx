@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ArrowCircleRight, ArrowLeft } from 'iconsax-react-native';
-import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
-import { useDispatch } from 'react-redux';
+import {ArrowCircleRight, ArrowLeft} from 'iconsax-react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {StyleSheet, TextInput, View} from 'react-native';
+import {useDispatch} from 'react-redux';
 import authenticationAPI from '../../apis/authApi';
 import messaging from '@react-native-firebase/messaging';
 import {
@@ -10,15 +10,16 @@ import {
   RowComponent,
   SectionComponent,
   SpaceComponent,
-  TextComponent
+  TextComponent,
 } from '../../components';
 import LoadingModal from '../../components/modals/LoadingModal';
-import { addAuth } from '../../redux/reducers/authReducer';
-import { appColors } from '../../utils/constants/appColors';
-import { fontFamilies } from '../../utils/constants/fontFamilies';
+import {addAuth} from '../../redux/reducers/authReducer';
+import {appColors} from '../../utils/constants/appColors';
+import {fontFamilies} from '../../utils/constants/fontFamilies';
 
 const VerificationScreen = ({navigation, route}: any) => {
-  const {code, email, password, name, isForgotPass} = route.params;
+  const {code, email, password, name, isForgotPass, address, organization} =
+    route.params;
   const dispatch = useDispatch();
   const [currentCode, setCurrentCode] = useState(code);
   const [verificationCode, setVerificationCode] = useState('');
@@ -77,7 +78,7 @@ const VerificationScreen = ({navigation, route}: any) => {
       verificationCode.length === 4 &&
       verificationCode == currentCode
     ) {
-      navigation.navigate('ResetPasswordScreen',{email});
+      navigation.navigate('ResetPasswordScreen', {email});
     } else if (
       verificationCode.length === 4 &&
       verificationCode == currentCode
@@ -85,43 +86,86 @@ const VerificationScreen = ({navigation, route}: any) => {
       console.log('Verification Successfully !');
       const currentToken = await messaging().getToken();
 
-      await AsyncStorage.setItem('fcmToken', currentToken)
-      const data = {
-        email,
-        password,
-        name: name ? name : '',
-        fcmTokens: currentToken
-      };
-      try {
-        const res = await authenticationAPI.HandleAuthentication(
-          '/register',
-          data,
-          'post',
-        );
-        //   console.log(res.data.verificationCode)
-        dispatch(
-          addAuth({
-            accessToken: res.data.accessToken,
-            email: res.data.email,
-            id: res.data.id,
-            favorites: res.data.favorites,
-            fcmTokens: res.data.fcmTokens
-  
-          }),
-        );
+      await AsyncStorage.setItem('fcmToken', currentToken);
 
-        await AsyncStorage.setItem(
-        'auth',
-        JSON.stringify({
-          accessToken: res.data.accessToken,
-          email: res.data.email,
-          id: res.data.id,
-          favorites: res.data.favorites,
-        }),
-      );
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
+      if (address && organization) {
+        const data = {
+          email,
+          password,
+          name: name ? name : '',
+          fcmTokens: currentToken,
+          organization,
+          address
+        };
+        try {
+          const res = await authenticationAPI.HandleAuthentication(
+            '/register-organizer',
+            data,
+            'post',
+          );
+          //   console.log(res.data.verificationCode)
+          dispatch(
+            addAuth({
+              accessToken: res.data.accessToken,
+              email: res.data.email,
+              organization: res.data.organization,
+              id: res.data.id,
+              favorites: res.data.favorites,
+              fcmTokens: res.data.fcmTokens,
+            }),
+          );
+
+          await AsyncStorage.setItem(
+            'auth',
+            JSON.stringify({
+              accessToken: res.data.accessToken,
+              email: res.data.email,
+              organization: res.data.organization,
+              id: res.data.id,
+              favorites: res.data.favorites,
+            }),
+          );
+          setIsLoading(false);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        const data = {
+          email,
+          password,
+          name: name ? name : '',
+          fcmTokens: currentToken,
+        };
+        try {
+          const res = await authenticationAPI.HandleAuthentication(
+            '/register',
+            data,
+            'post',
+          );
+          //   console.log(res.data.verificationCode)
+          dispatch(
+            addAuth({
+              accessToken: res.data.accessToken,
+              email: res.data.email,
+              id: res.data.id,
+              favorites: res.data.favorites,
+              fcmTokens: res.data.fcmTokens,
+            }),
+          );
+
+          await AsyncStorage.setItem(
+            'auth',
+            JSON.stringify({
+              accessToken: res.data.accessToken,
+              email: res.data.email,
+              id: res.data.id,
+              favorites: res.data.favorites,
+            }),
+          );
+          setIsLoading(false);
+        } catch (error) {
+          console.log(error);
+        }
       }
     } else {
       console.log('Verification Fall');
@@ -164,7 +208,9 @@ const VerificationScreen = ({navigation, route}: any) => {
           onPress={handleVerification}
           text="CONTINUE"
           type="primary"
-          iconRight={<ArrowCircleRight size={22} color="white" />}></ButtonComponent>
+          iconRight={
+            <ArrowCircleRight size={22} color="white" />
+          }></ButtonComponent>
       </SectionComponent>
       <SectionComponent>
         <RowComponent styles={{justifyContent: 'center'}}>

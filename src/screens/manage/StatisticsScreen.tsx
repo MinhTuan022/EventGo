@@ -12,12 +12,14 @@ import {
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import {appColors} from '../../utils/constants/appColors';
 import orderAPI from '../../apis/orderApi';
-import { formatCurrency } from '../../utils/util';
+import {formatCurrency} from '../../utils/util';
 const StatisticsScreen = ({route}: any) => {
   const eventData = route.params;
   // console.log(eventData);
   const [hours, setHours] = useState<any>(['Không có dữ liệu']);
   const [counts, setCounts] = useState<number[]>([0]);
+  const [hoursCancel, setHoursCancle] = useState<any>(['Không có dữ liệu']);
+  const [countsCancel, setCountsCancel] = useState<number[]>([0]);
   const [ticketSolds, setTicketSolds] = useState<any>([]);
   const [revenue, setRevenue] = useState(0);
   const screenWidth = Dimensions.get('window').width;
@@ -25,7 +27,8 @@ const StatisticsScreen = ({route}: any) => {
     if (eventData) {
       getStatis();
       getTicketSold();
-      getRevenue()
+      getRevenue();
+      getCancelled();
     }
   }, [eventData]);
   useEffect(() => {
@@ -53,6 +56,16 @@ const StatisticsScreen = ({route}: any) => {
       },
     ],
   };
+  const dataCancel = {
+    labels: hoursCancel.length > 0 ? hoursCancel : ['Không có dữ liệu'],
+    datasets: [
+      {
+        data: countsCancel.length > 0 ? countsCancel : [0],
+        color: (opacity = 1) => `rgba(210, 1, 3, ${opacity})`,
+        strokeWidth: 5,
+      },
+    ],
+  };
   const dataProgress = {
     labels: ['Swim'],
     data: [0.4],
@@ -71,6 +84,17 @@ const StatisticsScreen = ({route}: any) => {
       console.log(error);
     }
   };
+  const getCancelled = async () => {
+    try {
+      const res = await orderAPI.HandleOrder(
+        `/cancelled?eventId=${eventData._id}`,
+      );
+      setHoursCancle(res.data.hours);
+      setCountsCancel(res.data.counts);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getTicketSold = async () => {
     try {
@@ -84,30 +108,49 @@ const StatisticsScreen = ({route}: any) => {
 
   const getRevenue = async () => {
     try {
-      const res = await orderAPI.HandleOrder(`/revenue?eventId=${eventData._id}`)
-      console.log("dđ",res)
-      setRevenue(res.data)
+      const res = await orderAPI.HandleOrder(
+        `/revenue?eventId=${eventData._id}`,
+      );
+      console.log('dđ', res);
+      setRevenue(res.data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
   return (
     <ScrollView
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
       <HeaderComponent title={eventData.title} goBack />
       <SectionComponent>
         <TextComponent text="Doanh Thu" font={fontFamilies.medium} size={16} />
-        <TextComponent text={`${formatCurrency(revenue)} `} font={fontFamilies.bold} size={25} />
+        <TextComponent
+          text={`${formatCurrency(revenue)} `}
+          font={fontFamilies.bold}
+          size={25}
+        />
       </SectionComponent>
       <SectionComponent>
         <TextComponent
-          text="Lượng bán theo thời gian"
+          text="Lượng người mua vé theo thời gian"
           font={fontFamilies.medium}
           size={16}
         />
       </SectionComponent>
       <LineChart
         data={data}
+        width={screenWidth}
+        height={220}
+        chartConfig={chartConfig}
+      />
+      <SectionComponent>
+        <TextComponent
+          text="Lượng người hủy vé theo thời gian"
+          font={fontFamilies.medium}
+          size={16}
+        />
+      </SectionComponent>
+      <LineChart
+        data={dataCancel}
         width={screenWidth}
         height={220}
         chartConfig={chartConfig}

@@ -67,7 +67,7 @@ const DrawerCustom = ({navigation}: any) => {
     {
       key: 'SignOut',
       title: 'Sign Out',
-      icon: <Logout size={size} color={color} />,
+      icon: <Logout size={size} color={"red"} />,
       // onPress: () => dispatch(removeAuth({})),
     },
   ];
@@ -76,9 +76,10 @@ const DrawerCustom = ({navigation}: any) => {
 
   const handleLogOut = async () => {
     await GoogleSignin.signOut();
-    await LoginManager.logOut();
+    LoginManager.logOut();
     dispatch(removeAuth());
     await AsyncStorage.clear();
+
   };
   return (
     <View style={{paddingTop: StatusBar.currentHeight, paddingHorizontal: 20}}>
@@ -112,17 +113,10 @@ const DrawerCustom = ({navigation}: any) => {
               font={fontFamilies.regular}
               styles={{paddingLeft: 10}}
               text={item.title}
+              color={item.key === 'SignOut' ? 'red' : 'black'}
             />
           </RowComponent>
         )}
-      />
-      <ButtonComponent
-        styles={{marginTop: 60, width: '70%', elevation: 0}}
-        textColor="#00F8FF"
-        color="#F2FFFF"
-        iconLeft={<Crown size={size} color="#00F8FF" />}
-        type="primary"
-        text="Upgrade Pro"
       />
     </View>
   );

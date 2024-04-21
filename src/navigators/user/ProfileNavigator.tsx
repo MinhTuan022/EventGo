@@ -8,16 +8,16 @@ import {
   RowComponent,
   SpaceComponent,
   TextComponent,
-} from '../components';
-import {UserModel} from '../models/UserModel';
-import AboutComponent from '../screens/profiles/AboutComponent';
-import EventComponrnt from '../screens/profiles/EventComponrnt';
-import ReviewsComponent from '../screens/profiles/ReviewsComponent';
-import {appColors} from '../utils/constants/appColors';
-import {fontFamilies} from '../utils/constants/fontFamilies';
-import userAPI from '../apis/userApi';
+} from '../../components';
+import {UserModel} from '../../models/UserModel';
+import AboutComponent from '../../screens/profiles/AboutComponent';
+import EventComponrnt from '../../screens/profiles/EventComponrnt';
+import ReviewsComponent from '../../screens/profiles/ReviewsComponent';
+import {appColors} from '../../utils/constants/appColors';
+import {fontFamilies} from '../../utils/constants/fontFamilies';
+import userAPI from '../../apis/userApi';
 import {useSelector} from 'react-redux';
-import {authSelector} from '../redux/reducers/authReducer';
+import {authSelector} from '../../redux/reducers/authReducer';
 
 const ProfileNavigator = ({route, navigation}: any) => {
   const {profiledata} = route.params;

@@ -35,7 +35,10 @@ const TicketScreen = ({navigation}: any) => {
   const refRBSheet = useRef<any>();
   const [selected, setSelected] = useState(0);
   const [ticket, setTicket] = useState([]);
-  const [orderIdSelected, setOrderIdSelected] = useState('');
+  const [orderIdSelected, setOrderIdSelected] = useState({
+    orderId: '',
+    totalPrice: 0,
+  });
   const user = useSelector(authSelector);
   const data = [
     {name: 'Sắp diễn ra', val: 'Paid'},
@@ -48,7 +51,6 @@ const TicketScreen = ({navigation}: any) => {
       if (status) {
         getTicket();
       }
-
     }, [status]),
   );
   const getTicket = async () => {
@@ -60,7 +62,7 @@ const TicketScreen = ({navigation}: any) => {
       setTicket(res.data);
       // console.log(res.data);
       if (res.data && res.data.length > 0) {
-        res.data.forEach((ticket:any) => {
+        res.data.forEach((ticket: any) => {
           // console.log("dd",ticket)
           updateComplete(ticket._id);
         });
@@ -69,14 +71,14 @@ const TicketScreen = ({navigation}: any) => {
       console.log(error);
     }
   };
-  const updateComplete = async (id:any) => {
+  const updateComplete = async (id: any) => {
     try {
-      const res = await orderAPI.HandleOrder("/complete", {orderId: id}, "put")
+      const res = await orderAPI.HandleOrder('/complete', {orderId: id}, 'put');
       // console.log(res)
     } catch (error) {
-      console.log("e",error)
+      console.log('e', error);
     }
-  }
+  };
   const handleSelected = (index: any, val: any) => {
     setSelected(index);
     setStatus(val);
@@ -84,18 +86,21 @@ const TicketScreen = ({navigation}: any) => {
   // useEffect(() => {
   //   console.log(ticket);
   // }, [ticket]);
-  const openModal = (id: any) => {
+  const openModal = (orderId: any, totalPrice: number) => {
     refRBSheet.current.open();
-    console.log(id);
-    setOrderIdSelected(id);
+    console.log(orderId);
+    console.log(totalPrice);
+    setOrderIdSelected({orderId, totalPrice});
   };
   const closeModal = () => {
     refRBSheet.current.close();
   };
-  const handleCancelled = async (orderId: any) => {
+  const handleCancelled = async (orderId: any, totalPrice: number) => {
     try {
       console.log(orderId);
-      await paymentApi.HandlePayment("/payment-refund", {orderId}, "post")
+      if (totalPrice > 0) {
+        await paymentApi.HandlePayment('/payment-refund', {orderId}, 'post');
+      }
 
       const res = await orderAPI.HandleOrder('/delete', {orderId}, 'delete');
       refRBSheet.current.close();
@@ -184,7 +189,12 @@ const TicketScreen = ({navigation}: any) => {
             <SpaceComponent width={10} />
 
             <ButtonComponent
-              onPress={() => handleCancelled(orderIdSelected)}
+              onPress={() =>
+                handleCancelled(
+                  orderIdSelected.orderId,
+                  orderIdSelected.totalPrice,
+                )
+              }
               text="Có Hủy"
               type="primary"
               styles={{flex: 1, borderRadius: 30}}
@@ -213,7 +223,7 @@ const TicketScreen = ({navigation}: any) => {
                 selected === index && localStyle.selectedTouchableOpacity,
               ]}>
               <TextComponent
-                size={16}
+                size={15}
                 text={item.name}
                 color={selected === index ? appColors.primary : appColors.gray2}
                 font={fontFamilies.medium}
@@ -229,7 +239,7 @@ const TicketScreen = ({navigation}: any) => {
             key={index}
             item={item}
             onPressCancelled={() => {
-              openModal(item._id);
+              openModal(item._id, item.totalPrice);
             }}
             onPressReview={handleReview}
             onPressView={() => {

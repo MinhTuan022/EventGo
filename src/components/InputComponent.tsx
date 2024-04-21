@@ -13,7 +13,12 @@ import {Eye, EyeSlash} from 'iconsax-react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {appColors} from '../utils/constants/appColors';
 import {globalStyles} from '../styles/globalStyles';
-import {ContainerComponent, RowComponent, TextComponent} from '.';
+import {
+  ContainerComponent,
+  RowComponent,
+  SpaceComponent,
+  TextComponent,
+} from '.';
 interface Props {
   value: string;
   onChange: (val: string) => void;
@@ -66,7 +71,10 @@ const InputComponent = (props: Props) => {
       <View
         style={[
           globalStyles.inputContainer,
-          {backgroundColor: editable === false ? appColors.gray2 : 'white', borderColor:isFocus ? appColors.primary : appColors.gray2},
+          {
+            backgroundColor: editable === false ? appColors.gray2 : 'white',
+            borderColor: isFocus ? appColors.primary : appColors.gray2,
+          },
           styles,
         ]}>
         {affix ?? affix}
@@ -107,6 +115,7 @@ const InputComponent = (props: Props) => {
         </TouchableOpacity>
       </View>
       {validate ? validate : <></>}
+      <SpaceComponent height={19}></SpaceComponent>
     </View>
   );
 };

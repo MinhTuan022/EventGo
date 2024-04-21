@@ -2,8 +2,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
 import { AddNewEvent, EventDetailScreen, GoingScreen, InviteScreen, NotificationScreen, OrderDetail, OrderTickets, SearchScreen, SeeAllEvent, TicketDetailScreen } from '../screens';
 import DrawerNavigator from './DrawerNavigator';
-import ProfileNavigator from './ProfileNavigator';
-import TabNavigator from './TabNavigator';
+import ProfileNavigator from './user/ProfileNavigator';
+import TabNavigator from './user/TabNavigator';
 import { HandleNotification } from '../utils/handleNotification';
 
 

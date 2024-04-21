@@ -62,7 +62,6 @@ const MyProfileScreen = ({route, navigation}: any) => {
     dispatch(removeAuth());
     await AsyncStorage.removeItem('auth');
     await AsyncStorage.removeItem('fcmToken');
-
   };
   const handleProfile = async (id: any) => {
     try {

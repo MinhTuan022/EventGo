@@ -9,6 +9,9 @@ import AsyncStorage, {
   useAsyncStorage,
 } from '@react-native-async-storage/async-storage';
 
+import Test from '../screens/Test';
+import MainOgzNavigator from './MainOgzNavigator';
+
 const AppRouters = () => {
   const [isShowSplash, setIsShowSplash] = useState(true);
   const {getItem} = useAsyncStorage('auth');
@@ -31,11 +34,10 @@ const AppRouters = () => {
       if (res) {
         if (isJSONString(res)) {
           dispatch(addAuth(JSON.parse(res)));
-          
         }
       }
-      
-      console.log("cc",res);
+
+      console.log('cc', res);
     } catch (error) {
       if (error instanceof SyntaxError) {
         // Xử lý trường hợp parse JSON không thành công
@@ -59,9 +61,11 @@ const AppRouters = () => {
     <>
       {isShowSplash ? (
         <SplashScreen />
+      ) : auth.accessToken && auth.organization ? (
+        <MainOgzNavigator />
       ) : auth.accessToken ? (
         <MainNavigator />
-      ) :  (
+      ) : (
         <AuthNavigator />
       )}
     </>

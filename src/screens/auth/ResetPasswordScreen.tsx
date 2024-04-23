@@ -16,6 +16,7 @@ import {
 } from '../../components';
 import LodingModal from '../../components/modals/LoadingModal';
 import { appColors } from '../../utils/constants/appColors';
+import { Alert } from 'react-native';
 // import {validateForm} from '../../constants/validateForm';
 interface Errors {
   password?: string;
@@ -56,7 +57,7 @@ const ResetPasswordScreen = ({navigation, route}: any) => {
       setIsLoading(true);
       try {
         const res = await authenticationAPI.HandleAuthentication(
-          '/forgotPassword',
+          '/resetPassword',
           {
             // fullname: values.username,
             email,
@@ -69,7 +70,17 @@ const ResetPasswordScreen = ({navigation, route}: any) => {
         //   console.log(res.data.verificationCode)
         //   dispatch(addAuth(res.data));
         setIsLoading(false);
-        console.log('Reset Thành Công');
+        Alert.alert(
+          'Thành công',
+          'Mật khẩu đã được đặt lại. Vui lòng đăng nhập bằng mật khẩu mới.',
+          [
+            {
+              text: 'OK',
+              onPress: () => navigation.navigate('LoginScreen'),
+            },
+          ],
+          { cancelable: false }
+        );
       } catch (error) {
         console.log(error);
         setIsLoading(false);
@@ -82,13 +93,13 @@ const ResetPasswordScreen = ({navigation, route}: any) => {
         <SectionComponent styles={{marginTop: 35}}>
           <ArrowLeft size={22} color="black" />
           <SpaceComponent height={20} />
-          <TextComponent text="Reset Password" title />
+          <TextComponent text="Đặt lại mật khẩu" title />
           <SpaceComponent height={10} />
 
           <InputComponent
             isPassword
             styles={errors.password ? {borderColor: 'red'} : {}}
-            placeHolder="New Password"
+            placeHolder="Mật khẩu mới"
             value={newPassword}
             onChange={val => setNewPassword(val)}
             affix={<Lock1 size={22} color={appColors.gray} />}
@@ -102,7 +113,7 @@ const ResetPasswordScreen = ({navigation, route}: any) => {
           <InputComponent
             isPassword
             styles={errors.confirm ? {borderColor: 'red'} : {}}
-            placeHolder="Confirm Password"
+            placeHolder="Xác nhận mật khẩu"
             value={confirmPass}
             onChange={val => setConfirmPass(val)}
             affix={<PasswordCheck size={22} color={appColors.gray} />}
@@ -116,7 +127,7 @@ const ResetPasswordScreen = ({navigation, route}: any) => {
         <SectionComponent styles={{alignItems: 'center'}}>
           <ButtonComponent
             onPress={handleResetPass}
-            text="Send"
+            text="Gửi"
             type="primary"
             iconRight={
               <ArrowCircleRight size={22} color="white" />

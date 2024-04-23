@@ -1,19 +1,32 @@
-import {View, Text, StatusBar, ScrollView, FlatList} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  StatusBar,
+  ScrollView,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
 import {globalStyles} from '../../styles/globalStyles';
 import {Dimensions} from 'react-native';
 import {LineChart, ProgressChart} from 'react-native-chart-kit';
 import {
+  ButtonComponent,
   HeaderComponent,
   RowComponent,
   SectionComponent,
+  SpaceComponent,
   TextComponent,
 } from '../../components';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import {appColors} from '../../utils/constants/appColors';
 import orderAPI from '../../apis/orderApi';
 import {formatCurrency} from '../../utils/util';
-const StatisticsScreen = ({route}: any) => {
+import {Edit, Trash} from 'iconsax-react-native';
+import eventAPI from '../../apis/eventApi';
+import RBSheet from 'react-native-raw-bottom-sheet';
+const StatisticsScreen = ({navigation, route}: any) => {
   const eventData = route.params;
   // console.log(eventData);
   const [hours, setHours] = useState<any>(['Không có dữ liệu']);
@@ -23,6 +36,8 @@ const StatisticsScreen = ({route}: any) => {
   const [ticketSolds, setTicketSolds] = useState<any>([]);
   const [revenue, setRevenue] = useState(0);
   const screenWidth = Dimensions.get('window').width;
+  const refRBSheet = useRef<any>();
+
   useEffect(() => {
     if (eventData) {
       getStatis();
@@ -71,7 +86,9 @@ const StatisticsScreen = ({route}: any) => {
     data: [0.4],
     colors: [appColors.primary],
   };
-
+  const openModal = () => {
+    refRBSheet.current.open();
+  };
   const getStatis = async () => {
     try {
       const res = await orderAPI.HandleOrder(
@@ -99,7 +116,7 @@ const StatisticsScreen = ({route}: any) => {
   const getTicketSold = async () => {
     try {
       const res = await orderAPI.HandleOrder(`/sold?eventId=${eventData._id}`);
-      console.log(res);
+      console.log('fghfghfg', res);
       setTicketSolds(res.data);
     } catch (error) {
       console.log(error);
@@ -117,10 +134,126 @@ const StatisticsScreen = ({route}: any) => {
       console.log(error);
     }
   };
+
+  const deleteEvent = async () => {
+    try {
+      const res = await eventAPI.HandleEvent(
+        '/delete',
+        {eventId: eventData._id},
+        'delete',
+      );
+      Alert.alert(
+        'Thành công',
+        'Sự kiện của bạn đã được xóa.',
+        [
+          {
+            text: 'OK',
+            onPress: () => navigation.navigate('HomeOgz'),
+          },
+        ],
+        {cancelable: false},
+      );
+      refRBSheet.current.close();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <ScrollView
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
-      <HeaderComponent title={eventData.title} goBack />
+      <RBSheet
+        animationType="slide"
+        ref={refRBSheet}
+        closeOnDragDown={true}
+        closeOnPressMask={true}
+        customStyles={{
+          container: {
+            backgroundColor: 'white',
+            borderTopEndRadius: 38,
+            borderTopStartRadius: 38,
+            height: 'auto',
+          },
+          wrapper: {
+            backgroundColor: 'rgba(0, 0, 0, 0.3)',
+          },
+          draggableIcon: {
+            backgroundColor: appColors.gray2,
+          },
+        }}>
+        <View style={{alignItems: 'center'}}>
+          <TextComponent text="Hủy Sự Kiện" title />
+          <View
+            style={{
+              height: 1,
+              backgroundColor: appColors.gray2,
+              width: '90%',
+              marginVertical: 20,
+            }}></View>
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingHorizontal: 40,
+            }}>
+            <TextComponent
+              styles={{textAlign: 'center'}}
+              text="Bạn có chắc chắn muốn hủy bỏ sự kiện này?"
+              font={fontFamilies.medium}
+              size={20}
+            />
+            <SpaceComponent height={10} />
+            <TextComponent
+              styles={{textAlign: 'center'}}
+              text="Mọi thông tin sự kiện, doanh thu sẽ bị hủy bỏ, những người dùng đã mua vé sự kiện này sẽ được hoàn tiền"
+              size={18}
+            />
+          </View>
+
+          <RowComponent
+            styles={{
+              width: '100%',
+              paddingHorizontal: 20,
+              marginVertical: 20,
+            }}>
+            <ButtonComponent
+              onPress={() => {
+                refRBSheet.current.close();
+              }}
+              text="Không Hủy"
+              type="primary"
+              color={appColors.purple2}
+              textColor={appColors.primary}
+              textStyle={{fontFamily: fontFamilies.medium}}
+              styles={{flex: 1, borderRadius: 30}}
+            />
+            <SpaceComponent width={10} />
+
+            <ButtonComponent
+              onPress={deleteEvent}
+              text="Có Hủy"
+              type="primary"
+              styles={{flex: 1, borderRadius: 30}}
+              textStyle={{fontFamily: fontFamilies.medium}}
+            />
+          </RowComponent>
+        </View>
+      </RBSheet>
+      <HeaderComponent
+        title={eventData.title}
+        goBack
+        children={
+          <RowComponent>
+             <TouchableOpacity onPress={() => {navigation.navigate("EditEventScreen", {id: eventData._id, isManage: true})}}>
+              <Edit size={25} color="black" />
+            </TouchableOpacity>
+            <SpaceComponent width={20}/>
+            <TouchableOpacity onPress={openModal}>
+              <Trash size={25} color="red" />
+            </TouchableOpacity>
+          </RowComponent>
+        }
+        styles={{justifyContent: 'space-between'}}
+      />
       <SectionComponent>
         <TextComponent text="Doanh Thu" font={fontFamilies.medium} size={16} />
         <TextComponent

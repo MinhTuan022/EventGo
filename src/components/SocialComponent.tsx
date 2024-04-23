@@ -15,6 +15,7 @@ import authenticationAPI from '../apis/authApi';
 import {addAuth, addFavoriteEvent} from '../redux/reducers/authReducer';
 import {appColors} from '../utils/constants/appColors';
 import LoadingModal from './modals/LoadingModal';
+import { globalStyles } from '../styles/globalStyles';
 
 GoogleSignin.configure({
   webClientId:
@@ -149,17 +150,17 @@ const SocialComponent = () => {
     <>
       <SectionComponent styles={{alignItems: 'center'}}>
         <TextComponent
-          text="OR"
+          text="Hoặc"
           color={appColors.gray2}
           styles={{textAlign: 'center'}}
         />
         <SpaceComponent height={16} />
-        <ButtonComponent text="Logout" onPress={() => GoogleSignin.signOut()} />
-        <ButtonComponent
+        {/* <ButtonComponent text="Logout" onPress={() => GoogleSignin.signOut()} /> */}
+        <ButtonComponent styles={globalStyles.shadow}
           onPress={handleLoginWithGoogle}
           textColor={appColors.text}
           color="white"
-          text="Login With Google"
+          text="Đăng nhập với Google"
           type="primary"
           iconLeft={
             <Svg width="26" height="26" viewBox="0 0 26 26" fill="none">
@@ -183,11 +184,11 @@ const SocialComponent = () => {
           }
         />
         <SpaceComponent height={20} />
-        <ButtonComponent
+        <ButtonComponent styles={globalStyles.shadow}
           onPress={handleLoginWithFaceBook}
           textColor={appColors.text}
           color="white"
-          text="Login with Facebook"
+          text="Đăng nhập với Facebook"
           type="primary"
           iconLeft={
             <Svg width="31" height="31" viewBox="0 0 31 31" fill="none">

@@ -2,6 +2,7 @@ import {View, Text, ScrollView, SafeAreaView, StyleProp, ViewStyle} from 'react-
 import React, {ReactNode} from 'react';
 import {ImageBackground} from 'react-native';
 import {globalStyles} from '../styles/globalStyles';
+import { StatusBar } from 'react-native';
 
 interface Props {
   children: ReactNode;
@@ -25,7 +26,7 @@ const ContainerComponent = (props: Props) => {
       <SafeAreaView style={{flex: 1}}>{returnContainer}</SafeAreaView>
     </ImageBackground>
   ) : (
-    <SafeAreaView style={[globalStyles.container, styles]}>
+    <SafeAreaView style={[globalStyles.container,{paddingTop: StatusBar.currentHeight}, styles]}>
       <View>{returnContainer}</View>
     </SafeAreaView>
   );

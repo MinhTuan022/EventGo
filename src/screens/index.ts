@@ -1,4 +1,4 @@
-import AddNewEvent from './manage/AddNewEvent';
+import AddNewEvent from './organizer/AddNewEvent';
 import SplashScreen from './SplashScreen';
 import LoginScreen from './auth/LoginScreen';
 import OnBoardingScreen from './auth/OnBoardingScreen';
@@ -19,11 +19,11 @@ import TicketScreen from './tickets/TicketScreen';
 import EditProfileScreen from './profiles/EditProfileScreen';
 import CurrentLocation from './home/components/CurrentLocation';
 import TicketDetailScreen from './tickets/TicketDetailScreen';
-import ManageEventScreen from './manage/ManageEventScreen';
+import ManageEventScreen from './organizer/ManageEventScreen';
 import SeeAllEvent from './home/SeeAllEvent';
 import NotificationItem from './notification/NotificationItem';
 import InviteScreen from './events/InviteScreen';
-import StatisticsScreen from './manage/StatisticsScreen';
+import StatisticsScreen from './organizer/StatisticsScreen';
 
 export {
   HomeScreen,

@@ -71,15 +71,15 @@ const OrderDetail = ({route, navigation}: any) => {
 
   const handleResponse = (navState: any) => {
     const {url} = navState;
-    if (url.includes('http://192.168.1.106:3001/payment/paypal-success')) {
+    if (url.includes('http://192.168.1.102:3001/payment/paypal-success')) {
       setShowModal(false);
       setPaymentSuccess(true);
     } else if (
-      url.includes('http://192.168.1.106:3001/payment/vnpay-success')
+      url.includes('http://192.168.1.102:3001/payment/vnpay-success')
     ) {
       setShowModal(false);
       setPaymentSuccess(true);
-    } else if (url.includes('http://192.168.1.106:3001/payment/cancel')) {
+    } else if (url.includes('http://192.168.1.102:3001/payment/cancel')) {
       setShowModal(false);
       setPaymentFail(true);
     }
@@ -225,14 +225,14 @@ const OrderDetail = ({route, navigation}: any) => {
           />
         </Modal>
         <View style={globalStyles.container}>
-          <HeaderComponent goBack onPress={handleGoBack} title="Order Detail" />
+          <HeaderComponent goBack onPress={handleGoBack} title="Chi tiết đơn hàng" />
           <EventItem item={dataDetail.eventId} type="list" disible={true} />
           <SectionComponent>
-            <TextComponent title text="Order Summary" size={20} />
+            <TextComponent title text="Thông tin đơn hàng" size={20} />
             <SpaceComponent height={10} />
             <RowComponent
               styles={{justifyContent: 'space-between', paddingBottom: 10}}>
-              <TextComponent text="Ticket Price" size={16} />
+              <TextComponent text="Tiền loại vé" size={16} />
               <TextComponent
                 text={`${formatCurrency(dataDetail.ticketId.price)}`}
                 size={16}
@@ -240,7 +240,7 @@ const OrderDetail = ({route, navigation}: any) => {
             </RowComponent>
             <RowComponent
               styles={{justifyContent: 'space-between', paddingBottom: 10}}>
-              <TextComponent text="Quantity" size={16} />
+              <TextComponent text="Số lượng" size={16} />
               <TextComponent text={dataDetail.quantity} size={16} />
             </RowComponent>
           </SectionComponent>
@@ -254,7 +254,7 @@ const OrderDetail = ({route, navigation}: any) => {
           <SectionComponent>
             <RowComponent styles={{justifyContent: 'space-between'}}>
               <TextComponent
-                text="Total"
+                text="Tổng tiền"
                 size={18}
                 font={fontFamilies.medium}
               />
@@ -267,7 +267,7 @@ const OrderDetail = ({route, navigation}: any) => {
           </SectionComponent>
 
           <SectionComponent>
-            <TextComponent text="Payment Method" title size={20} />
+            <TextComponent text="Phương thức thanh toán" title size={20} />
             <RowComponent
               styles={{paddingTop: 15}}
               onPress={() => handlePaymentMethodChange('paypal')}>
@@ -307,7 +307,7 @@ const OrderDetail = ({route, navigation}: any) => {
           <ButtonComponent
             onPress={paymentMethod === 'paypal' ? handlePaypal : handleVnPay}
             styles={{width: '70%', padding: 12}}
-            text="Checkout"
+            text="Thanh toán"
             type="primary"
             textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
           />

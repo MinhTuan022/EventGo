@@ -1,34 +1,51 @@
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {ArrowLeft, Message, UserAdd} from 'iconsax-react-native';
-import React, {useEffect, useState} from 'react';
-import {Image, StatusBar, TouchableOpacity, View} from 'react-native';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { ArrowLeft, Message, UserAdd } from 'iconsax-react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  Dimensions,
+  FlatList,
+  Image,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import {
   ButtonComponent,
+  EventItem,
   RowComponent,
+  SectionComponent,
   SpaceComponent,
   TextComponent,
 } from '../../components';
-import {UserModel} from '../../models/UserModel';
-import AboutComponent from '../../screens/profiles/AboutComponent';
-import EventComponrnt from '../../screens/profiles/EventComponrnt';
-import ReviewsComponent from '../../screens/profiles/ReviewsComponent';
-import {appColors} from '../../utils/constants/appColors';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
-import userAPI from '../../apis/userApi';
-import {useSelector} from 'react-redux';
-import {authSelector} from '../../redux/reducers/authReducer';
 
-const ProfileNavigator = ({route, navigation}: any) => {
+import { useSelector } from 'react-redux';
+import eventAPI from '../../apis/eventApi';
+import organizerAPI from '../../apis/organizerApi';
+import userAPI from '../../apis/userApi';
+import { OrganizerModel } from '../../models/OrganizerModel';
+import { authSelector } from '../../redux/reducers/authReducer';
+import { appColors } from '../../utils/constants/appColors';
+import { fontFamilies } from '../../utils/constants/fontFamilies';
+
+const ProfileOganizer = ({route, navigation}: any) => {
   const {profiledata} = route.params;
   const [followers, setFollowers] = useState('');
   const [userId, setUserId] = useState(useSelector(authSelector).id);
   const [targetUserId, setTargetUserId] = useState(profiledata._id);
+  const [events, setEvents] = useState([]);
+  const [selected, setSelected] = useState('about');
   const [isFollowing, setisFollowing] = useState(false);
-  const [profile, setProfile] = useState<any>();
+  const [profile, setProfile] = useState<OrganizerModel>();
 
   const profileId = profiledata._id;
 
+  const data = [
+    {name: 'Tiểu sử', val: 'about'},
+    {name: 'Sự kiện', val: 'event'},
+    {name: 'Bộ sưu tập', val: 'collection'},
+  ];
   useEffect(() => {
     const checkFollowing = async () => {
       try {
@@ -48,15 +65,25 @@ const ProfileNavigator = ({route, navigation}: any) => {
     if (targetUserId) {
       getProfile(targetUserId);
       // getFollowers(targetUserId);
+      getEvent();
     }
   }, [targetUserId]);
 
   const getProfile = async (id: string) => {
     try {
-      const res = await userAPI.HandleUser(`/userId?userId=${id}`);
+      const res = await organizerAPI.HandleOrganizer(`/byId?userId=${id}`);
       setProfile(res.data);
       setFollowers(String(res.data.followers.length));
       // console.log(res.data.followers.length + 2)
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getEvent = async () => {
+    try {
+      const res = await eventAPI.HandleEvent(`/byOrganizer?id=${profileId}`);
+      setEvents(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -93,7 +120,7 @@ const ProfileNavigator = ({route, navigation}: any) => {
     <>
       <View
         style={{
-          // flex: 1,
+          flex: 1,
           paddingTop: StatusBar.currentHeight,
           backgroundColor: 'white',
           paddingVertical: 20,
@@ -125,11 +152,11 @@ const ProfileNavigator = ({route, navigation}: any) => {
           <RowComponent styles={{justifyContent: 'center'}}>
             <View style={{alignItems: 'center', paddingHorizontal: 30}}>
               <TextComponent
-                text={profile ? String(profile.following.length) : ''}
+                text={profile ? String(events.length) : ''}
                 font={fontFamilies.medium}
                 size={16}
               />
-              <TextComponent text="Following" />
+              <TextComponent text="Sự kiện" />
             </View>
             <View
               style={{width: 1, height: 30, backgroundColor: appColors.gray}}
@@ -167,27 +194,74 @@ const ProfileNavigator = ({route, navigation}: any) => {
             />
           </RowComponent>
         </View>
+        <SpaceComponent height={20} />
+        <RowComponent styles={{justifyContent: 'center'}}>
+          {data.map((item: any, index: any) => (
+            <TouchableOpacity
+              onPress={() => setSelected(item.val)}
+              key={index}
+              style={[
+                localStyle.touchableOpacity,
+                selected === item.val && localStyle.selectedTouchableOpacity,
+              ]}>
+              <TextComponent
+                size={20}
+                text={item.name}
+                color={
+                  selected === item.val ? appColors.primary : appColors.gray2
+                }
+                font={fontFamilies.medium}
+              />
+            </TouchableOpacity>
+          ))}
+        </RowComponent>
+        {selected === 'about' && (
+          <SectionComponent>
+            <TextComponent text={profile ? profile.about : ''} />
+          </SectionComponent>
+        )}
+        {selected === 'event' && (
+          <SectionComponent styles={{flex: 1}}>
+          {events.length !== 0 ? (
+            <FlatList
+              data={events}
+              renderItem={({item, index}:any) => (
+                <EventItem styles={{width: Dimensions.get('window').width * 0.86}} item={item} type="list" />
+              )}
+            />
+          ) : (
+            <View
+              style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+              <TextComponent
+                text="Người dùng chưa tạo sự kiện nào"
+                size={18}
+                color={appColors.gray2}
+              />
+            </View>
+          )}
+        </SectionComponent>
+        )}
+        {selected === 'collection' && (
+          <></>
+        )}
       </View>
 
-      <Tab.Navigator
-        screenOptions={{
-          tabBarStyle: {shadowColor: 'white'},
-          // tabBarIndicatorStyle: {width: 60, marginLeft: 37},
-          tabBarLabelStyle: {fontSize: 16, fontFamily: fontFamilies.medium},
-          tabBarActiveTintColor: appColors.primary,
-          tabBarInactiveTintColor: appColors.gray2,
-          tabBarPressColor: 'white',
-        }}>
-        <Tab.Screen name="About" component={AboutComponent} />
-        <Tab.Screen
-          name="Event"
-          component={EventComponrnt}
-          initialParams={profile ? {id: profile._id} : {}}
-        />
-        <Tab.Screen name="Reviews" component={ReviewsComponent} />
-      </Tab.Navigator>
     </>
   );
 };
-
-export default ProfileNavigator;
+const localStyle = StyleSheet.create({
+  touchableOpacity: {
+    flex: 1,
+    paddingBottom: 7,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    borderBottomColor: appColors.gray2,
+    borderBottomWidth: 1,
+  },
+  selectedTouchableOpacity: {
+    color: 'blue',
+    borderBottomColor: 'blue', // Màu của border khi được chọn
+    borderBottomWidth: 2, // Độ dày của border khi được chọn
+  },
+});
+export default ProfileOganizer;

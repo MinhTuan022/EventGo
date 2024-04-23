@@ -21,6 +21,7 @@ import AsyncStorage, {
 } from '@react-native-async-storage/async-storage';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {LoginManager} from 'react-native-fbsdk-next';
+import userAPI from '../apis/userApi';
 
 const DrawerCustom = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -75,6 +76,9 @@ const DrawerCustom = ({navigation}: any) => {
   //   console.log(user)
 
   const handleLogOut = async () => {
+    const fcmToken = await AsyncStorage.getItem('fcmToken');
+    console.log(fcmToken)
+    await userAPI.HandleUser("/delete-fcmToken", {fcmToken, userId: user.id}, 'delete')
     await GoogleSignin.signOut();
     LoginManager.logOut();
     dispatch(removeAuth());

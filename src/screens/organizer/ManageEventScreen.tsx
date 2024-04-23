@@ -1,32 +1,28 @@
+import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
+  Dimensions,
+  FlatList,
   StatusBar,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
-  Dimensions,
+  View
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import { useSelector } from 'react-redux';
+import eventAPI from '../../apis/eventApi';
+import MemoAdd from '../../assets/svg/Add';
 import {
-  ButtonComponent,
   EventItem,
   HeaderComponent,
   RowComponent,
   SectionComponent,
   ShapeComponent,
   SpaceComponent,
-  TextComponent,
+  TextComponent
 } from '../../components';
-import {Add, ArrowCircleRight, Message, TrendUp} from 'iconsax-react-native';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
-import {globalStyles} from '../../styles/globalStyles';
-import {appColors} from '../../utils/constants/appColors';
-import MemoAdd from '../../assets/svg/Add';
-import MemoStatistics from '../../assets/svg/Statistics';
-import eventAPI from '../../apis/eventApi';
-import {useSelector} from 'react-redux';
-import {authSelector} from '../../redux/reducers/authReducer';
+import { authSelector } from '../../redux/reducers/authReducer';
+import { globalStyles } from '../../styles/globalStyles';
+import { appColors } from '../../utils/constants/appColors';
+import { fontFamilies } from '../../utils/constants/fontFamilies';
 
 const ManageEventScreen = ({navigation}: any) => {
   const auth = useSelector(authSelector);
@@ -36,7 +32,7 @@ const ManageEventScreen = ({navigation}: any) => {
     if (userId) {
       getEvent();
     }
-  }, [userId]);
+  }, []);
   const getEvent = async () => {
     try {
       const res = await eventAPI.HandleEvent(`/byOrganizer?id=${userId}`);

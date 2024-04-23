@@ -179,10 +179,10 @@ const VerificationScreen = ({navigation, route}: any) => {
       <SectionComponent styles={{marginTop: 35}}>
         <ArrowLeft size={22} color="black" />
         <SpaceComponent height={20} />
-        <TextComponent text="Verification" title />
+        <TextComponent text="Xác minh" title />
         <SpaceComponent height={10} />
         <TextComponent
-          text={`We’ve send you the verification code on email ${email}`}
+          text={`Chúng tôi đã gửi mail tới ${email}`}
           color={appColors.gray}
         />
         <SpaceComponent height={25} />
@@ -206,7 +206,7 @@ const VerificationScreen = ({navigation, route}: any) => {
           disable={verificationCode.length !== 4}
           textStyle={{fontFamily: fontFamilies.medium}}
           onPress={handleVerification}
-          text="CONTINUE"
+          text="Tiếp tục"
           type="primary"
           iconRight={
             <ArrowCircleRight size={22} color="white" />
@@ -214,10 +214,10 @@ const VerificationScreen = ({navigation, route}: any) => {
       </SectionComponent>
       <SectionComponent>
         <RowComponent styles={{justifyContent: 'center'}}>
-          <TextComponent text="If you didn't recieve a code!  " />
+          <TextComponent text="Nếu không nhận được mã!  " />
           <ButtonComponent
             type="link"
-            text="Re-send"
+            text="Gửi lại"
             onPress={handleResendCode}
           />
         </RowComponent>

@@ -19,6 +19,7 @@ import {
 import LoadingModal from '../../components/modals/LoadingModal';
 import {addAuth, addFavoriteEvent} from '../../redux/reducers/authReducer';
 import {appColors} from '../../utils/constants/appColors';
+import { globalStyles } from '../../styles/globalStyles';
 
 interface Errors {
   email?: string;
@@ -73,24 +74,42 @@ const LoginScreen = ({navigation}: any) => {
             accessToken: res.data.accessToken,
             email: res.data.email,
             name: res.data.name,
+            organization: res.data.organization,
             id: res.data.id,
             favorites: res.data.favorites,
             fcmTokens: res.data.fcmTokens,
           }),
         );
         setIsLoading(false);
-        await AsyncStorage.setItem(
-          'auth',
-          isRemember
-            ? JSON.stringify({
-                accessToken: res.data.accessToken,
-                email: res.data.email,
-                name: res.data.name,
-                id: res.data.id,
-                favorites: res.data.favorites,
-              })
-            : email,
-        );
+        if (res.data.organization) {
+          await AsyncStorage.setItem(
+            'auth',
+            isRemember
+              ? JSON.stringify({
+                  accessToken: res.data.accessToken,
+                  email: res.data.email,
+                  name: res.data.name,
+                  organization: res.data.organization,
+                  id: res.data.id,
+                  favorites: res.data.favorites,
+                })
+              : email,
+          );
+        }else{
+          await AsyncStorage.setItem(
+            'auth',
+            isRemember
+              ? JSON.stringify({
+                  accessToken: res.data.accessToken,
+                  email: res.data.email,
+                  name: res.data.name,
+                  id: res.data.id,
+                  favorites: res.data.favorites,
+                })
+              : email,
+          );
+        }
+       
       } catch (error) {
         setIsLoading(false);
         console.log(error);
@@ -111,11 +130,11 @@ const LoginScreen = ({navigation}: any) => {
           }}>
           <Image
             source={require('../../assets/images/login-logo.png')}
-            style={{width: 162, height: 114, marginBottom: 30}}
+            style={{width: 162, height: 114, marginBottom: 20}}
           />
         </SectionComponent>
         <SectionComponent>
-          <TextComponent text="Sign in" title />
+          <TextComponent text="Đăng nhập" title />
           <SpaceComponent height={3} />
           <InputComponent
             styles={[
@@ -139,7 +158,7 @@ const LoginScreen = ({navigation}: any) => {
             ]}
             value={password}
             onChange={val => setPassword(val)}
-            placeHolder="Password"
+            placeHolder="Mật khẩu"
             isPassword
             affix={<Lock1 color={appColors.gray2} />}
             validate={
@@ -160,7 +179,7 @@ const LoginScreen = ({navigation}: any) => {
               <TextComponent text="Remember me" />
             </RowComponent>
             <ButtonComponent
-              text="Forgot Password?"
+              text="Quên mật khẩu?"
               type="link"
               onPress={() => navigation.navigate('ForgotPasswordScreen')}
             />
@@ -174,9 +193,9 @@ const LoginScreen = ({navigation}: any) => {
         )}
         <SpaceComponent height={16} />
         <SectionComponent styles={{alignItems: 'center'}}>
-          <ButtonComponent
+          <ButtonComponent styles={globalStyles.shadow}
             onPress={handleLogin}
-            text="SIGN IN"
+            text="Đăng nhập"
             // iconFlex="right"
             type="primary"
             iconRight={<ArrowCircleRight size={21} color={appColors.white} />}
@@ -185,11 +204,11 @@ const LoginScreen = ({navigation}: any) => {
         <SocialComponent />
         <SectionComponent>
           <RowComponent styles={{justifyContent: 'center'}}>
-            <TextComponent text="Don't have an account? " />
-            <ButtonComponent
+            <TextComponent text="Chưa có tài khoản? " />
+            <ButtonComponent 
               onPress={() => navigation.navigate('SignUpScreen')}
               type="link"
-              text="Sign up"
+              text="Đăng kí"
             />
           </RowComponent>
         </SectionComponent>

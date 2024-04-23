@@ -28,12 +28,15 @@ import userAPI from '../../apis/userApi';
 import {UserModel} from '../../models/UserModel';
 import paypalApi from '../../apis/paymentApi';
 import paymentApi from '../../apis/paymentApi';
+import organizerAPI from '../../apis/organizerApi';
+import { OrganizerModel } from '../../models/OrganizerModel';
+import { DateTime } from '../../utils/convertDateTime';
 
 const TicketDetailScreen = ({route, navigation}: any) => {
   const ticketInfo = route.params;
   console.log(ticketInfo);
   const auth = useSelector(authSelector);
-  const [organizer, setOrganizer] = useState<UserModel>();
+  const [organizer, setOrganizer] = useState<OrganizerModel>();
   const [payment, setPayment] = useState<any>();
   const viewShotRef = useRef<any>(null);
   useEffect(() => {
@@ -42,8 +45,8 @@ const TicketDetailScreen = ({route, navigation}: any) => {
   }, []);
   const getOrganizer = async () => {
     try {
-      const res = await userAPI.HandleUser(
-        `/userId?userId=${ticketInfo.eventId.organizer}`,
+      const res = await organizerAPI.HandleOrganizer(
+        `/byId?userId=${ticketInfo.eventId.organizer}`,
       );
       setOrganizer(res.data);
     } catch (error) {
@@ -118,7 +121,11 @@ const TicketDetailScreen = ({route, navigation}: any) => {
             />
             <TextComponent text="Thời Gian " />
             <TextComponent
-              text={`${ticketInfo.eventId.startTime}`}
+              text={`${DateTime.GetDateNotYear(
+                ticketInfo.eventId.startTime,
+              )} - ${DateTime.GetTime24h(
+                ticketInfo.eventId.startTime,
+              )} - ${DateTime.GetTime24h(ticketInfo.eventId.endTime)} `}
               title
               size={18}
               styles={{paddingVertical: 10}}
@@ -132,7 +139,7 @@ const TicketDetailScreen = ({route, navigation}: any) => {
             />
             <TextComponent text="Tổ Chức Sự Kiện" />
             <TextComponent
-              text={`${organizer?.name}`}
+              text={`${organizer?.organizationName}`}
               title
               size={18}
               styles={{paddingTop: 10}}

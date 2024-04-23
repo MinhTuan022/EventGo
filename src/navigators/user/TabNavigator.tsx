@@ -1,34 +1,20 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
-  AddSquare,
-  Calendar,
   Discover,
   Heart,
   Home,
-  Home2,
-  Home3,
-  Location,
-  Map,
   Profile,
-  Ticket,
-  Ticket2,
+  Ticket
 } from 'iconsax-react-native';
-import React, {ReactNode} from 'react';
-import EventScreen from '../../screens/favorites/FavoriteScreen';
+import React, { ReactNode } from 'react';
+import { TicketScreen } from '../../screens';
+import { appColors } from '../../utils/constants/appColors';
+import FavoriteNavigator from './FavoriteNavigator';
 import HomeNavigator from './HomeNavigator';
 import MapNavigator from './MapNavigator';
-import  FavoriteNavigator from './FavoriteNavigator';
-import ProfileNavigator from './ProfileNavigator';
-import {appColors} from '../../utils/constants/appColors';
-import {MyProfileScreen, TicketScreen} from '../../screens';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {View} from 'react-native';
-import {TextComponent} from '../../components';
-import {globalStyles} from '../../styles/globalStyles';
 import MyProfileNavigator from './MyProfileNavigator';
 
 const TabNavigator = () => {
-  // const isUser = true
   const Tab = createBottomTabNavigator();
 
   return (
@@ -65,41 +51,10 @@ const TabNavigator = () => {
             case 'Vé':
               icon = <Ticket color={color} size={size} variant={variant} />;
               break;
-              // case 'Add':
-              icon = (
-                <View
-                  style={[
-                    globalStyles.shadow,
-                    {
-                      backgroundColor: appColors.primary,
-                      width: 46,
-                      height: 46,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginBottom: 50,
-                      borderRadius: 100,
-                    },
-                  ]}>
-                  <AddSquare
-                    color={appColors.white}
-                    size={size}
-                    variant="Bold"
-                  />
-                </View>
-              );
-              break;
           }
           return icon;
         },
-        // tabBarLabel({focused}) {
-        //   return route.name === 'Add' ? null : (
-        //     <TextComponent
-        //       text={route.name}
-        //       size={12}
-        //       color={focused ? appColors.primary : appColors.gray2}
-        //     />
-        //   );
-        // },
+
       })}>
       <Tab.Screen name="Trang Chủ" component={HomeNavigator} />
       <Tab.Screen name="Ưu Thích" component={FavoriteNavigator} />

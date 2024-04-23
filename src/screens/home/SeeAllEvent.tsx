@@ -50,7 +50,7 @@ const SeeAllEvent = ({navigation, route}: any) => {
   return (
     <View
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
-      <HeaderComponent goBack title="Upcomming" />
+      <HeaderComponent goBack title="Sự kiện sắp diễn ra" />
       <FlatList
         data={events}
         renderItem={({item, index}) => <EventItem item={item} type="list"  key={index}/>}

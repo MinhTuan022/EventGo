@@ -51,7 +51,7 @@ const NotificationScreen = ({navigation}: any) => {
     <View
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
       <StatusBar barStyle="dark-content" />
-      <HeaderComponent title="Notification" goBack />
+      <HeaderComponent title="Thông báo" goBack />
       {notiList.length > 0 ? (
         <View style={{flex: 1}}>
           <FlatList

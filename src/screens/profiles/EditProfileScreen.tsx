@@ -13,6 +13,7 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import FontAwesome6Icon from 'react-native-vector-icons/FontAwesome6';
 import {
   ButtonComponent,
+  HeaderComponent,
   InputComponent,
   RowComponent,
   SectionComponent,
@@ -27,15 +28,19 @@ import userAPI from '../../apis/userApi';
 import LoadingModal from '../../components/modals/LoadingModal';
 import {useNavigation} from '@react-navigation/native';
 import {UserModel} from '../../models/UserModel';
+import organizerAPI from '../../apis/organizerApi';
 
 const EditProfileScreen = ({route}: any) => {
-  const userData: UserModel = route.params;
+  const userData: any = route.params;
   console.log(userData);
   const [imageUrl, setImageUrl] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [firstName, setFirstName] = useState(userData.firstname);
   const [lastName, setLastName] = useState(userData.lastname);
   const [about, setAbout] = useState(userData.about);
+  const [organization, setOrganization] = useState(userData.organizationName);
+  const [address, setAddress] = useState(userData.organizationAddress);
+  const [name, setName] = useState(userData.name);
   const [isLoading, setIsLoading] = useState(false);
 
   const navigation = useNavigation();
@@ -92,20 +97,36 @@ const EditProfileScreen = ({route}: any) => {
   const updateProfile = async () => {
     setIsLoading(true);
     try {
-      const res = await userAPI.HandleUser(
-        '/profile',
-        {
-          userId: userData._id,
-          firstName: firstName,
-          lastName: lastName,
-          about: about,
-          photo: imageUrl,
-        },
-        'put',
-      );
+      if (userData.organizationName && userData.organizationAddress) {
+        const res = await organizerAPI.HandleOrganizer(
+          '/profile-ogz',
+          {
+            userId: userData._id,
+            name: name,
+            about: about,
+            organization: organization,
+            address: address,
+            photo: imageUrl,
+          },
+          'put',
+        );
+      }else{
+        const res = await userAPI.HandleUser(
+          '/profile',
+          {
+            userId: userData._id,
+            firstName: firstName,
+            lastName: lastName,
+            about: about,
+            photo: imageUrl,
+          },
+          'put',
+        );
+      }
+      
       setIsLoading(false);
       navigation.goBack();
-      console.log(res);
+      // console.log(res);
     } catch (error) {
       console.log(error);
       setIsLoading(false);
@@ -119,18 +140,7 @@ const EditProfileScreen = ({route}: any) => {
     <View
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <RowComponent styles={{alignItems: 'center', paddingHorizontal: 16}}>
-          <TouchableOpacity onPress={updateProfile}>
-            <ArrowLeft size={22} color="black" fontFamily={fontFamilies.bold} />
-          </TouchableOpacity>
-          <SpaceComponent width={20} />
-          <TextComponent
-            text="Edit Profile"
-            title
-            size={20}
-            font={fontFamilies.bold}
-          />
-        </RowComponent>
+        <HeaderComponent title="Cập nhật hồ sơ" onPress={updateProfile} goBack />
         <SpaceComponent height={40} />
         <View style={{alignItems: 'center', justifyContent: 'center'}}>
           <TouchableOpacity
@@ -164,7 +174,10 @@ const EditProfileScreen = ({route}: any) => {
           </TouchableOpacity>
 
           <SpaceComponent height={20} />
-          <TextComponent text={String(userData?.name)} title />
+          <TextComponent
+            text={String(userData.name ? userData.name : organization)}
+            title
+          />
         </View>
         <ChoicePictureModal
           modalVisible={modalVisible}
@@ -172,101 +185,53 @@ const EditProfileScreen = ({route}: any) => {
           captureFromCamera={captureFromCamera}
           selectFromLibrary={selectFromLibrary}
         />
-        {/* <Modal visible={modalVisible} transparent animationType="slide">
-          <TouchableOpacity
-            onPress={closeModal}
-            activeOpacity={1}
-            style={{
-              flex: 1,
-              backgroundColor: 'rgba(0,0,0,0.2)',
-              justifyContent: 'flex-end',
-            }}>
-            <View
-              style={[
-                {
-                  paddingVertical: 10,
-                  // paddingHorizontal:16,
-                  backgroundColor: appColors.white,
-                  borderTopRightRadius: 12,
-                  borderTopLeftRadius: 12,
-                },
-              ]}>
-              <ButtonComponent
-                onPress={captureFromCamera}
-                text="Capture from Camera"
-                type="primary"
-                styles={{width: '100%'}}
-                iconLeft={
-                  <FontAwesome6Icon name="camera" size={20} color="black" />
-                }
-                textStyle={{
-                  fontFamily: fontFamilies.medium,
-                  textAlign: 'left',
-                }}
-                textColor="black"
-                color="white"
-              />
-              <ButtonComponent
-                onPress={selectFromLibrary}
-                text="Select from Library"
-                type="primary"
-                styles={{width: '100%'}}
-                iconLeft={
-                  <FontAwesome6Icon name="image" size={20} color="black" />
-                }
-                textStyle={{
-                  fontFamily: fontFamilies.medium,
-                  textAlign: 'left',
-                }}
-                textColor="black"
-                color="white"
-              />
-              <ButtonComponent
-                text="Upload from URL"
-                type="primary"
-                styles={{width: '100%'}}
-                iconLeft={
-                  <FontAwesome6Icon name="link" size={20} color="black" />
-                }
-                textStyle={{
-                  fontFamily: fontFamilies.medium,
-                  textAlign: 'left',
-                }}
-                textColor="black"
-                color="white"
-              />
-            </View>
-          </TouchableOpacity>
-        </Modal> */}
+
         <SectionComponent>
+          {!userData.organizationName && !userData.organizationAddress ? (
+            <>
+              <InputComponent
+                label="Tên"
+                value={firstName}
+                onChange={val => setFirstName(val)}
+              />
+              <InputComponent
+                label="Họ và tên đệm"
+                value={lastName}
+                onChange={val => setLastName(val)}
+              />
+            </>
+          ) : (
+            <InputComponent
+              label="Họ và tên"
+              value={name}
+              onChange={val => setName(val)}
+            />
+          )}
           <InputComponent
-            label='First Name'
-            placeHolder="First Name"
-            value={firstName}
-            onChange={val => setFirstName(val)}
-          />
-          <InputComponent
-            label='First Name'
-
-            placeHolder="Last Name"
-            value={lastName}
-            onChange={val => setLastName(val)}
-          />
-          <InputComponent
-            label='First Name'
-
+            label="Email"
             editable={false}
-            placeHolder="Email"
             value={userData.email}
             onChange={() => {}}
           />
-          <InputComponent
-            label='First Name'
-
-            placeHolder="About me"
-            value={about}
-            onChange={val => setAbout(val)}
-          />
+          {userData.organizationName && (
+            <>
+              <InputComponent
+                label="Thông tin"
+                value={about}
+                onChange={val => setAbout(val)}
+              />
+              <InputComponent
+                label="Tên tổ chức"
+                value={organization}
+                onChange={val => setOrganization(val)}
+              />
+              <InputComponent
+                label="Địa chỉ tổ chức"
+                value={address}
+                onChange={val => setAddress(val)}
+              />
+            </>
+          )}
         </SectionComponent>
       </ScrollView>
       <LoadingModal visible={isLoading} />

@@ -1,6 +1,6 @@
 import {View, Text} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import MainNavigator from './MainNavigator';
+import MainNavigator from './user/MainNavigator';
 import AuthNavigator from './AuthNavigator';
 import {useDispatch, useSelector} from 'react-redux';
 import {addAuth, authSelector} from '../redux/reducers/authReducer';
@@ -10,7 +10,7 @@ import AsyncStorage, {
 } from '@react-native-async-storage/async-storage';
 
 import Test from '../screens/Test';
-import MainOgzNavigator from './MainOgzNavigator';
+import MainOgzNavigator from './organizer/MainOgzNavigator';
 
 const AppRouters = () => {
   const [isShowSplash, setIsShowSplash] = useState(true);

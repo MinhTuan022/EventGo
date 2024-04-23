@@ -3,15 +3,19 @@ import {useFocusEffect} from '@react-navigation/native';
 import Mapbox from '@rnmapbox/maps';
 import {
   ArrowLeft,
+  ArrowRight,
   Calendar,
   Heart,
   Location,
+  Magicpen,
+  PenAdd,
   Ticket,
 } from 'iconsax-react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {
   Animated,
   Dimensions,
+  FlatList,
   Image,
   Linking,
   SafeAreaView,
@@ -27,6 +31,7 @@ import eventAPI from '../../apis/eventApi';
 import userAPI from '../../apis/userApi';
 import {
   ButtonComponent,
+  EventItem,
   RowComponent,
   SectionComponent,
   ShapeComponent,
@@ -46,9 +51,16 @@ import {fontFamilies} from '../../utils/constants/fontFamilies';
 import {DateTime} from '../../utils/convertDateTime';
 import ticketAPI from '../../apis/ticketApi';
 import {formatCurrency} from '../../utils/util';
+import origanizerAPI from '../../apis/organizerApi';
+import organizerAPI from '../../apis/organizerApi';
+import {OrganizerModel} from '../../models/OrganizerModel';
+import {appInfo} from '../../utils/constants/appInfos';
+import categoryAPI from '../../apis/categoryApi';
 
 const EventDetailScreen = ({navigation, route}: any) => {
   const {id}: {id: string} = route.params;
+  const {isManage} = route.params;
+
   const user = useSelector(authSelector);
   const [item, setItem] = useState<EventModel>();
   const [showMap, setShowMap] = useState(false);
@@ -57,14 +69,16 @@ const EventDetailScreen = ({navigation, route}: any) => {
   const [userId, setUserId] = useState(user.id);
   const [favorite, setFavorite] = useState(false);
   const dispatch = useDispatch();
-  const [organizer, setOrganizer] = useState<UserModel>();
+  const [organizer, setOrganizer] = useState<OrganizerModel>();
   const [attendees, setAttendees] = useState<any>([]);
   const [ticketData, setTicketData] = useState<any>();
   const [isEnd, setIsEnd] = useState(false);
   const [isOutStock, setIsOutStock] = useState(false);
   const [friend, setFriend] = useState<any>([]);
-
-  // const [currentTime, setCurrentTime] = useState(new Date());
+  const [isFollowing, setisFollowing] = useState(false);
+  const [category, setCategory] = useState<any>();
+  const [events, setEvents] = useState();
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
     getEventbyId(id);
@@ -91,14 +105,14 @@ const EventDetailScreen = ({navigation, route}: any) => {
   }, [item, ticketData]);
 
   useEffect(() => {
-    getFriend();
-  }, []);
-  useEffect(() => {
     if (item) {
       if (item.attendees) {
         getGoing(item.attendees);
       }
-
+      if (item.category) {
+        getCategoryById(item.category);
+        // getEvents();
+      }
       if (item.organizer) {
         getOrganizer(item.organizer);
       }
@@ -119,24 +133,29 @@ const EventDetailScreen = ({navigation, route}: any) => {
   useFocusEffect(
     React.useCallback(() => {
       if (item) {
-        checkRelationship(item.organizer);
+        // checkRelationship(item.organizer);
+        checkFollowing(item.organizer);
       }
     }, [item]),
   );
-  const getFriend = async () => {
-    try {
-      const res = await userAPI.HandleUser(`/friend?userId=${user.id}`)
-      setFriend(res.data)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  const checkRelationship = async (targetId: any) => {
+
+  // const checkRelationship = async (targetId: any) => {
+  //   try {
+  //     const res = await userAPI.HandleUser(
+  //       `/check-relationship?userId=${userId}&targetUserId=${targetId}`,
+  //     );
+  //     setRelationship(res.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  const checkFollowing = async (targetId: any) => {
     try {
       const res = await userAPI.HandleUser(
-        `/check-relationship?userId=${userId}&targetUserId=${targetId}`,
+        `/check-following?userId=${userId}&targetUserId=${targetId}`,
       );
-      setRelationship(res.data);
+      setisFollowing(res.data);
+      console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -149,9 +168,20 @@ const EventDetailScreen = ({navigation, route}: any) => {
       console.log(error);
     }
   };
+
+  const getCategoryById = async (cateId: any) => {
+    try {
+      const res = await categoryAPI.HandleCategory(`/byId?cateId=${cateId}`);
+      console.log(res);
+      setCategory(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getOrganizer = async (uid: any) => {
     try {
-      const res = await userAPI.HandleUser(`/userId?userId=${uid}`);
+      const res = await organizerAPI.HandleOrganizer(`/byId?userId=${uid}`);
       setOrganizer(res.data);
     } catch (error) {
       console.log(error);
@@ -193,7 +223,20 @@ const EventDetailScreen = ({navigation, route}: any) => {
       console.log(error);
     }
   };
+  const getEvents = async () => {
+    // const api = `?category=${cateId}`;
+    // console.log(cateId)
 
+    try {
+      const res = await eventAPI.HandleEvent(
+        `?category=${category.categoryName}`,
+      );
+      console.log(res);
+      setEvents(res.data);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  };
   const handleFollow = async () => {
     try {
       const targetUserId = item?.organizer;
@@ -203,15 +246,16 @@ const EventDetailScreen = ({navigation, route}: any) => {
         'post',
       );
       // console.log(res);
-      if (relationship === 'following') {
-        setRelationship('none');
-      } else if (relationship === 'friend') {
-        setRelationship('follower');
-      } else if (relationship === 'follower') {
-        setRelationship('friend');
-      } else if (relationship === 'none') {
-        setRelationship('following');
-      }
+      // if (relationship === 'following') {
+      //   setRelationship('none');
+      // } else if (relationship === 'friend') {
+      //   setRelationship('follower');
+      // } else if (relationship === 'follower') {
+      //   setRelationship('friend');
+      // } else if (relationship === 'none') {
+      //   setRelationship('following');
+      // }
+      setisFollowing(!isFollowing);
     } catch (error) {
       console.log(error);
     }
@@ -289,27 +333,29 @@ const EventDetailScreen = ({navigation, route}: any) => {
             <ArrowLeft size={20} color="black" />
           </ShapeComponent>
         </RowComponent>
-        <RowComponent>
-          <ShapeComponent
-            radius={12}
-            color={appColors.white}
-            size={36}
-            onPress={handleFavorite}>
-            <Heart
-              size={20}
-              color={appColors.primary}
-              variant={favorite ? 'Bold' : 'Linear'}
-            />
-          </ShapeComponent>
-          <SpaceComponent width={10} />
-          <ShapeComponent
-            radius={12}
-            color={appColors.white}
-            size={36}
-            onPress={handleShare}>
-            <MaterialIcons name="ios-share" size={20} color={'black'} />
-          </ShapeComponent>
-        </RowComponent>
+        {!isManage && (
+          <RowComponent>
+            <ShapeComponent
+              radius={12}
+              color={appColors.white}
+              size={36}
+              onPress={handleFavorite}>
+              <Heart
+                size={20}
+                color={appColors.primary}
+                variant={favorite ? 'Bold' : 'Linear'}
+              />
+            </ShapeComponent>
+            <SpaceComponent width={10} />
+            <ShapeComponent
+              radius={12}
+              color={appColors.white}
+              size={36}
+              onPress={handleShare}>
+              <MaterialIcons name="ios-share" size={20} color={'black'} />
+            </ShapeComponent>
+          </RowComponent>
+        )}
       </RowComponent>
 
       <ScrollView
@@ -317,7 +363,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
           animatedValue.setValue(e.nativeEvent.contentOffset.y);
         }}
         scrollEventThrottle={16}>
-        <View style={{height: 200}}>
+        <View style={{height: 300}}>
           <Image
             resizeMode="cover"
             source={{
@@ -328,79 +374,66 @@ const EventDetailScreen = ({navigation, route}: any) => {
             style={{height: '100%', width: '100%'}}
           />
         </View>
-
-        <View
-          style={{
-            marginHorizontal: '12%',
-          }}>
-          <View
-            style={{
-              width: '100%',
-              position: 'absolute',
-              bottom: -30,
-            }}>
-            <TouchableOpacity
-              style={[
-                globalStyles.shadow,
-                {
-                  borderRadius: 100,
-                  paddingHorizontal: 12,
-                  paddingVertical: 6,
-                  backgroundColor: 'white',
-                },
-              ]}>
-              <RowComponent styles={{justifyContent: 'space-between'}}>
-                <RowComponent
-                  styles={{marginVertical: 12}}
-                  onPress={() =>
-                    navigation.navigate('GoingScreen', {
-                      attendees: attendees,
-                    })
-                  }>
-                  {Array.from({
-                    length: attendees.length > 3 ? 3 : attendees.length,
-                  }).map((it, index) => (
-                    <Image
-                      key={`img${index}`}
-                      source={{
-                        uri: attendees
-                          ? attendees[index].photo
-                          : 'https://th.bing.com/th/id/OIP.DxdqBFLVLPcWsjkds8636QHaHf?rs=1&pid=ImgDetMain',
-                      }}
-                      style={{
-                        width: 24,
-                        height: 24,
-                        borderRadius: 100,
-                        marginLeft: index > 0 ? -8 : 0,
-                      }}
-                    />
-                  ))}
-
-                  <TextComponent
-                    styles={{marginLeft: 10}}
-                    color={appColors.primary}
-                    font={fontFamilies.medium}
-                    text={`${attendees.length} Đang tham dự`}
-                  />
-                </RowComponent>
-                <TouchableOpacity onPress={() => {navigation.navigate("Invite", {friend})}}
-                  style={{
-                    backgroundColor: appColors.primary,
-                    paddingHorizontal: 18,
-                    paddingVertical: 8,
-                    borderRadius: 12,
-                  }}>
-                  <TextComponent text="Mời" color="white" />
-                </TouchableOpacity>
-              </RowComponent>
-            </TouchableOpacity>
-          </View>
-        </View>
         {item && (
           <SectionComponent>
-            <SpaceComponent height={30} />
-            <TextComponent text={item?.title} size={30} title />
+            <RowComponent>
+              <TextComponent text={item?.title} size={30} title />
+              <SpaceComponent width={15} />
+              {isManage && <Magicpen size={20} color="black" />}
+            </RowComponent>
+
+            <SpaceComponent height={10} />
+            <RowComponent>
+              <View
+                style={{
+                  paddingHorizontal: 10,
+                  paddingVertical: 5,
+                  borderRadius: 6,
+                  borderWidth: 1,
+                  borderColor: appColors.primary,
+                }}>
+                <TextComponent
+                  text={`${category?.categoryName}`}
+                  color={appColors.primary}
+                />
+              </View>
+              <SpaceComponent width={10} />
+              <RowComponent
+                styles={{marginVertical: 12}}
+                onPress={() =>
+                  navigation.navigate('GoingScreen', {
+                    attendees: attendees,
+                  })
+                }>
+                {Array.from({
+                  length: attendees.length > 3 ? 3 : attendees.length,
+                }).map((it, index) => (
+                  <Image
+                    key={`img${index}`}
+                    source={{
+                      uri: attendees
+                        ? attendees[index].photo
+                        : 'https://th.bing.com/th/id/OIP.DxdqBFLVLPcWsjkds8636QHaHf?rs=1&pid=ImgDetMain',
+                    }}
+                    style={{
+                      width: 24,
+                      height: 24,
+                      borderRadius: 100,
+                      marginLeft: index > 0 ? -8 : 0,
+                    }}
+                  />
+                ))}
+
+                <TextComponent
+                  styles={{marginLeft: 10}}
+                  // color={appColors.primary}
+                  // font={fontFamilies.medium}
+                  text={`${attendees.length} Người tham dự`}
+                />
+              </RowComponent>
+            </RowComponent>
             <SpaceComponent height={20} />
+
             <RowComponent>
               <ShapeComponent color={appColors.purple2} size={48} radius={12}>
                 <Calendar size={25} color={appColors.purple} variant="Bold" />
@@ -449,7 +482,8 @@ const EventDetailScreen = ({navigation, route}: any) => {
                     text={
                       ticketData[0].price === 0
                         ? `Free`
-                        : `${formatCurrency(
+                        : ticketData.length > 1
+                        ? `${formatCurrency(
                             Math.min(
                               ...ticketData.map((ticket: any) => ticket.price),
                             ),
@@ -458,15 +492,13 @@ const EventDetailScreen = ({navigation, route}: any) => {
                               ...ticketData.map((ticket: any) => ticket.price),
                             ),
                           )}`
+                        : `${formatCurrency(ticketData[0].price)}`
                     }
                     font={fontFamilies.medium}
                     size={16}
                   />
                 )}
-                <TextComponent
-                  text={'Giá vé tuy theo loại'}
-                  size={12}
-                />
+                <TextComponent text={'Giá vé tuy theo loại'} size={12} />
               </View>
             </RowComponent>
           </SectionComponent>
@@ -478,39 +510,32 @@ const EventDetailScreen = ({navigation, route}: any) => {
             height: 0.7,
           }}></View>
         <SectionComponent styles={{}}>
-          {item && (
-            <RowComponent styles={{justifyContent: 'space-between'}}>
-              <RowComponent
-                onPress={
-                  userId !== organizer?._id
-                    ? () => {
-                        navigation.navigate('ProfileNavigator', {
-                          profiledata: organizer,
-                        });
-                      }
-                    : () => {
-                        navigation.navigate('Profile');
-                      }
-                }>
-                <Image
-                  source={{
-                    uri: organizer
-                      ? organizer.photo
-                      : 'https://th.bing.com/th/id/OIP.DxdqBFLVLPcWsjkds8636QHaHf?rs=1&pid=ImgDetMain',
-                  }}
-                  style={{width: 48, height: 48, borderRadius: 12}}></Image>
-                <SpaceComponent width={10} />
-                <View>
-                  <TextComponent
-                    text={String(organizer?.name)}
-                    font={fontFamilies.medium}
-                    size={16}
-                  />
-                  <TextComponent text="Organizer" size={12} />
-                </View>
-              </RowComponent>
-              {userId !== item.organizer ? (
-                <TouchableOpacity
+          {/* {item && ( */}
+          <RowComponent styles={{justifyContent: 'space-between'}}>
+            <RowComponent
+              onPress={() => {
+                navigation.navigate('ProfileOganizer', {
+                  profiledata: organizer,
+                });
+              }}>
+              <Image
+                source={{
+                  uri: organizer
+                    ? organizer.photo
+                    : 'https://th.bing.com/th/id/OIP.DxdqBFLVLPcWsjkds8636QHaHf?rs=1&pid=ImgDetMain',
+                }}
+                style={{width: 48, height: 48, borderRadius: 12}}></Image>
+              <SpaceComponent width={10} />
+              <View>
+                <TextComponent
+                  text={String(organizer?.organizationName)}
+                  font={fontFamilies.medium}
+                  size={16}
+                />
+                <TextComponent text="Tổ chức sự kiện" size={12} />
+              </View>
+            </RowComponent>
+            {/* <TouchableOpacity
                   onPress={handleFollow}
                   style={{
                     backgroundColor: appColors.purple2,
@@ -530,23 +555,40 @@ const EventDetailScreen = ({navigation, route}: any) => {
                   ) : (
                     <TextComponent text="Follow" color={appColors.primary} />
                   )}
-                </TouchableOpacity>
-              ) : (
-                <TextComponent
-                  text="You"
-                  font={fontFamilies.semiBold}
-                  color={appColors.gray2}
-                />
-              )}
-            </RowComponent>
-          )}
+                </TouchableOpacity> */}
+            {organizer && userId !== organizer._id ? (
+              <TouchableOpacity
+                onPress={handleFollow}
+                style={{
+                  backgroundColor: !isFollowing
+                    ? appColors.primary
+                    : appColors.purple2,
+                  paddingHorizontal: 18,
+                  paddingVertical: 8,
+                  borderRadius: 12,
+                }}>
+                {isFollowing ? (
+                  <TextComponent text="Following" color={appColors.primary} />
+                ) : (
+                  <TextComponent text="Follow" color={appColors.white} />
+                )}
+              </TouchableOpacity>
+            ) : (
+              <TextComponent text="You" font={fontFamilies.medium} />
+            )}
+          </RowComponent>
+          {/* )} */}
 
           <View style={{paddingTop: 20}}>
-            <TextComponent
-              text="Thông tin sự kiện "
-              size={18}
-              font={fontFamilies.medium}
-            />
+            <RowComponent>
+              <TextComponent
+                text="Thông tin sự kiện "
+                size={18}
+                font={fontFamilies.medium}
+              />
+              {isManage && <Magicpen size={20} color="black" />}
+            </RowComponent>
+
             <SpaceComponent height={20} />
             <TextComponent
               maxLength={187}
@@ -583,7 +625,6 @@ const EventDetailScreen = ({navigation, route}: any) => {
                   font={fontFamilies.medium}
                 />
                 <TextComponent text={`${item?.fullAddress}`} />
-                {/* <TextComponent text="20144 Milano" /> */}
               </View>
             </RowComponent>
             {showMap ? (
@@ -624,51 +665,16 @@ const EventDetailScreen = ({navigation, route}: any) => {
               width: '100%',
               height: 0.4,
             }}></View>
-          <View style={{paddingTop: 20}}>
+          {/* <View style={{paddingTop: 20}}>
             <TextComponent text="More Event like this" title size={20} />
-            <TouchableOpacity style={{paddingVertical: 10}}>
-              <RowComponent>
-                <Image
-                  source={require('../../assets/images/event-img.png')}
-                  style={{width: 80, height: 80, borderRadius: 12}}
-                />
-                <View style={{flex: 1, marginLeft: 20}}>
-                  <TextComponent
-                    text="1ST MAY-SAT -2:00 PM"
-                    color={appColors.primary}
-                    size={12}
-                    font={fontFamilies.medium}
-                  />
-                  <TextComponent
-                    text="A virtual evening of smooth jazz"
-                    title
-                    size={19}
-                  />
-                </View>
-              </RowComponent>
-            </TouchableOpacity>
-            <TouchableOpacity style={{paddingVertical: 10}}>
-              <RowComponent>
-                <Image
-                  source={require('../../assets/images/event-img.png')}
-                  style={{width: 80, height: 80, borderRadius: 12}}
-                />
-                <View style={{flex: 1, marginLeft: 20}}>
-                  <TextComponent
-                    text="1ST MAY-SAT -2:00 PM"
-                    color={appColors.primary}
-                    size={12}
-                    font={fontFamilies.medium}
-                  />
-                  <TextComponent
-                    text="A virtual evening of smooth jazz"
-                    title
-                    size={19}
-                  />
-                </View>
-              </RowComponent>
-            </TouchableOpacity>
-          </View>
+            <FlatList
+              scrollEnabled={false}
+              data={events}
+              renderItem={({item, index}) => (
+                <EventItem type="list" item={item} key={index} />
+              )}
+            />
+          </View> */}
         </SectionComponent>
       </ScrollView>
       {organizer && userId !== organizer._id && (

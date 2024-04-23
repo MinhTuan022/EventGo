@@ -45,7 +45,7 @@ interface Props {
   type: 'card' | 'list' | 'grid';
   disible?: boolean;
   styles?: StyleProp<ViewStyle>;
-  isManage?: boolean
+  isManage?: boolean;
 }
 
 const EventItem = (props: Props) => {
@@ -54,35 +54,7 @@ const EventItem = (props: Props) => {
   const dispatch = useDispatch();
   const navigation: any = useNavigation();
   const [attendees, setAttendees] = useState<any>([]);
-  // const [favorite, setFavorite] = useState(
-  //   user.favorites && item && user.favorites.includes(item._id) ? true : false,
-  // );
 
-  // useEffect(() => {
-  //   console.log(favorite);
-  // }, [favorite]);
-
-  // const handleFavorite = async () => {
-  //   try {
-  //     setFavorite(!favorite);
-
-  //     const res = await userAPI.HandleUser(
-  //       `/favorite`,
-  //       {userId: user.id, eventId: item._id},
-  //       'post',
-  //     );
-  //     console.log(res);
-
-  //     if (favorite) {
-  //       dispatch(removeFavoriteEvent(item._id));
-  //     } else {
-  //       dispatch(addFavoriteEvent(item._id));
-  //     }
-  //     await AsyncStorage.setItem('auth', JSON.stringify(user));
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
   return (
     <CardComponent
       styles={[
@@ -96,9 +68,13 @@ const EventItem = (props: Props) => {
         styles,
       ]}
       onPress={
-        disible ? undefined : isManage ? () => {navigation.navigate("StatisticsScreen", item)}
+        disible
+          ? undefined
+          : isManage
+          ? () => {
+              navigation.navigate('StatisticsScreen', item);
+            }
           : () => navigation.navigate('EventDetail', {id: item._id})
-
       }>
       {type === 'card' ? (
         <>
@@ -141,7 +117,7 @@ const EventItem = (props: Props) => {
               color="white"
               styles={{margin: 12}}>
               <Heart
-                color={"red"}
+                color={'red'}
                 size={18}
                 variant={
                   user.favorites && item && user.favorites.includes(item._id)
@@ -153,9 +129,13 @@ const EventItem = (props: Props) => {
           </ImageBackground>
           <TextComponent text={item.title} title size={18} />
           <TextComponent
-            text={DateTime.GetDate(item.startTime)}
-            size={14}
+            text={`${DateTime.GetDateNotYear(
+              item.startTime,
+            )} - ${DateTime.GetTime24h(item.startTime)} - ${DateTime.GetTime24h(
+              item.endTime,
+            )} `}
             color={appColors.primary}
+            font={fontFamilies.medium}
           />
 
           {/* <RowComponent styles={{marginVertical: 12}}>
@@ -227,20 +207,21 @@ const EventItem = (props: Props) => {
                     />
                     <TextComponent text={item.address} />
                   </RowComponent>
-
-                  <TouchableOpacity>
-                    <Heart
-                      size={18}
-                      color={appColors.primary}
-                      variant={
-                        user.favorites &&
-                        item &&
-                        user.favorites.includes(item._id)
-                          ? 'Bold'
-                          : 'Linear'
-                      }
-                    />
-                  </TouchableOpacity>
+                  {!isManage && (
+                    <TouchableOpacity>
+                      <Heart
+                        size={18}
+                        color={appColors.primary}
+                        variant={
+                          user.favorites &&
+                          item &&
+                          user.favorites.includes(item._id)
+                            ? 'Bold'
+                            : 'Linear'
+                        }
+                      />
+                    </TouchableOpacity>
+                  )}
                 </RowComponent>
               </View>
             </View>
@@ -286,11 +267,15 @@ const EventItem = (props: Props) => {
               <TextComponent text={item.address} color={appColors.gray2} />
             </RowComponent>
             {/* <TouchableOpacity> */}
-              <Heart
-                size={20}
-                color={appColors.primary}
-                variant={user.favorites && item && user.favorites.includes(item._id) ? "Bold" : 'Linear'}
-              />
+            <Heart
+              size={20}
+              color={appColors.primary}
+              variant={
+                user.favorites && item && user.favorites.includes(item._id)
+                  ? 'Bold'
+                  : 'Linear'
+              }
+            />
             {/* </TouchableOpacity> */}
           </RowComponent>
         </>

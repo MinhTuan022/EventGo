@@ -10,6 +10,8 @@ import { AddNewEvent, ManageEventScreen } from '../../screens';
 import HomeOrganizer from '../../screens/organizer/HomeOrganizer';
 import test from '../../screens/Test';
 import Test from '../../screens/Test';
+import HomeOgzNavigator from './HomeOgzNavigator';
+import ManageNavigator from './ProfileOgzNavigator';
 
 const TabOgrNavigator = () => {
   const Tab = createBottomTabNavigator();
@@ -54,7 +56,7 @@ const TabOgrNavigator = () => {
                       height: 46,
                       alignItems: 'center',
                       justifyContent: 'center',
-                      marginBottom: 50,
+                      marginBottom: focused ? 0 : 50,
                       borderRadius: 100,
                     },
                   ]}>
@@ -70,7 +72,7 @@ const TabOgrNavigator = () => {
           return icon;
         },
         tabBarLabel({focused}) {
-          return route.name === 'Add' ? null : (
+          return route.name === 'Tạo sự kiện' ? null : (
             <TextComponent
               text={route.name}
               size={12}
@@ -79,9 +81,9 @@ const TabOgrNavigator = () => {
           );
         },
       })}>
-      <Tab.Screen name="Trang chủ" component={HomeOrganizer} />
+      <Tab.Screen name="Trang chủ" component={HomeOgzNavigator} />
       <Tab.Screen name="Tạo sự kiện" component={AddNewEvent} />
-      <Tab.Screen name="Thống kê" component={ManageEventScreen} />
+      <Tab.Screen name="Hồ sơ" component={ManageNavigator} />
       {/* <Tab.Screen name="Sự kiện" component={Test} /> */}
       {/* <Tab.Screen name="Hồ sơ" component={test} /> */}
     </Tab.Navigator>

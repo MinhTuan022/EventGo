@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const MyEventScreen = () => {
+const EditEventScreen = () => {
   return (
     <View>
-      <Text>MyEventScreen</Text>
+      <Text>EditEventScreen</Text>
     </View>
   )
 }
 
-export default MyEventScreen
+export default EditEventScreen

@@ -1,16 +1,18 @@
-import { ArrowCircleRight, ArrowLeft, Sms } from 'iconsax-react-native';
-import React, { useState } from 'react';
+import {ArrowCircleRight, ArrowLeft, Sms} from 'iconsax-react-native';
+import React, {useState} from 'react';
 import authenticationAPI from '../../apis/authApi';
 import {
   ButtonComponent,
   ContainerComponent,
+  HeaderComponent,
   InputComponent,
   SectionComponent,
   SpaceComponent,
   TextComponent,
 } from '../../components';
 import LoadingModal from '../../components/modals/LoadingModal';
-import { appColors } from '../../utils/constants/appColors';
+import {appColors} from '../../utils/constants/appColors';
+import { Alert } from 'react-native';
 
 const ForgotPasswordScreen = ({navigation}: any) => {
   const [email, setEmail] = useState('');
@@ -39,6 +41,7 @@ const ForgotPasswordScreen = ({navigation}: any) => {
         isForgotPass,
       });
     } catch (error) {
+      Alert.alert("Không tìm thấy tài khoản với email bạn cung cấp")
       console.log(error);
       setIsLoading(false);
     }
@@ -46,16 +49,17 @@ const ForgotPasswordScreen = ({navigation}: any) => {
 
   return (
     <>
-      <ContainerComponent isImageBackground isScroll>
-        <SectionComponent styles={{marginTop: 35}}>
-          <ArrowLeft size={22} color="black" />
-          <SpaceComponent height={20} />
-          <TextComponent text="Forgot Password?" title />
+      <ContainerComponent isScroll>
+        <HeaderComponent title="" goBack />
+        <SectionComponent>
+          {/* <SpaceComponent height={20} /> */}
+          <TextComponent text="Quên mật khẩu?" title />
           <SpaceComponent height={10} />
           <TextComponent
-            text="Don't worry! It happens, please enter the address associated with your account"
+            text="Đừng lo lắng, hãy nhập địa chỉ email tài khoản của bạn"
             color={appColors.gray}
           />
+          <SpaceComponent height={10} />
           <InputComponent
             placeHolder="abc@gmail.com"
             value={email}

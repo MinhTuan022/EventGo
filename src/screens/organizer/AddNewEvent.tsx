@@ -79,6 +79,8 @@ const AddNewEvent = ({navigation}: any) => {
   const [coordinates, setCoordinates] = useState<number[]>([
     105.763791, 21.012379,
   ]);
+
+  const [showModal, setShowModal] = useState(false);
   const [tickets, setTickets] = useState([
     {ticketType: '', price: '0', quantity: ''},
   ]);
@@ -131,6 +133,8 @@ const AddNewEvent = ({navigation}: any) => {
       };
       const res = await eventAPI.HandleEvent('/add', data, 'post');
       setEventId(res.data);
+      setShowModal(true)
+      setCurrentStep(1);
       // navigation.navigate('ManageEventScreen');
     } catch (error) {
       console.log(error);
@@ -268,7 +272,7 @@ const AddNewEvent = ({navigation}: any) => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
-      {eventId && (
+      {showModal && (
         <Modal transparent={true}>
           <StatusBar backgroundColor="rgba(0, 0, 0, 0.5)" translucent={true} />
           <View
@@ -303,23 +307,11 @@ const AddNewEvent = ({navigation}: any) => {
                   text="Bạn đã tạo sự kiệm mới thành công. "
                   size={16}
                 />
-                <TextComponent
-                  text="hãy mời mọi người tham gia sự kiện!"
-                  size={16}
-                />
               </View>
-              <ButtonComponent
-                onPress={() => {
-                  navigation.navigate('EventDetail', {id: eventId});
-                }}
-                text="Xem Sự Kiện"
-                type="primary"
-                styles={{marginVertical: 10}}
-              />
               <ButtonComponent
                 text="Trang Chủ"
                 type="primary"
-                onPress={() => navigation.navigate('Menu')}
+                onPress={() => {setShowModal(false),navigation.navigate('HomeOgz')}}
                 color={appColors.purple2}
                 textColor={appColors.primary}
               />
@@ -349,9 +341,16 @@ const AddNewEvent = ({navigation}: any) => {
                 width: '90%',
                 borderRadius: 12,
               }}>
-              <InputComponent onChange={(val) => {setImageUrl(val)}} value={imageUrl} label="URL" />
+              <InputComponent
+                onChange={val => {
+                  setImageUrl(val);
+                }}
+                value={imageUrl}
+                label="URL"
+              />
               <View style={{}}>
-                <ButtonComponent onPress={() => setShowUrl(false)}
+                <ButtonComponent
+                  onPress={() => setShowUrl(false)}
                   text="Save"
                   type="link"
                   textStyle={{fontFamily: fontFamilies.medium}}
@@ -379,10 +378,10 @@ const AddNewEvent = ({navigation}: any) => {
             <TextComponent
               text={
                 currentStep === 1
-                  ? '1 of 3 Event Details'
+                  ? '1 of 3 Chi tiết sự kiện'
                   : currentStep === 2
-                  ? '2 of 3 Add Location'
-                  : 'Add Ticket'
+                  ? '2 of 3 Địa điểm sự kiện'
+                  : 'Vé sự kiện'
               }
               title
               size={18}
@@ -416,7 +415,7 @@ const AddNewEvent = ({navigation}: any) => {
             </TouchableOpacity>
             <SpaceComponent height={15} />
             <TextComponent
-              text="Title"
+              text="Tiêu đề sự kiện"
               title
               size={16}
               styles={{paddingBottom: 7}}
@@ -426,9 +425,9 @@ const AddNewEvent = ({navigation}: any) => {
                 setTitle(val);
               }}
               value={title}
-              placeHolder="Title"></InputComponent>
+              placeHolder="Tiêu đề"></InputComponent>
             <TextComponent
-              text="Category"
+              text="Danh mục"
               title
               size={16}
               styles={{paddingBottom: 7}}
@@ -449,7 +448,7 @@ const AddNewEvent = ({navigation}: any) => {
               onBlur={() => setIsFocus(false)}
             />
             <TextComponent
-              text="Event Description"
+              text="Mô tả sự kiện"
               title
               size={16}
               styles={{paddingBottom: 7}}
@@ -459,16 +458,16 @@ const AddNewEvent = ({navigation}: any) => {
                 setDescription(val);
               }}
               value={description}
-              placeHolder="Write your event description"></InputComponent>
+              placeHolder="Nhập mô tả về sự kiện"></InputComponent>
             <TextComponent
-              text="Event Timing"
+              text="Thời gian diễn ra sự kiện"
               title
               size={16}
               styles={{paddingBottom: 7}}
             />
             <RowComponent styles={{justifyContent: 'space-between'}}>
               <DateTimePicker
-                label="Start Date: "
+                label="Ngày bắt đầu: "
                 mode="date"
                 onSelect={val => {
                   setStartDate(val);
@@ -477,7 +476,7 @@ const AddNewEvent = ({navigation}: any) => {
               />
               <SpaceComponent width={16} />
               <DateTimePicker
-                label="Start at: "
+                label="Thời gian bắt đầu: "
                 mode="time"
                 onSelect={val => {
                   setStartTime(val);
@@ -487,20 +486,21 @@ const AddNewEvent = ({navigation}: any) => {
             </RowComponent>
             <RowComponent styles={{justifyContent: 'space-between'}}>
               <DateTimePicker
-                label="End date: "
+                label="Ngày kết thúc: "
                 mode="date"
                 onSelect={val => setEndDate(val)}
                 selected={endDate}
               />
               <SpaceComponent width={16} />
               <DateTimePicker
-                label="End at: "
+                label="Thời gian kết thúc: "
                 mode="time"
                 onSelect={val => setEndTime(val)}
                 selected={endTime}
               />
             </RowComponent>
           </SectionComponent>
+          <SpaceComponent height={80} />
         </ScrollView>
       )}
       {currentStep === 2 && (
@@ -515,7 +515,7 @@ const AddNewEvent = ({navigation}: any) => {
               }}>
               <TextInput
                 value={fullAddress}
-                placeholder="Search Location"
+                placeholder="Tìm địa điểm"
                 style={{flex: 1, marginRight: 10}}
                 onChangeText={val => {
                   setFullAddress(val);
@@ -598,7 +598,7 @@ const AddNewEvent = ({navigation}: any) => {
               onPress={() => {
                 setselectedType('Paid');
               }}>
-              <TextComponent text="Paid" size={18} />
+              <TextComponent text="Trả Phí" size={18} />
             </TouchableOpacity>
             <SpaceComponent width={20} />
             <TouchableOpacity
@@ -610,7 +610,7 @@ const AddNewEvent = ({navigation}: any) => {
               onPress={() => {
                 setselectedType('Free');
               }}>
-              <TextComponent text="Free" size={18} />
+              <TextComponent text="Miễn Phí" size={18} />
             </TouchableOpacity>
           </RowComponent>
           {tickets.map((ticket, index) => (
@@ -658,7 +658,7 @@ const AddNewEvent = ({navigation}: any) => {
           {selectedType === 'Paid' && (
             <ButtonComponent
               type="link"
-              text="Add Ticket"
+              text="Thêm loại vé"
               onPress={handleAddTicket}
               iconLeft={<AddCircle size={22} color={appColors.primary} />}
             />
@@ -672,14 +672,26 @@ const AddNewEvent = ({navigation}: any) => {
             justifyContent: 'center',
             alignItems: 'center',
             paddingVertical: 10,
-            // position: 'absolute',
-            // bottom: 0,
+            position: 'absolute',
+            bottom: 0,
             width: '100%',
           }}>
           <ButtonComponent
+            disable={
+              imageUrl &&
+              title &&
+              category &&
+              startTime &&
+              endTime &&
+              startDate &&
+              endDate &&
+              description
+                ? false
+                : true
+            }
             onPress={handleNext}
             styles={{width: '70%', padding: 12}}
-            text={`Next: Add Location`}
+            text={`Tiếp: Thêm địa điểm`}
             type="primary"
             textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
           />
@@ -691,15 +703,15 @@ const AddNewEvent = ({navigation}: any) => {
             justifyContent: 'center',
             alignItems: 'center',
             paddingVertical: 10,
-            // position: 'absolute',
-            // bottom: 0,
+            position: 'absolute',
+            bottom: 0,
             width: '100%',
           }}>
           <ButtonComponent
             disable={fullAddress && address && coordinates ? false : true}
             onPress={handleNext}
             styles={{width: '70%', padding: 12}}
-            text={`Next: Add Ticket`}
+            text={`Tiếp: Thêm vé`}
             type="primary"
             textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
           />
@@ -711,15 +723,16 @@ const AddNewEvent = ({navigation}: any) => {
             justifyContent: 'center',
             alignItems: 'center',
             paddingVertical: 10,
-            // position: 'absolute',
-            // bottom: 0,
+            position: 'absolute',
+            bottom: 0,
+
             width: '100%',
           }}>
           <ButtonComponent
             disable={tickets ? false : true}
             onPress={handleCreateEvent}
             styles={{width: '70%', padding: 12}}
-            text={`Save`}
+            text={`Tạo sự kiện`}
             type="primary"
             textStyle={{fontFamily: fontFamilies.medium, fontSize: 16}}
           />

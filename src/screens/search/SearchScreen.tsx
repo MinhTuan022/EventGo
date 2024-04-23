@@ -1,44 +1,34 @@
 import {
-  View,
-  Text,
-  StatusBar,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-  Image,
-  FlatList,
+  ArrowCircleRight,
+  ArrowLeft,
+  FilterSearch,
+  Location,
+  SearchNormal
+} from 'iconsax-react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import {
   Dimensions,
+  FlatList,
+  StatusBar,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
-import {globalStyles} from '../../styles/globalStyles';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import eventAPI from '../../apis/eventApi';
 import {
   ButtonComponent,
-  CardComponent,
   EventItem,
-  InputComponent,
   RowComponent,
   SectionComponent,
   ShapeComponent,
   SpaceComponent,
-  TextComponent,
+  TextComponent
 } from '../../components';
-import {
-  ArrowCircleRight,
-  ArrowLeft,
-  ArrowLeft2,
-  Calendar,
-  FilterSearch,
-  Location,
-  Music,
-  SearchNormal,
-  Sort,
-} from 'iconsax-react-native';
-import {appColors} from '../../utils/constants/appColors';
-import {fontFamilies} from '../../utils/constants/fontFamilies';
-import RBSheet from 'react-native-raw-bottom-sheet';
-import CategoriesFilter from './components/CategoriesFilter';
 import CategoriesList from '../../components/CategoriesList';
-import eventAPI from '../../apis/eventApi';
+import { globalStyles } from '../../styles/globalStyles';
+import { appColors } from '../../utils/constants/appColors';
+import { fontFamilies } from '../../utils/constants/fontFamilies';
 
 const SearchScreen = ({navigation}: any) => {
   const inputRef = useRef<any>();

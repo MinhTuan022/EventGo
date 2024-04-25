@@ -3,6 +3,7 @@ import React from 'react';
 import { AddNewEvent, EventDetailScreen, GoingScreen, InviteScreen, NotificationScreen, OrderDetail, OrderTickets, SearchScreen, SeeAllEvent, TicketDetailScreen } from '../../screens';
 import ProfileOganizer from '../../screens/profiles/ProfileOganizer';
 import TabNavigator from './TabNavigator';
+import FollowingScreen from '../../screens/profiles/FollowingScreen';
 
 
 const MainNavigator = () => {
@@ -25,6 +26,8 @@ const MainNavigator = () => {
       <Stack.Screen name='AddNewEvent' component={AddNewEvent}/>
       <Stack.Screen name='SeeAll' component={SeeAllEvent}/>
       <Stack.Screen name='Invite' component={InviteScreen}/>
+      <Stack.Screen name='Following' component={FollowingScreen}/>
+
 
 
 

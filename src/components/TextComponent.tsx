@@ -13,13 +13,14 @@ interface Props {
   styles?: StyleProp<TextStyle>;
   title?: boolean;
   maxLength?: number;
+  isMore?: boolean
 }
 
 const TextComponent = (props: Props) => {
-  const {text, color, size, flex, font, styles, title, maxLength} = props;
+  const {text, color, size, flex, font, styles, title, maxLength,isMore} = props;
   const [showFullText, setShowFullText] = useState(false);
   const shouldTruncate = maxLength && text && text.length > Number(maxLength) ;
-  const truncatedText = showFullText && text ? text : String(text).slice(0, maxLength);
+  const truncatedText = showFullText && text ? text : String(text).slice(0, maxLength)+"...";
 
   const handlePress = () => {
     setShowFullText(!showFullText);
@@ -42,13 +43,13 @@ const TextComponent = (props: Props) => {
         styles,
       ]}>
       {shouldTruncate ? truncatedText : text}
-      {shouldTruncate && (
+      {shouldTruncate && isMore ? (
         <TouchableOpacity onPress={handlePress}>
           <Text style={{color: 'blue'}}>
             {showFullText ? ' See Less' : ' See More'}
           </Text>
         </TouchableOpacity>
-      )}
+      ) : (<></>)}
     </Text>
   );
 };

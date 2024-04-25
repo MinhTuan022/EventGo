@@ -20,46 +20,46 @@ const FollowList = (props: Props) => {
   const auth: AuthState = useSelector(authSelector);
   const [userId, setUserId] = useState(auth.id);
   const [relationship, setRelationship] = useState('');
-  useFocusEffect(
-    React.useCallback(() => {
-      if (item) {
-        checkRelationship(item.organizer);
-      }
-    }, [item]),
-  );
-  const checkRelationship = async (targetId: any) => {
-    try {
-      const res = await userAPI.HandleUser(
-        `/check-relationship?userId=${userId}&targetUserId=${item._id}`,
-      );
-      setRelationship(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const handleFollow = async () => {
-    try {
-      const targetUserId = item._id;
-      // const userId = auth.id;
-      const res = await userAPI.HandleUser(
-        '/follow',
-        {userId, targetUserId},
-        'post',
-      );
-      // console.log(res);
-      if (relationship === 'following') {
-        setRelationship('none');
-      } else if (relationship === 'friend') {
-        setRelationship('follower');
-      } else if (relationship === 'follower') {
-        setRelationship('friend');
-      } else if (relationship === 'none') {
-        setRelationship('following');
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     if (item) {
+  //       checkRelationship(item.organizer);
+  //     }
+  //   }, [item]),
+  // );
+  // const checkRelationship = async (targetId: any) => {
+  //   try {
+  //     const res = await userAPI.HandleUser(
+  //       `/check-relationship?userId=${userId}&targetUserId=${item._id}`,
+  //     );
+  //     setRelationship(res.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  // const handleFollow = async () => {
+  //   try {
+  //     const targetUserId = item._id;
+  //     // const userId = auth.id;
+  //     const res = await userAPI.HandleUser(
+  //       '/follow',
+  //       {userId, targetUserId},
+  //       'post',
+  //     );
+  //     // console.log(res);
+  //     if (relationship === 'following') {
+  //       setRelationship('none');
+  //     } else if (relationship === 'friend') {
+  //       setRelationship('follower');
+  //     } else if (relationship === 'follower') {
+  //       setRelationship('friend');
+  //     } else if (relationship === 'none') {
+  //       setRelationship('following');
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
   return (
     <View style={{marginBottom: 20}}>
       <RowComponent
@@ -73,15 +73,15 @@ const FollowList = (props: Props) => {
               borderRadius: 100,
               marginRight: 10,
             }}
-            source={{uri: item.photo}}
+            source={{uri: item && item.photo ? item.photo : "https://th.bing.com/th/id/OIP.DxdqBFLVLPcWsjkds8636QHaHf?rs=1&pid=ImgDetMain"}}
           />
           <View>
             <TextComponent text={item.name} title size={18} />
-            <TextComponent text={`${item.followers.length} Người theo dõi`} />
+            {/* <TextComponent text={`${item.followers.length} Người theo dõi`} /> */}
           </View>
         </RowComponent>
 
-        {userId !== item._id ? (
+        {/* {userId !== item._id ? (
           <>
             {!invite ? (
               <TouchableOpacity
@@ -128,7 +128,7 @@ const FollowList = (props: Props) => {
           </>
         ) : (
           <TextComponent text="Bạn" />
-        )}
+        )} */}
       </RowComponent>
     </View>
   );

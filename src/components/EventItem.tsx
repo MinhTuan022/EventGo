@@ -127,7 +127,7 @@ const EventItem = (props: Props) => {
               />
             </ShapeComponent>
           </ImageBackground>
-          <TextComponent text={item.title} title size={18} />
+          <TextComponent text={item.title} title size={18} maxLength={25}/>
           <TextComponent
             text={`${DateTime.GetDateNotYear(
               item.startTime,
@@ -188,7 +188,7 @@ const EventItem = (props: Props) => {
                   flex: 1,
                   justifyContent: 'space-around',
                 }}>
-                <TextComponent text={item.title} title size={18} />
+                <TextComponent text={item.title} title size={18} maxLength={30}/>
                 <TextComponent
                   text={`${DateTime.GetDateNotYear(
                     item.startTime,
@@ -254,7 +254,7 @@ const EventItem = (props: Props) => {
               </View>
             )}
           </ImageBackground>
-          <TextComponent text={item.title} title size={18} />
+          <TextComponent text={item.title} title size={18} maxLength={15}/>
           <TextComponent
             text={DateTime.GetDate(item.startTime)}
             size={14}

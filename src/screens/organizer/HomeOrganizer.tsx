@@ -7,6 +7,7 @@ import {
   StyleSheet,
   FlatList,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {globalStyles} from '../../styles/globalStyles';
@@ -34,7 +35,6 @@ import Toast from 'react-native-toast-message';
 import messaging from '@react-native-firebase/messaging';
 import notificationAPI from '../../apis/notificationApi';
 
-
 const HomeOrganizer = ({navigation}: any) => {
   const auth = useSelector(authSelector);
   const [userId, setuserId] = useState(auth.id);
@@ -43,7 +43,6 @@ const HomeOrganizer = ({navigation}: any) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [greeting, setGreeting] = useState<string>('');
   const [isRead, setIsRead] = useState(false);
-
 
   useEffect(() => {
     messaging().onMessage(async (mess: any) => {
@@ -59,7 +58,7 @@ const HomeOrganizer = ({navigation}: any) => {
   useFocusEffect(
     React.useCallback(() => {
       if (userId) {
-        checkNoti()
+        checkNoti();
         getEvent();
         getOrganizer();
         handleGreeting(currentTime);
@@ -153,16 +152,16 @@ const HomeOrganizer = ({navigation}: any) => {
             <View>
               <Notification size={18} color="black" />
               {isRead && (
-              <View
-                style={{
-                  backgroundColor: '#02E9FE',
-                  width: 6,
-                  height: 6,
-                  borderRadius: 100,
-                  position: 'absolute',
-                  top: 1,
-                  right: 1,
-                }}></View>
+                <View
+                  style={{
+                    backgroundColor: '#02E9FE',
+                    width: 6,
+                    height: 6,
+                    borderRadius: 100,
+                    position: 'absolute',
+                    top: 1,
+                    right: 1,
+                  }}></View>
               )}
             </View>
           </ShapeComponent>
@@ -181,40 +180,44 @@ const HomeOrganizer = ({navigation}: any) => {
           textColor={appColors.gray2}
         /> */}
       </SectionComponent>
-      <SectionComponent>
-        <RowComponent
-          styles={{
-            // marginTop: 40,
-            justifyContent: 'space-between',
-            // paddingHorizontal: 16,
-          }}>
-          <TextComponent text="Sự kiện đã tạo" title size={20} />
-          <ButtonComponent
-            onPress={() =>
-              navigation.navigate('SeeAll', {
-                dataType: 'upcomming',
-              })
-            }
-            type="link"
-            text="Xem tất cả"
-            textColor={appColors.primary}
-            textStyle={{fontFamily: fontFamilies.medium}}
-          />
-        </RowComponent>
-      </SectionComponent>
-
-      <SectionComponent>
-        <FlatList
-          data={eventData}
-          renderItem={({item, index}) => (
-            <EventItem
-              isManage
-              item={item}
-              type="list"
-              styles={{width: Dimensions.get('window').width * 0.86}}
+      <ScrollView>
+        <SectionComponent>
+          <RowComponent
+            styles={{
+              // marginTop: 40,
+              justifyContent: 'space-between',
+              // paddingHorizontal: 16,
+            }}>
+            <TextComponent text="Sự kiện đã tạo" title size={20} />
+            <ButtonComponent
+              onPress={() =>
+                navigation.navigate('SeeAll', {
+                  dataType: 'upcomming',
+                })
+              }
+              type="link"
+              text="Xem tất cả"
+              textColor={appColors.primary}
+              textStyle={{fontFamily: fontFamilies.medium}}
             />
-          )}></FlatList>
-      </SectionComponent>
+          </RowComponent>
+        </SectionComponent>
+
+        <SectionComponent>
+          <FlatList
+          scrollEnabled={false}
+            data={eventData}
+            renderItem={({item, index}) => (
+              <EventItem
+                isManage
+                item={item}
+                type="list"
+                styles={{width: Dimensions.get('window').width * 0.86}}
+              />
+            )}></FlatList>
+        </SectionComponent>
+      </ScrollView>
+
       <Toast />
     </View>
   );

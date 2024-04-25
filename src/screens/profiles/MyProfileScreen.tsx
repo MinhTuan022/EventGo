@@ -208,14 +208,14 @@ const MyProfileScreen = ({route, navigation}: any) => {
                     backgroundColor: appColors.gray,
                   }}
                 />
-                <View style={{alignItems: 'center', paddingHorizontal: 30}}>
+                <TouchableOpacity style={{alignItems: 'center', paddingHorizontal: 30}} onPress={() => navigation.navigate('Following', {ids: userData.following})}>
                   <TextComponent
                     text={String(userData?.following.length)}
                     font={fontFamilies.medium}
                     size={25}
                   />
                   <TextComponent text="Following" size={16} />
-                </View>
+                </TouchableOpacity>
               </>
             ) : (
               <>
@@ -267,6 +267,16 @@ const MyProfileScreen = ({route, navigation}: any) => {
             textStyle={{fontFamily: fontFamilies.medium}}
           />
           <ButtonComponent
+            text="Bảo mật"
+            iconLeft={<Security size={22} color="black" />}
+            iconRight={<ArrowCircleRight size={22} color="black" />}
+            type="primary"
+            color="white"
+            textColor="black"
+            styles={localStyle.button}
+            textStyle={{fontFamily: fontFamilies.medium}}
+          />
+          <ButtonComponent
             text="Thông báo"
             iconLeft={<Notification size={22} color="black" />}
             iconRight={<ArrowCircleRight size={22} color="black" />}
@@ -286,16 +296,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
             styles={localStyle.button}
             textStyle={{fontFamily: fontFamilies.medium}}
           />
-          <ButtonComponent
-            text="Bảo mật"
-            iconLeft={<Security size={22} color="black" />}
-            iconRight={<ArrowCircleRight size={22} color="black" />}
-            type="primary"
-            color="white"
-            textColor="black"
-            styles={localStyle.button}
-            textStyle={{fontFamily: fontFamilies.medium}}
-          />
+          
           <ButtonComponent
             text="Ngôn ngữ"
             iconLeft={<LanguageCircle size={22} color="black" />}

@@ -3,16 +3,18 @@ import {
   ArrowLeft,
   FilterSearch,
   Location,
-  SearchNormal
+  SearchNormal,
 } from 'iconsax-react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Dimensions,
   FlatList,
   StatusBar,
+  StyleSheet,
+  Switch,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import eventAPI from '../../apis/eventApi';
@@ -23,18 +25,22 @@ import {
   SectionComponent,
   ShapeComponent,
   SpaceComponent,
-  TextComponent
+  TextComponent,
 } from '../../components';
 import CategoriesList from '../../components/CategoriesList';
-import { globalStyles } from '../../styles/globalStyles';
-import { appColors } from '../../utils/constants/appColors';
-import { fontFamilies } from '../../utils/constants/fontFamilies';
+import {globalStyles} from '../../styles/globalStyles';
+import {appColors} from '../../utils/constants/appColors';
+import {fontFamilies} from '../../utils/constants/fontFamilies';
 
 const SearchScreen = ({navigation}: any) => {
   const inputRef = useRef<any>();
   const refRBSheet = useRef<any>();
   const [isFocused, setIsFocused] = useState(false);
   const [textSearch, setTextSearch] = useState('');
+  // const [title, setTitle] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
+  // const [address, setAddress] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [events, setEvents] = useState([]);
   useEffect(() => {
     inputRef.current.focus();
@@ -50,12 +56,37 @@ const SearchScreen = ({navigation}: any) => {
       console.log(error);
     }
   };
-
+useEffect(() => {
+console.log(selectedCategories)
+},[selectedCategories])
   const handleFocus = () => {
     setIsFocused(true);
   };
   const handleBlur = () => {
     setIsFocused(false);
+  };
+
+  const handleTimeOption = (option: string) => {
+    let selectedDate = new Date();
+    switch (option) {
+      case 'today':
+        setSelectedTime(selectedDate.toISOString());
+        break;
+      case 'tomorrow':
+        selectedDate.setDate(selectedDate.getDate() + 1);
+        setSelectedTime(selectedDate.toISOString());
+        break;
+      case 'nextWeek':
+        selectedDate.setDate(selectedDate.getDate() + 7);
+        setSelectedTime(selectedDate.toISOString());
+        break;
+      default:
+        setSelectedTime('');
+        break;
+    }
+  };
+  const handleCategorySelection = (categories: string[]) => {
+    setSelectedCategories(categories);
   };
   return (
     <View
@@ -122,7 +153,7 @@ const SearchScreen = ({navigation}: any) => {
             },
           }}>
           <View style={{alignItems: 'center'}}>
-            <TextComponent text="Filter" title />
+            <TextComponent text="Bộ lọc" title />
             <View
               style={{
                 height: 1,
@@ -131,117 +162,83 @@ const SearchScreen = ({navigation}: any) => {
                 marginVertical: 20,
               }}
             />
-            <SectionComponent styles={{width:"100%"}}>
+            <SectionComponent styles={{width: '100%', paddingVertical: 0}}>
               <TextComponent
-                text="Time & Date"
+                text="Danh mục"
                 font={fontFamilies.medium}
                 size={16}
               />
-              <RowComponent>
-                <ButtonComponent
-                  text="Today"
-                  type="primary"
-                  color="white"
-                  textColor={appColors.gray2}
-                  styles={{
-                    borderColor: appColors.gray2,
-                    borderWidth: 1,
-                    flex: 1,
-                    marginRight: 10,
-                    paddingVertical: 12,
-                    paddingHorizontal: 5,
-                  }}
-                />
-                <ButtonComponent
-                  text="Tomorrow"
-                  type="primary"
-                  color="white"
-                  textColor={appColors.gray2}
-                  styles={{
-                    borderColor: appColors.gray2,
-                    borderWidth: 1,
-                    flex: 1,
-                    marginRight: 10,
-                    paddingVertical: 12,
-                    paddingHorizontal: 5,
-                  }}
-                />
-                <ButtonComponent
-                  text="This week"
-                  type="primary"
-                  color="white"
-                  textColor={appColors.gray2}
-                  styles={{
-                    borderColor: appColors.gray2,
-                    borderWidth: 1,
-                    flex: 1,
-                    marginRight: 10,
-                    paddingVertical: 12,
-                    paddingHorizontal: 5,
-                  }}
-                />
-              </RowComponent>
+              <SpaceComponent height={15} />
+              <CategoriesList grid onSelectCategory={handleCategorySelection} allowMultiple />
             </SectionComponent>
-            <SectionComponent styles={{width:"100%"}}>
+            <SectionComponent styles={{width: '100%'}}>
               <TextComponent
-                text="Location"
+                text="Thời gian"
                 font={fontFamilies.medium}
-                size={18}
+                size={16}
               />
-              <RowComponent
-                onPress={() => {}}
-                styles={{
-                  borderRadius: 12,
-                  //   justifyContent: 'flex-start',
-                  borderColor: appColors.gray2,
-                  borderWidth: 1,
-                  marginTop: 10,
-                  paddingVertical: 12,
-                  paddingHorizontal: 5,
-                  //   width:'60%',
-                  //   flex:1
-                }}>
-                <ShapeComponent size={40} color={appColors.purple2} radius={12}>
-                  <Location size={18} color={appColors.primary} />
-                </ShapeComponent>
-                <TextComponent
-                  size={18}
-                  text="New York, USA"
-                  styles={{paddingHorizontal: 10}}
+              <SpaceComponent height={15} />
+              <RowComponent>
+                <ButtonComponent onPress={() => handleTimeOption('today')}
+                  text="Hôm nay"
+                  type="primary"
+                  color="white"
+                  textColor={appColors.primary}
+                  styles={[localStyle.time]}
                 />
-                <ArrowCircleRight size={24} color={appColors.primary} />
+                <ButtonComponent onPress={() => handleTimeOption('tomorrow')}
+                  text="Ngày mai"
+                  type="primary"
+                  color="white"
+                  textColor={appColors.primary}
+                  styles={[localStyle.time]}
+                />
+                <ButtonComponent onPress={() => handleTimeOption('nextWeek')}
+                  text="Tuần tới"
+                  type="primary"
+                  color="white"
+                  textColor={appColors.primary}
+                  styles={[localStyle.time]}
+                />
               </RowComponent>
             </SectionComponent>
-            <SectionComponent styles={{width:"100%"}}>
+            <SectionComponent styles={{width: '100%'}}>
               <RowComponent styles={{justifyContent: 'space-between'}}>
                 <TextComponent
                   size={18}
-                  text="Select price range"
+                  text="Chỉ sự kiện miễn phí"
                   font={fontFamilies.medium}
                 />
-                <TextComponent text="$20-$120" color={appColors.primary} />
+
+                <Switch
+                  thumbColor={appColors.white}
+                  trackColor={{true: appColors.primary}}
+                  // value={isRemember}
+                  onChange={() => {}}
+                />
               </RowComponent>
-              <TextComponent text="HAHAHAHAHAHA" />
             </SectionComponent>
           </View>
-          <RowComponent styles={{paddingHorizontal: 16, marginVertical:20}}>
+          <RowComponent styles={{paddingHorizontal: 16, marginVertical: 20}}>
             <ButtonComponent
               styles={{flex: 1, borderRadius: 28}}
               text="RESET"
               type="primary"
               color={appColors.purple2}
               textColor="black"
+              textStyle={{fontFamily: fontFamilies.medium}}
             />
             <SpaceComponent width={10} />
             <ButtonComponent
               styles={{flex: 1, borderRadius: 28}}
               text="APPLY"
               type="primary"
+              textStyle={{fontFamily: fontFamilies.medium}}
             />
           </RowComponent>
         </RBSheet>
       </RowComponent>
-      <CategoriesList onSelectCategory={() => {}} />
+      <CategoriesList onSelectCategory={ handleCategorySelection} allowMultiple />
       <TextComponent
         text={`${events.length} Found`}
         title
@@ -263,4 +260,17 @@ const SearchScreen = ({navigation}: any) => {
   );
 };
 
+const localStyle = StyleSheet.create({
+  time: {
+    flex: 1,
+    paddingHorizontal: 18,
+    paddingVertical: 7,
+    backgroundColor: appColors.white,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: appColors.primary,
+    marginRight: 12,
+    marginBottom: 5,
+  },
+});
 export default SearchScreen;

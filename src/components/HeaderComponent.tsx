@@ -47,7 +47,7 @@ const HeaderComponent = (props: Props) => {
               // </View>
             )}
             <SpaceComponent width={10} />
-            <TextComponent text={title} size={20} font={fontFamilies.medium} />
+            <TextComponent text={title} size={20} font={fontFamilies.medium} maxLength={25}/>
           </RowComponent>
 
           {children ?? children}

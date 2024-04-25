@@ -3,7 +3,7 @@ import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabOgrNavigator from './TabOgrNavigator';
 import DrawerNavigator from '../DrawerNavigator';
-import { EventDetailScreen, NotificationScreen } from '../../screens';
+import { EventDetailScreen, GoingScreen, NotificationScreen } from '../../screens';
 import EditEventScreen from '../../screens/organizer/EditEventScreen';
 
 const MainOgzNavigator = () => {
@@ -16,6 +16,7 @@ const MainOgzNavigator = () => {
       <Stack.Screen name='Draw' component={TabOgrNavigator}/>
       <Stack.Screen name='NotificationScreen' component={NotificationScreen}/>
       <Stack.Screen name='EditEventScreen' component={EventDetailScreen}/>
+      <Stack.Screen name='GoingScreen' component={GoingScreen}/>
 
 
 

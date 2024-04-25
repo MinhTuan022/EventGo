@@ -28,11 +28,11 @@ const GoingScreen = ({route, navigation}: any) => {
               <UserList
                 item={item}
                 key={index}
-                onPressProfile={() => {
-                  navigation.navigate('ProfileNavigator', {
-                    profiledata: item,
-                  });
-                }}
+                // onPressProfile={() => {
+                //   navigation.navigate('ProfileNavigator', {
+                //     profiledata: item,
+                //   });
+                // }}
               />
             )}></FlatList>
         </SectionComponent>

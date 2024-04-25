@@ -3,21 +3,18 @@ import {useFocusEffect} from '@react-navigation/native';
 import Mapbox from '@rnmapbox/maps';
 import {
   ArrowLeft,
-  ArrowRight,
   Calendar,
   Heart,
   Location,
   Magicpen,
-  PenAdd,
   Ticket,
 } from 'iconsax-react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {
   Animated,
-  Dimensions,
-  FlatList,
   Image,
   Linking,
+  Modal,
   SafeAreaView,
   ScrollView,
   Share,
@@ -27,11 +24,14 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useDispatch, useSelector} from 'react-redux';
+import categoryAPI from '../../apis/categoryApi';
 import eventAPI from '../../apis/eventApi';
+import organizerAPI from '../../apis/organizerApi';
+import ticketAPI from '../../apis/ticketApi';
 import userAPI from '../../apis/userApi';
 import {
   ButtonComponent,
-  EventItem,
+  InputComponent,
   RowComponent,
   SectionComponent,
   ShapeComponent,
@@ -39,23 +39,18 @@ import {
   TextComponent,
 } from '../../components';
 import {EventModel} from '../../models/EventModel';
-import {UserModel} from '../../models/UserModel';
+import {OrganizerModel} from '../../models/OrganizerModel';
 import {
   addFavoriteEvent,
   authSelector,
   removeFavoriteEvent,
 } from '../../redux/reducers/authReducer';
-import {globalStyles} from '../../styles/globalStyles';
 import {appColors} from '../../utils/constants/appColors';
 import {fontFamilies} from '../../utils/constants/fontFamilies';
 import {DateTime} from '../../utils/convertDateTime';
-import ticketAPI from '../../apis/ticketApi';
 import {formatCurrency} from '../../utils/util';
-import origanizerAPI from '../../apis/organizerApi';
-import organizerAPI from '../../apis/organizerApi';
-import {OrganizerModel} from '../../models/OrganizerModel';
-import {appInfo} from '../../utils/constants/appInfos';
-import categoryAPI from '../../apis/categoryApi';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import LoadingModal from '../../components/modals/LoadingModal';
 
 const EventDetailScreen = ({navigation, route}: any) => {
   const {id}: {id: string} = route.params;
@@ -80,6 +75,13 @@ const EventDetailScreen = ({navigation, route}: any) => {
   const [events, setEvents] = useState();
   const [currentTime, setCurrentTime] = useState(new Date());
 
+  const [titleUpdate, setTitleUpdate] = useState(``);
+  const [descriptionUpdate, setDescriptionUpdate] = useState('');
+
+  const [ipTitle, setIpTitle] = useState(false);
+  const [ipDesciption, setIpDesciption] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     getEventbyId(id);
   }, [id]);
@@ -106,6 +108,8 @@ const EventDetailScreen = ({navigation, route}: any) => {
 
   useEffect(() => {
     if (item) {
+      setTitleUpdate(item.title);
+      setDescriptionUpdate(item.description);
       if (item.attendees) {
         getGoing(item.attendees);
       }
@@ -162,10 +166,14 @@ const EventDetailScreen = ({navigation, route}: any) => {
   };
   const getEventbyId = async (eventId: any) => {
     try {
+      setIsLoading(true);
+
       const res = await eventAPI.HandleEvent(`/byId?id=${eventId}`);
       setItem(res.data);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
   };
 
@@ -260,6 +268,20 @@ const EventDetailScreen = ({navigation, route}: any) => {
       console.log(error);
     }
   };
+
+  const updateEvent = async () => {
+    try {
+      const res = await eventAPI.HandleEvent(
+        `/update?eventId=${id}`,
+        {title: titleUpdate, description: descriptionUpdate},
+        'put',
+      );
+      setShowModal(true)
+    } catch (error) {
+      console.log('update', error);
+    }
+  };
+
   const handleShare = async () => {
     try {
       const result = await Share.share({
@@ -291,14 +313,66 @@ const EventDetailScreen = ({navigation, route}: any) => {
   };
 
   const openMap = () => {
-    const url = `https://www.google.com/maps/search/?api=1&query=105,21`;
-    Linking.openURL(url);
+    if (item) {
+      const url = `https://www.google.com/maps/search/?api=1&query=${item.geometry.coordinates[1]},${item.geometry.coordinates[0]}`;
+      Linking.openURL(url);
+    }
   };
+
   const animatedValue = useRef(new Animated.Value(0)).current;
 
   return (
     <SafeAreaView style={{backgroundColor: 'white', flex: 1}}>
       <StatusBar barStyle="dark-content" />
+      {showModal && (
+        <Modal transparent={true}>
+          <StatusBar backgroundColor="rgba(0, 0, 0, 0.5)" translucent={true} />
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            }}>
+            <View
+              style={{
+                backgroundColor: appColors.white,
+                width: '80%',
+                height: '30%',
+                borderRadius: 50,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <TextComponent
+                text="Thành công"
+                color={appColors.primary}
+                title
+                size={20}
+              />
+              <View
+                style={{
+                  paddingHorizontal: 30,
+                  paddingVertical: 20,
+                  alignItems: 'center',
+                }}>
+                <TextComponent
+                  text="Bạn đã sửa sự kiện thành công"
+                  size={16}
+                />
+              </View>
+              <ButtonComponent
+                text="Trang Chủ"
+                type="primary"
+                onPress={() => {
+                  setShowModal(false), navigation.navigate('HomeOgz');
+                }}
+                color={appColors.purple2}
+                textColor={appColors.primary}
+              />
+            </View>
+          </View>
+        </Modal>
+      )}
       <Animated.View
         style={{
           paddingTop: StatusBar.currentHeight,
@@ -333,7 +407,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
             <ArrowLeft size={20} color="black" />
           </ShapeComponent>
         </RowComponent>
-        {!isManage && (
+        {!isManage ? (
           <RowComponent>
             <ShapeComponent
               radius={12}
@@ -354,6 +428,22 @@ const EventDetailScreen = ({navigation, route}: any) => {
               onPress={handleShare}>
               <MaterialIcons name="ios-share" size={20} color={'black'} />
             </ShapeComponent>
+          </RowComponent>
+        ) : (
+          <RowComponent
+            onPress={updateEvent}
+            styles={{
+              backgroundColor: appColors.primary,
+              paddingHorizontal: 10,
+              paddingVertical: 7,
+              borderRadius: 12,
+            }}>
+            <AntDesign name="check" size={20} color={appColors.white} />
+            <TextComponent
+              text="Lưu"
+              color="white"
+              font={fontFamilies.medium}
+            />
           </RowComponent>
         )}
       </RowComponent>
@@ -376,12 +466,28 @@ const EventDetailScreen = ({navigation, route}: any) => {
         </View>
         {item && (
           <SectionComponent>
-            <RowComponent>
-              <TextComponent text={item?.title} size={30} title />
-              <SpaceComponent width={15} />
-              {isManage && <Magicpen size={20} color="black" />}
-            </RowComponent>
-
+            {!ipTitle ? (
+              <RowComponent>
+                <TextComponent text={item.title} size={30} title />
+                <SpaceComponent width={15} />
+                {isManage && (
+                  <Magicpen
+                    size={20}
+                    color="black"
+                    onPress={() => {
+                      setIpTitle(true);
+                    }}
+                  />
+                )}
+              </RowComponent>
+            ) : (
+              <InputComponent
+                value={titleUpdate}
+                onChange={val => {
+                  setTitleUpdate(val);
+                }}
+              />
+            )}
             <SpaceComponent height={10} />
             <RowComponent>
               <View
@@ -405,6 +511,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
                     attendees: attendees,
                   })
                 }>
+              
                 {Array.from({
                   length: attendees.length > 3 ? 3 : attendees.length,
                 }).map((it, index) => (
@@ -423,7 +530,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
                     }}
                   />
                 ))}
-
+              
                 <TextComponent
                   styles={{marginLeft: 10}}
                   // color={appColors.primary}
@@ -515,7 +622,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
             <RowComponent
               onPress={() => {
                 navigation.navigate('ProfileOganizer', {
-                  profiledata: organizer,
+                  profiledata: organizer?._id,
                 });
               }}>
               <Image
@@ -586,15 +693,33 @@ const EventDetailScreen = ({navigation, route}: any) => {
                 size={18}
                 font={fontFamilies.medium}
               />
-              {isManage && <Magicpen size={20} color="black" />}
+              {isManage && (
+                <Magicpen
+                  size={20}
+                  color="black"
+                  onPress={() => {
+                    setIpDesciption(!ipDesciption);
+                  }}
+                />
+              )}
             </RowComponent>
 
             <SpaceComponent height={20} />
-            <TextComponent
-              maxLength={187}
-              size={16}
-              text={String(item?.description)}
-            />
+            {!ipDesciption ? (
+              <TextComponent
+                isMore
+                maxLength={187}
+                size={16}
+                text={String(item?.description)}
+              />
+            ) : (
+              <InputComponent
+                value={descriptionUpdate}
+                onChange={val => {
+                  setDescriptionUpdate(val);
+                }}
+              />
+            )}
           </View>
         </SectionComponent>
         <SectionComponent>
@@ -705,6 +830,7 @@ const EventDetailScreen = ({navigation, route}: any) => {
           />
         </View>
       )}
+      <LoadingModal backgd="white" visible={isLoading} />
     </SafeAreaView>
   );
 };

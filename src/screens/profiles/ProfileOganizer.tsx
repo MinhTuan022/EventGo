@@ -31,13 +31,15 @@ import { fontFamilies } from '../../utils/constants/fontFamilies';
 
 const ProfileOganizer = ({route, navigation}: any) => {
   const {profiledata} = route.params;
+  // console.log(route.params)
   const [followers, setFollowers] = useState('');
   const [userId, setUserId] = useState(useSelector(authSelector).id);
-  const [targetUserId, setTargetUserId] = useState(profiledata._id);
+  const [targetUserId, setTargetUserId] = useState(profiledata);
   const [events, setEvents] = useState([]);
   const [selected, setSelected] = useState('about');
   const [isFollowing, setisFollowing] = useState(false);
   const [profile, setProfile] = useState<OrganizerModel>();
+  const [name, setName] = useState('');
 
   const profileId = profiledata._id;
 
@@ -74,6 +76,7 @@ const ProfileOganizer = ({route, navigation}: any) => {
       const res = await organizerAPI.HandleOrganizer(`/byId?userId=${id}`);
       setProfile(res.data);
       setFollowers(String(res.data.followers.length));
+      setName(res.data.name)
       // console.log(res.data.followers.length + 2)
     } catch (error) {
       console.log(error);
@@ -82,7 +85,7 @@ const ProfileOganizer = ({route, navigation}: any) => {
 
   const getEvent = async () => {
     try {
-      const res = await eventAPI.HandleEvent(`/byOrganizer?id=${profileId}`);
+      const res = await eventAPI.HandleEvent(`/byOrganizer?id=${profiledata}`);
       setEvents(res.data);
     } catch (error) {
       console.log(error);
@@ -146,7 +149,7 @@ const ProfileOganizer = ({route, navigation}: any) => {
               style={{borderRadius: 100, width: 96, height: 96}}
             />
             <SpaceComponent height={20} />
-            <TextComponent text={profiledata ? profiledata.name : ''} title />
+            <TextComponent text={name} title />
           </View>
           <SpaceComponent height={20} />
           <RowComponent styles={{justifyContent: 'center'}}>

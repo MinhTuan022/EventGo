@@ -4,9 +4,10 @@ import {globalStyles} from '../../styles/globalStyles';
 interface Props {
   visible: boolean;
   mess?: string;
+  backgd?: string
 }
 const LodingModal = (props: Props) => {
-  const {visible, mess} = props;
+  const {visible, mess, backgd} = props;
   return (
     <Modal
       visible={visible}
@@ -16,7 +17,7 @@ const LodingModal = (props: Props) => {
       <View
         style={{
          flex:1,
-          backgroundColor: 'rgba(0,0,0,0.3)',
+          backgroundColor: backgd ? backgd : 'rgba(0,0,0,0.3)',
           alignItems: 'center',
           justifyContent: 'center',
         }}>

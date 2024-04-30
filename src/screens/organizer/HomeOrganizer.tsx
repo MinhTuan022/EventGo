@@ -37,6 +37,7 @@ import notificationAPI from '../../apis/notificationApi';
 
 const HomeOrganizer = ({navigation}: any) => {
   const auth = useSelector(authSelector);
+  console.log(auth.id)
   const [userId, setuserId] = useState(auth.id);
   const [organizer, setOrganizer] = useState<OrganizerModel>();
   const [eventData, setEventData] = useState([]);
@@ -70,6 +71,7 @@ const HomeOrganizer = ({navigation}: any) => {
       const res = await notificationAPI.HandleNotification(
         `/check?userId=${auth.id}`,
       );
+      console.log("Asa",res)
       setIsRead(res.data);
     } catch (error) {
       console.log('vv', error);

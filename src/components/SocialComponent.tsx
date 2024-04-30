@@ -97,6 +97,9 @@ const SocialComponent = () => {
       const result = await LoginManager.logInWithPermissions([
         'public_profile',
       ]);
+      const currentToken = await messaging().getToken();
+
+      await AsyncStorage.setItem('fcmToken', currentToken)
       if (result.isCancelled) {
         console.log('Login Cancelled');
       } else {
@@ -110,6 +113,7 @@ const SocialComponent = () => {
             lastname: profile.lastName,
             email: profile.userID,
             photo: profile.imageURL,
+            fcmTokens: currentToken
           };
           //   console.log(data);
           const res = await authenticationAPI.HandleAuthentication(

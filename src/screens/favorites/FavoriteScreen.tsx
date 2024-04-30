@@ -78,7 +78,7 @@ const FavoriteScreen = () => {
       <FlatList
         data={eventFavorites}
         renderItem={({item, index}) => (
-          <EventItem item={item} type="list" key={index}/>
+          <EventItem item={item} type="list" key={index} maxTitle={24}/>
         )}
       />
     </View>

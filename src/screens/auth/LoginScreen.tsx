@@ -17,7 +17,7 @@ import {
   TextComponent,
 } from '../../components';
 import LoadingModal from '../../components/modals/LoadingModal';
-import {addAuth, addFavoriteEvent} from '../../redux/reducers/authReducer';
+import {addAuth, addFavoriteEvent, removeAuth} from '../../redux/reducers/authReducer';
 import {appColors} from '../../utils/constants/appColors';
 import { globalStyles } from '../../styles/globalStyles';
 
@@ -93,7 +93,7 @@ const LoginScreen = ({navigation}: any) => {
                   id: res.data.id,
                   favorites: res.data.favorites,
                 })
-              : email,
+              : JSON.stringify({email: res.data.email,accessToken: res.data.accessToken,}),
           );
         }else{
           await AsyncStorage.setItem(
@@ -106,13 +106,13 @@ const LoginScreen = ({navigation}: any) => {
                   id: res.data.id,
                   favorites: res.data.favorites,
                 })
-              : email,
+              : JSON.stringify({email: res.data.email,accessToken: res.data.accessToken,}),
           );
         }
        
       } catch (error) {
         setIsLoading(false);
-        console.log(error);
+        console.log("hah",error);
         //   Alert.alert('Error', 'Có lỗi từ server');
         setErrors({generic: 'Email hoặc mật khẩu không chính xác !'});
       }
@@ -134,6 +134,9 @@ const LoginScreen = ({navigation}: any) => {
           />
         </SectionComponent>
         <SectionComponent>
+          <ButtonComponent text='logout' onPress={() => {AsyncStorage.clear()
+
+    dispatch(removeAuth());}}/>
           <TextComponent text="Đăng nhập" title />
           <SpaceComponent height={3} />
           <InputComponent

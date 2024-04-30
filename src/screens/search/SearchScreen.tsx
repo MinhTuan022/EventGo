@@ -56,9 +56,9 @@ const SearchScreen = ({navigation}: any) => {
       console.log(error);
     }
   };
-useEffect(() => {
-console.log(selectedCategories)
-},[selectedCategories])
+  useEffect(() => {
+    console.log(selectedCategories);
+  }, [selectedCategories]);
   const handleFocus = () => {
     setIsFocused(true);
   };
@@ -162,7 +162,7 @@ console.log(selectedCategories)
                 marginVertical: 20,
               }}
             />
-            <SectionComponent styles={{width: '100%', paddingVertical: 0}}>
+            {/* <SectionComponent styles={{width: '100%', paddingVertical: 0}}>
               <TextComponent
                 text="Danh mục"
                 font={fontFamilies.medium}
@@ -170,8 +170,8 @@ console.log(selectedCategories)
               />
               <SpaceComponent height={15} />
               <CategoriesList grid onSelectCategory={handleCategorySelection} allowMultiple />
-            </SectionComponent>
-            <SectionComponent styles={{width: '100%'}}>
+            </SectionComponent> */}
+            <SectionComponent styles={{width: '100%', paddingVertical:0}}>
               <TextComponent
                 text="Thời gian"
                 font={fontFamilies.medium}
@@ -179,21 +179,24 @@ console.log(selectedCategories)
               />
               <SpaceComponent height={15} />
               <RowComponent>
-                <ButtonComponent onPress={() => handleTimeOption('today')}
+                <ButtonComponent
+                  onPress={() => handleTimeOption('today')}
                   text="Hôm nay"
                   type="primary"
                   color="white"
                   textColor={appColors.primary}
                   styles={[localStyle.time]}
                 />
-                <ButtonComponent onPress={() => handleTimeOption('tomorrow')}
+                <ButtonComponent
+                  onPress={() => handleTimeOption('tomorrow')}
                   text="Ngày mai"
                   type="primary"
                   color="white"
                   textColor={appColors.primary}
                   styles={[localStyle.time]}
                 />
-                <ButtonComponent onPress={() => handleTimeOption('nextWeek')}
+                <ButtonComponent
+                  onPress={() => handleTimeOption('nextWeek')}
                   text="Tuần tới"
                   type="primary"
                   color="white"
@@ -222,7 +225,7 @@ console.log(selectedCategories)
           <RowComponent styles={{paddingHorizontal: 16, marginVertical: 20}}>
             <ButtonComponent
               styles={{flex: 1, borderRadius: 28}}
-              text="RESET"
+              text="Làm mới"
               type="primary"
               color={appColors.purple2}
               textColor="black"
@@ -231,14 +234,17 @@ console.log(selectedCategories)
             <SpaceComponent width={10} />
             <ButtonComponent
               styles={{flex: 1, borderRadius: 28}}
-              text="APPLY"
+              text="Áp dụng"
               type="primary"
               textStyle={{fontFamily: fontFamilies.medium}}
             />
           </RowComponent>
         </RBSheet>
       </RowComponent>
-      <CategoriesList onSelectCategory={ handleCategorySelection} allowMultiple />
+      <CategoriesList
+        onSelectCategory={handleCategorySelection}
+        allowMultiple
+      />
       <TextComponent
         text={`${events.length} Found`}
         title
@@ -249,6 +255,7 @@ console.log(selectedCategories)
         data={events}
         renderItem={({item, index}) => (
           <EventItem
+            maxTitle={23}
             item={item}
             type="list"
             styles={{width: Dimensions.get('window').width * 0.86}}

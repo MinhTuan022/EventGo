@@ -48,6 +48,7 @@ import {HandleNotification} from '../../utils/handleNotification';
 import {globalStyles} from '../../styles/globalStyles';
 import organizerAPI from '../../apis/organizerApi';
 import orderAPI from '../../apis/orderApi';
+import authenticationAPI from '../../apis/authApi';
 
 const MyProfileScreen = ({route, navigation}: any) => {
   const user = useSelector(authSelector);
@@ -71,7 +72,7 @@ const MyProfileScreen = ({route, navigation}: any) => {
   const handleLogOut = async () => {
     const fcmToken = await AsyncStorage.getItem('fcmToken');
     console.log(fcmToken);
-    await userAPI.HandleUser(
+    await authenticationAPI.HandleAuthentication(
       '/delete-fcmToken',
       {fcmToken, userId: user.id},
       'delete',

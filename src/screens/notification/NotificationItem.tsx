@@ -40,6 +40,9 @@ const NotificationItem = (props: Props) => {
       case 'event':
         icon = <MaterialIcons name="event" size={size} color={'red'} />;
         break;
+        case 'create-event':
+        icon = <MaterialIcons name="event" size={size} color={appColors.primary} />;
+        break;
       case 'follow':
         icon = <User color={'#F0635A'} size={size} />;
         break;

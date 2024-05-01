@@ -13,7 +13,7 @@ const OnBoardingScreen = ({navigation}: any) => {
     <View style={[globalStyles.container]}>
       <Swiper style={{}} loop={false} activeDotColor="white" onIndexChanged={num => setIndex(num)} index={index}>
         <Image
-          source={require('../../assets/images/onboarding-1.png')}
+          source={require('../../assets/images/Onboarding1.png')}
           style={{
             flex: 1,
             width: appInfo.sizes.WIDTH,
@@ -22,7 +22,7 @@ const OnBoardingScreen = ({navigation}: any) => {
           }}
         />
         <Image
-          source={require('../../assets/images/onboarding-2.png')}
+          source={require('../../assets/images/Onboarding2.png')}
           style={{
             flex: 1,
             width: appInfo.sizes.WIDTH,
@@ -31,7 +31,7 @@ const OnBoardingScreen = ({navigation}: any) => {
           }}
         />
         <Image
-          source={require('../../assets/images/onboarding-3.png')}
+          source={require('../../assets/images/Onboarding3.png')}
           style={{
             flex: 1,
             width: appInfo.sizes.WIDTH,
@@ -46,7 +46,7 @@ const OnBoardingScreen = ({navigation}: any) => {
             paddingHorizontal: 16,
             paddingVertical: 12,
             position: 'absolute',
-            bottom: 0,
+            bottom: 10,
             right: 0,
             left: 0,
             flexDirection: 'row',
@@ -55,13 +55,13 @@ const OnBoardingScreen = ({navigation}: any) => {
           },
         ]}>
         <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
-        <TextComponent text='Skip' color={appColors.gray2} font={fontFamilies.medium}/>
+        <TextComponent text='Bỏ qua' color={appColors.gray2} font={fontFamilies.medium}/>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() =>
             index < 2 ? setIndex(index + 1) : navigation.navigate('LoginScreen')
           }>
-          <TextComponent text='Next' color={appColors.white} font={fontFamilies.medium}/>
+          <TextComponent text='Tiếp' color={appColors.white} font={fontFamilies.medium}/>
         </TouchableOpacity>
       </View>
     </View>

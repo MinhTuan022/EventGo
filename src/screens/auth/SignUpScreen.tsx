@@ -154,13 +154,13 @@ const SignUpScreen = ({navigation}: any) => {
             color="black"
           />
           <SpaceComponent height={30} />
-          <TextComponent text="Sign up" title />
+          <TextComponent text="Đăng kí" title />
           <SpaceComponent height={21} />
 
           <InputComponent
             value={name}
             onChange={val => setName(val)}
-            placeHolder="Full Name"
+            placeHolder="Tên đầy đủ"
             affix={<User color={appColors.gray2} />}
           />
           <InputComponent
@@ -178,7 +178,7 @@ const SignUpScreen = ({navigation}: any) => {
             styles={errors.password ? {borderColor: 'red'} : {}}
             value={password}
             onChange={val => setPassword(val)}
-            placeHolder="Password"
+            placeHolder="Mật khẩu"
             isPassword
             affix={<Lock1 color={appColors.gray2} />}
             validate={
@@ -191,7 +191,7 @@ const SignUpScreen = ({navigation}: any) => {
             styles={errors.confirm ? {borderColor: 'red'} : {}}
             value={confirmPass}
             onChange={val => setConfirmPass(val)}
-            placeHolder="Confirm Password"
+            placeHolder="Xác nhận mật khẩu"
             isPassword
             affix={<PasswordCheck color={appColors.gray2} />}
             validate={
@@ -245,7 +245,7 @@ const SignUpScreen = ({navigation}: any) => {
         <SectionComponent styles={{alignItems: 'center'}}>
           <ButtonComponent
             onPress={handleSignUp}
-            text="SIGN UP"
+            text="Đăng Kí"
             type="primary"
             iconRight={<ArrowCircleRight size={22} color={appColors.white} />}
           />
@@ -253,11 +253,11 @@ const SignUpScreen = ({navigation}: any) => {
         <SocialComponent></SocialComponent>
         <SectionComponent>
           <RowComponent styles={{justifyContent: 'center'}}>
-            <TextComponent text="Already have an account? " />
+            <TextComponent text="Bạn đã có tài khoản? " />
             <ButtonComponent
               onPress={() => navigation.navigate('LoginScreen')}
               type="link"
-              text="Sign in"
+              text="Đăng nhập"
             />
           </RowComponent>
         </SectionComponent>

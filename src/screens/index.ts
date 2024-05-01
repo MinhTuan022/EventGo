@@ -24,6 +24,7 @@ import SeeAllEvent from './home/SeeAllEvent';
 import NotificationItem from './notification/NotificationItem';
 import InviteScreen from './events/InviteScreen';
 import StatisticsScreen from './organizer/StatisticsScreen';
+import ChangePassword from './profiles/ChangePassword';
 
 export {
   HomeScreen,
@@ -51,5 +52,6 @@ export {
   SeeAllEvent,
   NotificationItem,
   InviteScreen,
-  StatisticsScreen
+  StatisticsScreen,
+  ChangePassword
 };

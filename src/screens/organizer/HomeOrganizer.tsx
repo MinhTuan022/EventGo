@@ -34,16 +34,18 @@ import {useFocusEffect} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import messaging from '@react-native-firebase/messaging';
 import notificationAPI from '../../apis/notificationApi';
+import LoadingComponent from '../../components/LoadingComponent';
 
 const HomeOrganizer = ({navigation}: any) => {
   const auth = useSelector(authSelector);
-  console.log(auth.id)
+  console.log(auth.id);
   const [userId, setuserId] = useState(auth.id);
   const [organizer, setOrganizer] = useState<OrganizerModel>();
   const [eventData, setEventData] = useState([]);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [greeting, setGreeting] = useState<string>('');
   const [isRead, setIsRead] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     messaging().onMessage(async (mess: any) => {
@@ -71,7 +73,7 @@ const HomeOrganizer = ({navigation}: any) => {
       const res = await notificationAPI.HandleNotification(
         `/check?userId=${auth.id}`,
       );
-      console.log("Asa",res)
+      console.log('Asa', res);
       setIsRead(res.data);
     } catch (error) {
       console.log('vv', error);
@@ -86,11 +88,14 @@ const HomeOrganizer = ({navigation}: any) => {
   };
   const getEvent = async () => {
     try {
+      setIsLoading(true);
       const res = await eventAPI.HandleEvent(`/byOrganizer?id=${userId}`);
       // console.log(res);
       setEventData(res.data);
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
   };
   const getOrganizer = async () => {
@@ -106,7 +111,7 @@ const HomeOrganizer = ({navigation}: any) => {
       style={[
         globalStyles.container,
         {
-          backgroundColor: appColors.white2,
+          // backgroundColor: appColors.white2,
           paddingTop: StatusBar.currentHeight,
         },
       ]}>
@@ -183,7 +188,7 @@ const HomeOrganizer = ({navigation}: any) => {
         /> */}
       </SectionComponent>
       <ScrollView>
-        <SectionComponent>
+        <SectionComponent styles={{paddingVertical: 0, paddingTop: 20}}>
           <RowComponent
             styles={{
               // marginTop: 40,
@@ -191,7 +196,7 @@ const HomeOrganizer = ({navigation}: any) => {
               // paddingHorizontal: 16,
             }}>
             <TextComponent text="Sự kiện đã tạo" title size={20} />
-            <ButtonComponent
+            {/* <ButtonComponent
               onPress={() =>
                 navigation.navigate('SeeAll', {
                   dataType: 'upcomming',
@@ -201,23 +206,58 @@ const HomeOrganizer = ({navigation}: any) => {
               text="Xem tất cả"
               textColor={appColors.primary}
               textStyle={{fontFamily: fontFamilies.medium}}
-            />
+            /> */}
           </RowComponent>
         </SectionComponent>
 
-        <SectionComponent>
-          <FlatList
-          scrollEnabled={false}
-            data={eventData}
-            renderItem={({item, index}) => (
-              <EventItem
-                isManage
-                item={item}
-                type="list"
-                styles={{width: Dimensions.get('window').width * 0.86}}
-              />
-            )}></FlatList>
+        <SectionComponent styles={{paddingVertical: 0}}>
+          {eventData.length > 0 ? (
+            <FlatList
+              scrollEnabled={false}
+              data={eventData}
+              renderItem={({item, index}) => (
+                <EventItem
+                  isManage
+                  item={item}
+                  type="list"
+                  styles={{width: Dimensions.get('window').width * 0.86}}
+                />
+              )}></FlatList>
+          ) : (
+            // <View
+            //   style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            //   <Image
+            //     source={require('../../assets/images/noticket.png')}
+            //     style={{width: '100%', height: 300}}
+            //     resizeMode="cover"
+            //   />
+            //   <TextComponent
+            //     text="Chưa có sự kiện nào được tạo"
+            //     title
+            //     size={18}
+            //   />
+            //   <TextComponent
+            //     text="Hãy bắt đầu tạo những sự kiện thật hấp dẫn nào"
+            //     // title
+            //     size={18}
+            //     styles={{textAlign:"center"}}
+            //   />
+            // </View>
+            <LoadingComponent
+              mess="Chưa có sự kiện nào được tạo"
+              children={
+                <Image
+                  source={require('../../assets/images/noticket.png')}
+                  style={{width: 300, height: 300}}
+                  resizeMode="cover"
+                />
+              }
+              values={eventData.length}
+              isLoading={isLoading}
+            />
+          )}
         </SectionComponent>
+        <SpaceComponent height={20} />
       </ScrollView>
 
       <Toast />

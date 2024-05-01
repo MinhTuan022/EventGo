@@ -17,9 +17,13 @@ import {
   TextComponent,
 } from '../../components';
 import LoadingModal from '../../components/modals/LoadingModal';
-import {addAuth, addFavoriteEvent, removeAuth} from '../../redux/reducers/authReducer';
+import {
+  addAuth,
+  addFavoriteEvent,
+  removeAuth,
+} from '../../redux/reducers/authReducer';
 import {appColors} from '../../utils/constants/appColors';
-import { globalStyles } from '../../styles/globalStyles';
+import {globalStyles} from '../../styles/globalStyles';
 
 interface Errors {
   email?: string;
@@ -93,9 +97,12 @@ const LoginScreen = ({navigation}: any) => {
                   id: res.data.id,
                   favorites: res.data.favorites,
                 })
-              : JSON.stringify({email: res.data.email,accessToken: res.data.accessToken,}),
+              : JSON.stringify({
+                  email: res.data.email,
+                  accessToken: res.data.accessToken,
+                }),
           );
-        }else{
+        } else {
           await AsyncStorage.setItem(
             'auth',
             isRemember
@@ -106,13 +113,15 @@ const LoginScreen = ({navigation}: any) => {
                   id: res.data.id,
                   favorites: res.data.favorites,
                 })
-              : JSON.stringify({email: res.data.email,accessToken: res.data.accessToken,}),
+              : JSON.stringify({
+                  email: res.data.email,
+                  accessToken: res.data.accessToken,
+                }),
           );
         }
-       
       } catch (error) {
         setIsLoading(false);
-        console.log("hah",error);
+        console.log('hah', error);
         //   Alert.alert('Error', 'Có lỗi từ server');
         setErrors({generic: 'Email hoặc mật khẩu không chính xác !'});
       }
@@ -134,9 +143,14 @@ const LoginScreen = ({navigation}: any) => {
           />
         </SectionComponent>
         <SectionComponent>
-          <ButtonComponent text='logout' onPress={() => {AsyncStorage.clear()
+          {/* <ButtonComponent
+            text="logout"
+            onPress={() => {
+              AsyncStorage.clear();
 
-    dispatch(removeAuth());}}/>
+              dispatch(removeAuth());
+            }}
+          /> */}
           <TextComponent text="Đăng nhập" title />
           <SpaceComponent height={3} />
           <InputComponent
@@ -179,7 +193,7 @@ const LoginScreen = ({navigation}: any) => {
                 value={isRemember}
                 onChange={() => setIsRemember(!isRemember)}
               />
-              <TextComponent text="Remember me" />
+              <TextComponent text="Lưu tài khoản" />
             </RowComponent>
             <ButtonComponent
               text="Quên mật khẩu?"
@@ -196,7 +210,8 @@ const LoginScreen = ({navigation}: any) => {
         )}
         <SpaceComponent height={16} />
         <SectionComponent styles={{alignItems: 'center'}}>
-          <ButtonComponent styles={globalStyles.shadow}
+          <ButtonComponent
+            styles={globalStyles.shadow}
             onPress={handleLogin}
             text="Đăng nhập"
             // iconFlex="right"
@@ -208,7 +223,7 @@ const LoginScreen = ({navigation}: any) => {
         <SectionComponent>
           <RowComponent styles={{justifyContent: 'center'}}>
             <TextComponent text="Chưa có tài khoản? " />
-            <ButtonComponent 
+            <ButtonComponent
               onPress={() => navigation.navigate('SignUpScreen')}
               type="link"
               text="Đăng kí"

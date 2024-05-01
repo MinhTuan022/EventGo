@@ -291,6 +291,11 @@ const AddNewEvent = ({navigation}: any) => {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
+                <Image
+                source={require('../../assets/images/success.png')}
+                resizeMode="cover"
+                style={{width:200, height:200}}
+              />
               <TextComponent
                 text="Chúc mừng"
                 color={appColors.primary}
@@ -304,7 +309,7 @@ const AddNewEvent = ({navigation}: any) => {
                   alignItems: 'center',
                 }}>
                 <TextComponent
-                  text="Bạn đã tạo sự kiệm mới thành công. "
+                  text="Bạn đã tạo sự kiện mới thành công. "
                   size={16}
                 />
               </View>

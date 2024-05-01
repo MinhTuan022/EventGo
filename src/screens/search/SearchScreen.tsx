@@ -9,6 +9,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {
   Dimensions,
   FlatList,
+  Image,
   StatusBar,
   StyleSheet,
   Switch,
@@ -36,21 +37,35 @@ const SearchScreen = ({navigation}: any) => {
   const inputRef = useRef<any>();
   const refRBSheet = useRef<any>();
   const [isFocused, setIsFocused] = useState(false);
+  const [isSelected, setIsSelected] = useState<any>();
+  const [isFreeRB, setIsFreeRB] = useState(false);
+  const [selectedTimeRB, setSelectedTimeRB] = useState(new Date());
+
   const [textSearch, setTextSearch] = useState('');
-  // const [title, setTitle] = useState('');
-  const [selectedTime, setSelectedTime] = useState('');
-  // const [address, setAddress] = useState('');
+  const [selectedTime, setSelectedTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [isFree, setIsFree] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
   const [events, setEvents] = useState([]);
   useEffect(() => {
     inputRef.current.focus();
-    handleSearch();
-  }, [textSearch]);
+    handleSearch(textSearch, selectedCategories, isFree, selectedTime);
+  }, [textSearch, selectedCategories, isFree, selectedTime]);
 
-  const handleSearch = async () => {
+  const handleSearch = async (
+    title?: string,
+    categories?: string[],
+    free?: boolean,
+    date?: Date,
+  ) => {
     try {
-      const res = await eventAPI.HandleEvent(`/search?title=${textSearch}`);
-      console.log(res);
+      const res = await eventAPI.HandleEvent(
+        `/search?title=${title}&categories=${
+          categories ? categories : []
+        }&isFree=${free ? free : false}&date=${date ? date : currentTime}`,
+      );
+      // console.log(res);
       setEvents(res.data);
     } catch (error) {
       console.log(error);
@@ -70,23 +85,41 @@ const SearchScreen = ({navigation}: any) => {
     let selectedDate = new Date();
     switch (option) {
       case 'today':
-        setSelectedTime(selectedDate.toISOString());
+        setSelectedTimeRB(selectedDate);
+        setIsSelected(1);
         break;
       case 'tomorrow':
         selectedDate.setDate(selectedDate.getDate() + 1);
-        setSelectedTime(selectedDate.toISOString());
+        setSelectedTimeRB(selectedDate);
+        setIsSelected(2);
+
         break;
       case 'nextWeek':
         selectedDate.setDate(selectedDate.getDate() + 7);
-        setSelectedTime(selectedDate.toISOString());
+        setSelectedTimeRB(selectedDate);
+        setIsSelected(3);
         break;
       default:
-        setSelectedTime('');
+        setSelectedTime(selectedDate);
         break;
     }
   };
   const handleCategorySelection = (categories: string[]) => {
     setSelectedCategories(categories);
+  };
+  const handleApply = () => {
+    setIsFree(isFreeRB);
+    setSelectedTime(selectedTimeRB);
+    refRBSheet.current.close();
+  };
+
+  const handleReset = () => {
+    setIsFree(false);
+    setSelectedTime(new Date());
+    setIsFreeRB(false);
+    setSelectedTimeRB(new Date());
+    setIsSelected(0);
+    refRBSheet.current.close();
   };
   return (
     <View
@@ -120,7 +153,7 @@ const SearchScreen = ({navigation}: any) => {
             <TextInput
               ref={inputRef}
               onChangeText={val => setTextSearch(val)}
-              placeholder="Search..."
+              placeholder="Tìm kiếm..."
               placeholderTextColor={appColors.gray2}
               focusable
               style={{fontSize: 20, flex: 1}}
@@ -171,11 +204,11 @@ const SearchScreen = ({navigation}: any) => {
               <SpaceComponent height={15} />
               <CategoriesList grid onSelectCategory={handleCategorySelection} allowMultiple />
             </SectionComponent> */}
-            <SectionComponent styles={{width: '100%', paddingVertical:0}}>
+            <SectionComponent styles={{width: '100%', paddingVertical: 0}}>
               <TextComponent
-                text="Thời gian"
+                text="Thời gian từ"
                 font={fontFamilies.medium}
-                size={16}
+                size={18}
               />
               <SpaceComponent height={15} />
               <RowComponent>
@@ -184,24 +217,36 @@ const SearchScreen = ({navigation}: any) => {
                   text="Hôm nay"
                   type="primary"
                   color="white"
-                  textColor={appColors.primary}
-                  styles={[localStyle.time]}
+                  textColor={
+                    isSelected === 1 ? appColors.white : appColors.primary
+                  }
+                  styles={[
+                    isSelected === 1 ? localStyle.timeFocus : localStyle.time,
+                  ]}
                 />
                 <ButtonComponent
                   onPress={() => handleTimeOption('tomorrow')}
                   text="Ngày mai"
                   type="primary"
                   color="white"
-                  textColor={appColors.primary}
-                  styles={[localStyle.time]}
+                  textColor={
+                    isSelected === 2 ? appColors.white : appColors.primary
+                  }
+                  styles={[
+                    isSelected === 2 ? localStyle.timeFocus : localStyle.time,
+                  ]}
                 />
                 <ButtonComponent
                   onPress={() => handleTimeOption('nextWeek')}
                   text="Tuần tới"
                   type="primary"
                   color="white"
-                  textColor={appColors.primary}
-                  styles={[localStyle.time]}
+                  textColor={
+                    isSelected === 3 ? appColors.white : appColors.primary
+                  }
+                  styles={[
+                    isSelected === 3 ? localStyle.timeFocus : localStyle.time,
+                  ]}
                 />
               </RowComponent>
             </SectionComponent>
@@ -216,14 +261,17 @@ const SearchScreen = ({navigation}: any) => {
                 <Switch
                   thumbColor={appColors.white}
                   trackColor={{true: appColors.primary}}
-                  // value={isRemember}
-                  onChange={() => {}}
+                  value={isFreeRB}
+                  onChange={() => {
+                    setIsFreeRB(!isFreeRB);
+                  }}
                 />
               </RowComponent>
             </SectionComponent>
           </View>
           <RowComponent styles={{paddingHorizontal: 16, marginVertical: 20}}>
             <ButtonComponent
+              onPress={handleReset}
               styles={{flex: 1, borderRadius: 28}}
               text="Làm mới"
               type="primary"
@@ -233,6 +281,7 @@ const SearchScreen = ({navigation}: any) => {
             />
             <SpaceComponent width={10} />
             <ButtonComponent
+              onPress={handleApply}
               styles={{flex: 1, borderRadius: 28}}
               text="Áp dụng"
               type="primary"
@@ -243,26 +292,33 @@ const SearchScreen = ({navigation}: any) => {
       </RowComponent>
       <CategoriesList
         onSelectCategory={handleCategorySelection}
-        allowMultiple
+        // allowMultiple
       />
       <TextComponent
-        text={`${events.length} Found`}
+        text={`${events.length} Kết quả`}
         title
         size={18}
         styles={{paddingVertical: 10}}
       />
-      <FlatList
-        data={events}
-        renderItem={({item, index}) => (
-          <EventItem
-            maxTitle={23}
-            item={item}
-            type="list"
-            styles={{width: Dimensions.get('window').width * 0.86}}
-            key={index}
-          />
-        )}
-      />
+      {events.length > 0 ? (
+        <FlatList
+          data={events}
+          renderItem={({item, index}) => (
+            <EventItem
+              maxTitle={20}
+              item={item}
+              type="list"
+              styles={{width: Dimensions.get('window').width * 0.86}}
+              key={index}
+            />
+          )}
+        />
+      ) : (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Image source={require('../../assets/images/notfound.png')} />
+          <TextComponent text="Không tìm thấy sự kiện nào" title size={18}/>
+        </View>
+      )}
     </View>
   );
 };
@@ -271,8 +327,19 @@ const localStyle = StyleSheet.create({
   time: {
     flex: 1,
     paddingHorizontal: 18,
-    paddingVertical: 7,
+    paddingVertical: 10,
     backgroundColor: appColors.white,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: appColors.primary,
+    marginRight: 12,
+    marginBottom: 5,
+  },
+  timeFocus: {
+    flex: 1,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    backgroundColor: appColors.primary,
     borderRadius: 100,
     borderWidth: 1,
     borderColor: appColors.primary,

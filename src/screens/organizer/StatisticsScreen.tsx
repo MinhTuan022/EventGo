@@ -159,7 +159,7 @@ const StatisticsScreen = ({navigation, route}: any) => {
     }
   };
   return (
-    <ScrollView
+    <View
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
       <RBSheet
         animationType="slide"
@@ -243,10 +243,16 @@ const StatisticsScreen = ({navigation, route}: any) => {
         goBack
         children={
           <RowComponent>
-             <TouchableOpacity onPress={() => {navigation.navigate("EditEventScreen", {id: eventData._id, isManage: true})}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('EditEventScreen', {
+                  id: eventData._id,
+                  isManage: true,
+                });
+              }}>
               <Edit size={25} color="black" />
             </TouchableOpacity>
-            <SpaceComponent width={20}/>
+            <SpaceComponent width={20} />
             <TouchableOpacity onPress={openModal}>
               <Trash size={25} color="red" />
             </TouchableOpacity>
@@ -254,86 +260,92 @@ const StatisticsScreen = ({navigation, route}: any) => {
         }
         styles={{justifyContent: 'space-between'}}
       />
-      <SectionComponent>
-        <TextComponent text="Doanh Thu" font={fontFamilies.medium} size={16} />
-        <TextComponent
-          text={`${formatCurrency(revenue)} `}
-          font={fontFamilies.bold}
-          size={25}
-        />
-      </SectionComponent>
-      <SectionComponent>
-        <TextComponent
-          text="Lượng người mua vé theo thời gian"
-          font={fontFamilies.medium}
-          size={16}
-        />
-      </SectionComponent>
-      <LineChart
-        data={data}
-        width={screenWidth}
-        height={220}
-        chartConfig={chartConfig}
-      />
-      <SectionComponent>
-        <TextComponent
-          text="Lượng người hủy vé theo thời gian"
-          font={fontFamilies.medium}
-          size={16}
-        />
-      </SectionComponent>
-      <LineChart
-        data={dataCancel}
-        width={screenWidth}
-        height={220}
-        chartConfig={chartConfig}
-      />
-      <SectionComponent>
-        <TextComponent
-          text="Số lượng vé đã bán / Tổng số vé"
-          font={fontFamilies.medium}
-          size={16}
-        />
-        {ticketSolds.length > 0 && (
-          <FlatList
-            scrollEnabled={false}
-            data={ticketSolds}
-            renderItem={({item, index}) => (
-              <RowComponent key={index}>
-                <TextComponent
-                  text={`${item.percentageSold * 100} %`}
-                  font={fontFamilies.medium}
-                  styles={{position: 'absolute', left: 35, zIndex: 1}}
-                />
-                <ProgressChart
-                  data={{
-                    labels: [`${item?.tiketType}`],
-                    data: [item.percentageSold],
-                    colors: [appColors.primary],
-                  }}
-                  width={100}
-                  height={100}
-                  strokeWidth={8}
-                  radius={30}
-                  chartConfig={chartConfig}
-                  hideLegend
-                  withCustomBarColorFromData
-                />
-                <View>
-                  <TextComponent
-                    text={`Vé ${item.ticketType}`}
-                    font={fontFamilies.medium}
-                  />
-                  <TextComponent
-                    text={`${item.totalSold}/${item.ticketQuantity}`}
-                  />
-                </View>
-              </RowComponent>
-            )}
+      <ScrollView>
+        <SectionComponent>
+          <TextComponent
+            text="Doanh Thu"
+            font={fontFamilies.medium}
+            size={16}
           />
-        )}
-      </SectionComponent>
-    </ScrollView>
+          <TextComponent
+            text={`${formatCurrency(revenue)} `}
+            font={fontFamilies.bold}
+            size={25}
+          />
+        </SectionComponent>
+        <SectionComponent>
+          <TextComponent
+            text="Lượng người mua vé theo thời gian"
+            font={fontFamilies.medium}
+            size={16}
+          />
+        </SectionComponent>
+        <LineChart
+          data={data}
+          width={screenWidth}
+          height={220}
+          chartConfig={chartConfig}
+        />
+        <SectionComponent>
+          <TextComponent
+            text="Lượng người hủy vé theo thời gian"
+            font={fontFamilies.medium}
+            size={16}
+          />
+        </SectionComponent>
+        <LineChart
+          data={dataCancel}
+          width={screenWidth}
+          height={220}
+          chartConfig={chartConfig}
+        />
+        <SectionComponent>
+          <TextComponent
+            text="Số lượng vé đã bán / Tổng số vé"
+            font={fontFamilies.medium}
+            size={16}
+          />
+          {ticketSolds.length > 0 && (
+            <FlatList
+              scrollEnabled={false}
+              data={ticketSolds}
+              renderItem={({item, index}) => (
+                <RowComponent key={index}>
+                  <TextComponent
+                    text={`${item.percentageSold * 100} %`}
+                    font={fontFamilies.medium}
+                    styles={{position: 'absolute', left: 35, zIndex: 1}}
+                  />
+                  <ProgressChart
+                    data={{
+                      labels: [`${item?.tiketType}`],
+                      data: [item.percentageSold],
+                      colors: [appColors.primary],
+                    }}
+                    width={100}
+                    height={100}
+                    strokeWidth={8}
+                    radius={30}
+                    chartConfig={chartConfig}
+                    hideLegend
+                    withCustomBarColorFromData
+                  />
+                  <View>
+                    <TextComponent
+                      text={`Vé ${item.ticketType}`}
+                      font={fontFamilies.medium}
+                    />
+                    <TextComponent
+                      text={`${item.totalSold}/${item.ticketQuantity}`}
+                    />
+                  </View>
+                </RowComponent>
+              )}
+            />
+          )}
+        </SectionComponent>
+      </ScrollView>
+    </View>
   );
 };
 

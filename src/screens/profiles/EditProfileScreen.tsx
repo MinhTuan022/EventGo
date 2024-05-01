@@ -29,8 +29,9 @@ import LoadingModal from '../../components/modals/LoadingModal';
 import {useNavigation} from '@react-navigation/native';
 import {UserModel} from '../../models/UserModel';
 import organizerAPI from '../../apis/organizerApi';
+import authenticationAPI from '../../apis/authApi';
 
-const EditProfileScreen = ({route}: any) => {
+const EditProfileScreen = ({route, navigation}: any) => {
   const userData: any = route.params;
   console.log(userData);
   const [imageUrl, setImageUrl] = useState<any>(null);
@@ -42,8 +43,8 @@ const EditProfileScreen = ({route}: any) => {
   const [address, setAddress] = useState(userData.organizationAddress);
   const [name, setName] = useState(userData.name);
   const [isLoading, setIsLoading] = useState(false);
-
-  const navigation = useNavigation();
+  const [isLinked, setIsLinked] = useState(false);
+  // const navigation = useNavigation();
   const openModal = () => {
     setModalVisible(true);
   };
@@ -110,7 +111,7 @@ const EditProfileScreen = ({route}: any) => {
           },
           'put',
         );
-      }else{
+      } else {
         const res = await userAPI.HandleUser(
           '/profile',
           {
@@ -123,7 +124,7 @@ const EditProfileScreen = ({route}: any) => {
           'put',
         );
       }
-      
+
       setIsLoading(false);
       navigation.goBack();
       // console.log(res);
@@ -133,14 +134,33 @@ const EditProfileScreen = ({route}: any) => {
     }
   };
 
+  // useEffect(() => {
+  //   console.log(imageUrl);
+  // }, [imageUrl]);
   useEffect(() => {
-    console.log(imageUrl);
-  }, [imageUrl]);
+    checkLinked();
+  }, []);
+  const checkLinked = async () => {
+    try {
+      const res = await authenticationAPI.HandleAuthentication(
+        `/check-linked?userId=${userData._id}`,
+      );
+      console.log(res.data);
+
+      setIsLinked(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <View
       style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <HeaderComponent title="Cập nhật hồ sơ" onPress={updateProfile} goBack />
+        <HeaderComponent
+          title="Cập nhật hồ sơ"
+          onPress={updateProfile}
+          goBack
+        />
         <SpaceComponent height={40} />
         <View style={{alignItems: 'center', justifyContent: 'center'}}>
           <TouchableOpacity
@@ -233,6 +253,22 @@ const EditProfileScreen = ({route}: any) => {
             </>
           )}
         </SectionComponent>
+        {!isLinked && (
+          <SectionComponent styles={{paddingVertical: 0}}>
+            <ButtonComponent
+              onPress={() => {
+                navigation.navigate('ChangePassword');
+              }}
+              text="Đổi mật khẩu"
+              type="primary"
+              styles={{width: '100%', borderRadius: 50}}
+              color={appColors.purple2}
+              textColor={appColors.primary}
+              textStyle={{fontFamily: fontFamilies.medium}}
+            />
+          </SectionComponent>
+        )}
+        <SpaceComponent height={30}/>
       </ScrollView>
       <LoadingModal visible={isLoading} />
     </View>

@@ -17,10 +17,8 @@ export class HandleNotification {
 
   static getFcmToken = async () => {
     const fcmTokens = await AsyncStorage.getItem('fcmTokens');
-console.log("ngu")
     if (!fcmTokens) {
       const token = await messaging().getToken();
-      console.log("d")
 
       if (token) {
         await AsyncStorage.setItem('fcmTokens', token);
@@ -47,7 +45,7 @@ console.log("ngu")
 
 
         await this.Update(auth.id, fcmTokens);
-      }else{console.log("cuttt")}
+      }
     }
   };
 

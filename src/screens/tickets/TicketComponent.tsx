@@ -29,6 +29,8 @@ const TicketComponent = (props: Props) => {
           marginVertical: 8,
           borderRadius: 20,
           padding: 15,
+          borderWidth:2,
+          borderColor:appColors.purple2
         }}>
         <RowComponent>
           <View

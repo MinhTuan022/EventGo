@@ -12,6 +12,7 @@ import Mapbox from '@rnmapbox/maps';
 import {HandleNotification} from './src/utils/handleNotification';
 import Toast from 'react-native-toast-message';
 import {Host} from 'react-native-portalize';
+import linking from './src/linking';
 
 const token: string =
   'pk.eyJ1IjoidHVhbmh5MjAyNCIsImEiOiJjbHR6enJrMnMwNWgyMmttcXV1bmllZWx1In0._QHVjgvwYlqrW5rW2b9JDw';
@@ -45,7 +46,7 @@ const App = () => {
           translucent
         />
         <Host>
-          <NavigationContainer>
+          <NavigationContainer linking={linking}>
             <AppRouters />
           </NavigationContainer>
         </Host>

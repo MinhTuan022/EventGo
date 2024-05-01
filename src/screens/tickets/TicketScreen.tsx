@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   FlatList,
+  Image,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import {globalStyles} from '../../styles/globalStyles';
@@ -29,9 +30,15 @@ import orderAPI from '../../apis/orderApi';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import paypalApi from '../../apis/paymentApi';
 import paymentApi from '../../apis/paymentApi';
+import LoadingModal from '../../components/modals/LoadingModal';
+import LoadingComponent from '../../components/LoadingComponent';
 
 const TicketScreen = ({navigation}: any) => {
   // const navigation = useNavigation();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingCpn, setIsLoadingCpn] = useState(false);
+
   const refRBSheet = useRef<any>();
   const [selected, setSelected] = useState(0);
   const [ticket, setTicket] = useState([]);
@@ -55,6 +62,7 @@ const TicketScreen = ({navigation}: any) => {
   );
   const getTicket = async () => {
     try {
+      setIsLoadingCpn(true)
       const res = await orderAPI.HandleOrder(
         `?userId=${user.id}&status=${status}`,
       );
@@ -67,8 +75,12 @@ const TicketScreen = ({navigation}: any) => {
           updateComplete(ticket._id);
         });
       }
+      setIsLoadingCpn(false)
+
     } catch (error) {
       console.log(error);
+      setIsLoadingCpn(false)
+
     }
   };
   const updateComplete = async (id: any) => {
@@ -97,6 +109,7 @@ const TicketScreen = ({navigation}: any) => {
   };
   const handleCancelled = async (orderId: any, totalPrice: number) => {
     try {
+      setIsLoading(true);
       console.log(orderId);
       if (totalPrice > 0) {
         await paymentApi.HandlePayment('/payment-refund', {orderId}, 'post');
@@ -105,8 +118,10 @@ const TicketScreen = ({navigation}: any) => {
       const res = await orderAPI.HandleOrder('/delete', {orderId}, 'delete');
       refRBSheet.current.close();
       getTicket();
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
   };
   const handleReview = async () => {
@@ -117,9 +132,10 @@ const TicketScreen = ({navigation}: any) => {
     <View
       style={[
         globalStyles.container,
+        globalStyles.shadow,
         {
           paddingTop: StatusBar.currentHeight,
-          backgroundColor: appColors.whiteBg,
+          // backgroundColor: appColors.whiteBg,
         },
       ]}>
       {/* <ModalBottom/> */}
@@ -203,15 +219,7 @@ const TicketScreen = ({navigation}: any) => {
           </RowComponent>
         </View>
       </RBSheet>
-      <HeaderComponent
-        styles={{justifyContent: 'space-between'}}
-        title="Vé"
-        children={
-          <TouchableOpacity>
-            <SearchNormal size={20} color="black" />
-          </TouchableOpacity>
-        }
-      />
+      <HeaderComponent styles={{justifyContent: 'space-between'}} title="Vé" />
       <SectionComponent>
         <RowComponent styles={{justifyContent: 'center'}}>
           {data.map((item: any, index: any) => (
@@ -232,24 +240,50 @@ const TicketScreen = ({navigation}: any) => {
           ))}
         </RowComponent>
       </SectionComponent>
-      <FlatList
-        data={ticket}
-        renderItem={({item, index}: any) => (
-          <TicketComponent
-            key={index}
-            item={item}
-            onPressCancelled={() => {
-              openModal(item._id, item.totalPrice);
-            }}
-            onPressReview={handleReview}
-            onPressView={() => {
-              navigation.navigate('TicketDetail', item);
-            }}
-            onPayment={() => {
-              navigation.navigate('OrderDetail', {dataDetail: item});
-            }}
-          />
-        )}></FlatList>
+      {ticket.length > 0 ? (
+        <FlatList
+          data={ticket}
+          renderItem={({item, index}: any) => (
+            <TicketComponent
+              key={index}
+              item={item}
+              onPressCancelled={() => {
+                openModal(item._id, item.totalPrice);
+              }}
+              onPressReview={handleReview}
+              onPressView={() => {
+                navigation.navigate('TicketDetail', item);
+              }}
+              onPayment={() => {
+                navigation.navigate('OrderDetail', {dataDetail: item});
+              }}
+            />
+          )}></FlatList>
+      ) : (
+        // <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        //   <Image
+        //     source={require('../../assets/images/noticket.png')}
+        //     style={{width: '100%', height: 300}}
+        //     resizeMode="cover"
+        //   />
+        //   <TextComponent text="Không có vé nào" title size={18} />
+        // </View>
+
+        <LoadingComponent
+          mess="Không có vé nào"
+          children={
+            <Image
+              source={require('../../assets/images/noticket.png')}
+              style={{width: 300, height: 300}}
+              resizeMode="cover"
+            />
+          }
+          values={ticket.length}
+          isLoading={isLoadingCpn}
+        />
+      )}
+
+      <LoadingModal visible={isLoading} />
     </View>
   );
 };

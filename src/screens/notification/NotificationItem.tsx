@@ -58,14 +58,14 @@ const NotificationItem = (props: Props) => {
         styles={{
           backgroundColor: item.isRead ? appColors.whiteBg : appColors.white,
         }}>
-        <RowComponent styles={{justifyContent: 'space-between'}}>
+        <RowComponent styles={{justifyContent: 'space-between'}} >
           <RowComponent>
             <ShapeComponent size={55} color={appColors.purple2}>
               {renderIcon(item.type)}
             </ShapeComponent>
             <SpaceComponent width={10} />
-            <View>
-              <TextComponent text={item.title} title size={20} />
+            <View style={{flex:1}}>
+              <TextComponent text={item.title} title size={20}  />
               <SpaceComponent height={5} />
               {/* <TextComponent text="20 Dec, 2024 | 20:49 PM" /> */}
               <TextComponent text={`${DateTime.GetDate(item.createdAt)} | ${DateTime.GetTime24h(item.createdAt)}`} />

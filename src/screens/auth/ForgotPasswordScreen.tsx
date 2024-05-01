@@ -41,7 +41,7 @@ const ForgotPasswordScreen = ({navigation}: any) => {
         isForgotPass,
       });
     } catch (error) {
-      Alert.alert("Không tìm thấy tài khoản với email bạn cung cấp")
+      Alert.alert("Email tài khoản không tồn tại hoặc đã được liên kết")
       console.log(error);
       setIsLoading(false);
     }

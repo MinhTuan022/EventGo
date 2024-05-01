@@ -119,8 +119,13 @@ const OrderDetail = ({route, navigation}: any) => {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
+              <Image
+                source={require('../../assets/images/success.png')}
+                resizeMode="cover"
+                style={{width:200, height:200}}
+              />
               <TextComponent
-                text="Congratulations"
+                text="Chúc mừng"
                 color={appColors.primary}
                 title
                 size={20}
@@ -132,21 +137,21 @@ const OrderDetail = ({route, navigation}: any) => {
                   alignItems: 'center',
                 }}>
                 <TextComponent
-                  text="You have successfully placed an order for National Music Festival. "
+                  text="Ban đã đặt vé sự kiện thành công"
                   size={16}
                 />
-                <TextComponent text="Enjoy the event!" size={16} />
+                <TextComponent text="Hãy tận hưởng sự kiện" size={16} />
               </View>
-              <ButtonComponent
+              {/* <ButtonComponent
                 onPress={() => {
                   navigation.navigate('TicketDetail', orderInfo);
                 }}
-                text="View E-Ticket"
+                text="Xem E-Ticket"
                 type="primary"
                 styles={{marginVertical: 10}}
-              />
+              /> */}
               <ButtonComponent
-                text="Go Home"
+                text="Trang chủ"
                 type="primary"
                 onPress={() => navigation.navigate('Menu')}
                 color={appColors.purple2}
@@ -225,7 +230,11 @@ const OrderDetail = ({route, navigation}: any) => {
           />
         </Modal>
         <View style={globalStyles.container}>
-          <HeaderComponent goBack onPress={handleGoBack} title="Chi tiết đơn hàng" />
+          <HeaderComponent
+            goBack
+            onPress={handleGoBack}
+            title="Chi tiết đơn hàng"
+          />
           <EventItem item={dataDetail.eventId} type="list" disible={true} />
           <SectionComponent>
             <TextComponent title text="Thông tin đơn hàng" size={20} />

@@ -35,6 +35,7 @@ interface Props {
   onChangeText?: () => void;
   mandatory?: boolean;
   flex?: boolean;
+  height?: number
   //   onEnd?: () => void;
 }
 
@@ -55,6 +56,7 @@ const InputComponent = (props: Props) => {
     onChangeText,
     mandatory,
     flex,
+    height
     //  onEnd
   } = props;
   const [isShowPass, setIsShowPass] = useState(isPassword ?? false);
@@ -83,7 +85,7 @@ const InputComponent = (props: Props) => {
           onBlur={() => setIsFocus(false)}
           editable={editable}
           style={[
-            globalStyles.input,
+            globalStyles.input, {height: height},
             affix || suffix ? {paddingHorizontal: 15} : {},
           ]}
           value={value}
@@ -93,6 +95,7 @@ const InputComponent = (props: Props) => {
           keyboardType={type ?? 'default'}
           autoCapitalize="none"
           placeholderTextColor={appColors.textInput}
+          multiline={!isShowPass}
 
           //  onEndEditing={onEnd}
         />

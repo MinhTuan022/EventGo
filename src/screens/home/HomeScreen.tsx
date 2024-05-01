@@ -15,6 +15,7 @@ import {
   Dimensions,
   FlatList,
   Image,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -47,6 +48,7 @@ import {HandleNotification} from '../../utils/handleNotification';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingComponent from '../../components/LoadingComponent';
 import notificationAPI from '../../apis/notificationApi';
+import { handleLinking } from '../../utils/handleLinking';
 
 const HomeScreen = ({navigation}: any) => {
   const dispatch = useDispatch();
@@ -63,6 +65,19 @@ const HomeScreen = ({navigation}: any) => {
   const animatedValue = useRef(new Animated.Value(0)).current;
   const [isLoading, setIsLoading] = useState(false);
   const [isRead, setIsRead] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchEvents(selectedCategory);
+    fetchEvents(
+      selectedCategory,
+      currentLocation?.position.lat,
+      currentLocation?.position.lng,
+    );
+    setRefreshing(false);
+
+  };
   const handleSelectCategory = (categoryKey: any) => {
     setSelectedCategory(categoryKey);
   };
@@ -88,11 +103,18 @@ const HomeScreen = ({navigation}: any) => {
         text2: mess.notification.body,
         onPress: () => {
           console.log(mess);
-          // const id = mess.data.id;
-          // console.log(id);
-          // navigation.navigate('EventDetail', {id});
+          const id = mess.data.id;
+          console.log(id);
+          navigation.navigate('EventDetail', {id});
         },
       });
+    });
+    messaging()
+    .getInitialNotification()
+    .then((mess: any) => {
+      const id = mess && mess.data ? mess.data.id : '';
+      console.log(mess)
+      id && handleLinking(`eventhub://app/detail/${mess.data.id}`);
     });
   }, []);
 
@@ -104,7 +126,7 @@ const HomeScreen = ({navigation}: any) => {
     }, []),
   );
   useEffect(() => {
-    console.log(selectedCategory);
+    // console.log(selectedCategory);
     fetchEvents(selectedCategory);
     fetchEvents(
       selectedCategory,
@@ -138,7 +160,7 @@ const HomeScreen = ({navigation}: any) => {
   ) => {
     const api =
       lat && long
-        ? `/?limit=${limit}&date=${currentTime}&lat=${lat}&long=${long}&distance=${
+        ? `/?limit=${6}&date=${currentTime}&lat=${lat}&long=${long}&distance=${
             distance ? distance : 5
           }&category=${category}`
         : `/?limit=${limit}&date=${currentTime}&category=${selectedCategory}`;
@@ -201,7 +223,7 @@ const HomeScreen = ({navigation}: any) => {
       ]}>
       <StatusBar barStyle={'dark-content'} />
       {/* HeaderComponent */}
-      <ScrollView
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         style={{flex: 1}}
         showsVerticalScrollIndicator={false}
         onScroll={e => {
@@ -357,6 +379,8 @@ const HomeScreen = ({navigation}: any) => {
             isLoading={isLoading}
             values={eventNear.length}
             mess="Chưa có sự kiện nào gần bạn"
+            textStyle={{fontFamily:fontFamilies.regular, fontSize:16}}
+            styles={{paddingTop:20}}
           />
         )}
       </ScrollView>

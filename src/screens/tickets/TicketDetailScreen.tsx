@@ -169,6 +169,14 @@ const TicketDetailScreen = ({route, navigation}: any) => {
                 size={16}
               />
             </RowComponent>
+            <RowComponent styles={{justifyContent: 'space-between', paddingVertical: 10}}>
+              <TextComponent text="Loại vé" />
+              <TextComponent
+                text={`${ticketInfo.ticketId.ticketType}`}
+                title
+                size={16}
+              />
+            </RowComponent>
             <RowComponent styles={{justifyContent: 'space-between'}}>
               <TextComponent text="Tổng tiền" />
               <TextComponent
@@ -200,7 +208,7 @@ const TicketDetailScreen = ({route, navigation}: any) => {
           <SectionComponent>
             <ButtonComponent
               onPress={captureTicket}
-              text="Download Ticket"
+              text="Tải xuống vé của bạn"
               type="primary"
               styles={{width: '100%', borderRadius: 100}}
             />

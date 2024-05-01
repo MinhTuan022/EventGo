@@ -49,16 +49,18 @@ export const globalStyles = StyleSheet.create({
     // width: '100%',
     // marginBottom: 19,
     // flex:1
-
+// height:100
   },
 
   input: {
-    margin: 0,
-    padding: 0,
+    // margin: 0,
+    // padding: 0,
     flex: 1,
     // paddingHorizontal: 14,
 
     // backgroundColor:'red',
+    // backgroundColor:"coral",
+    // height:100
   },
 
   row: {

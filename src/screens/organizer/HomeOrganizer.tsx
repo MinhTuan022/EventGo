@@ -217,6 +217,7 @@ const HomeOrganizer = ({navigation}: any) => {
               data={eventData}
               renderItem={({item, index}) => (
                 <EventItem
+                maxTitle={20}
                   isManage
                   item={item}
                   type="list"

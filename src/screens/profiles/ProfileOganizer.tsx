@@ -31,7 +31,7 @@ import { fontFamilies } from '../../utils/constants/fontFamilies';
 
 const ProfileOganizer = ({route, navigation}: any) => {
   const {profiledata} = route.params;
-  // console.log(route.params)
+  console.log(route.params)
   const [followers, setFollowers] = useState('');
   const [userId, setUserId] = useState(useSelector(authSelector).id);
   const [targetUserId, setTargetUserId] = useState(profiledata);
@@ -140,14 +140,15 @@ const ProfileOganizer = ({route, navigation}: any) => {
           </RowComponent>
           <SpaceComponent height={40} />
           <View style={{alignItems: 'center', justifyContent: 'center'}}>
+            {profile &&
             <Image
               source={{
                 uri:
-                  profiledata.photo ??
+                  profile.photo ??
                   'https://th.bing.com/th/id/OIG2.nyMz4YbxVu_XrMJ1mvcS?w=1024&h=1024&rs=1&pid=ImgDetMain',
               }}
               style={{borderRadius: 100, width: 96, height: 96}}
-            />
+            />}
             <SpaceComponent height={20} />
             <TextComponent text={name} title />
           </View>

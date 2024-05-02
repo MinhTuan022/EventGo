@@ -7,14 +7,21 @@ import {fontFamilies} from '../../utils/constants/fontFamilies';
 
 interface Props {
   modalVisible: boolean;
+  avatar?: boolean;
   closeModal?: () => void;
   captureFromCamera?: () => void;
   selectFromLibrary?: () => void;
-  uploadUrl?: () => void
+  uploadUrl?: () => void;
 }
 const ChoicePictureModal = (props: Props) => {
-  const {modalVisible, closeModal, captureFromCamera, selectFromLibrary, uploadUrl} =
-    props;
+  const {
+    modalVisible,
+    closeModal,
+    captureFromCamera,
+    selectFromLibrary,
+    uploadUrl,
+    avatar,
+  } = props;
   return (
     <Modal visible={modalVisible} transparent animationType="slide">
       <TouchableOpacity
@@ -36,7 +43,7 @@ const ChoicePictureModal = (props: Props) => {
           ]}>
           <ButtonComponent
             onPress={captureFromCamera}
-            text="Capture from Camera"
+            text="Chụp ảnh"
             type="primary"
             styles={{width: '100%'}}
             iconLeft={
@@ -51,7 +58,7 @@ const ChoicePictureModal = (props: Props) => {
           />
           <ButtonComponent
             onPress={selectFromLibrary}
-            text="Select from Library"
+            text="Chọn ảnh từ thư viện"
             type="primary"
             styles={{width: '100%'}}
             iconLeft={<FontAwesome6Icon name="image" size={20} color="black" />}
@@ -62,18 +69,23 @@ const ChoicePictureModal = (props: Props) => {
             textColor="black"
             color="white"
           />
-          <ButtonComponent onPress={uploadUrl}
-            text="Upload from URL"
-            type="primary"
-            styles={{width: '100%'}}
-            iconLeft={<FontAwesome6Icon name="link" size={20} color="black" />}
-            textStyle={{
-              fontFamily: fontFamilies.medium,
-              textAlign: 'left',
-            }}
-            textColor="black"
-            color="white"
-          />
+          {!avatar && (
+            <ButtonComponent
+              onPress={uploadUrl}
+              text="Tải lên từ URL"
+              type="primary"
+              styles={{width: '100%'}}
+              iconLeft={
+                <FontAwesome6Icon name="link" size={20} color="black" />
+              }
+              textStyle={{
+                fontFamily: fontFamilies.medium,
+                textAlign: 'left',
+              }}
+              textColor="black"
+              color="white"
+            />
+          )}
         </View>
       </TouchableOpacity>
     </Modal>

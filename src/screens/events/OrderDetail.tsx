@@ -137,6 +137,7 @@ const OrderDetail = ({route, navigation}: any) => {
                   alignItems: 'center',
                 }}>
                 <TextComponent
+                
                   text="Ban đã đặt vé sự kiện thành công"
                   size={16}
                 />

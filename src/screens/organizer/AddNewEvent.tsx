@@ -637,14 +637,14 @@ const AddNewEvent = ({navigation}: any) => {
               <InputComponent
                 value={ticket.ticketType}
                 onChange={val => handleTicketChange(index, 'ticketType', val)}
-                label="Name"
+                label="Loại vé"
               />
               <RowComponent>
                 <InputComponent
                   flex
                   value={ticket.quantity}
                   onChange={val => handleTicketChange(index, 'quantity', val)}
-                  label="Available quantity"
+                  label="Số lượng vé"
                 />
                 <SpaceComponent width={10} />
                 <InputComponent
@@ -654,7 +654,7 @@ const AddNewEvent = ({navigation}: any) => {
                   onChange={val => {
                     handleTicketChange(index, 'price', val);
                   }}
-                  label="Price"
+                  label="Giá"
                   editable={selectedType === 'Free' ? false : true}
                 />
               </RowComponent>

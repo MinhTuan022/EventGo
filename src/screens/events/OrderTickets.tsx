@@ -1,6 +1,7 @@
 import {Add, ArrowLeft, Minus} from 'iconsax-react-native';
 import React, {useEffect, useState} from 'react';
 import {
+  Image,
   Modal,
   StatusBar,
   StyleSheet,
@@ -125,60 +126,67 @@ const OrderTickets = ({route, navigation}: any) => {
   return (
     <View style={globalStyles.container}>
       {showModal &&
-      <Modal transparent={true}>
-        <StatusBar backgroundColor="rgba(0, 0, 0, 0.5)" translucent={true} />
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          }}>
-          <View
-            style={{
-              backgroundColor: appColors.white,
-              width: '80%',
-              height: '60%',
-              borderRadius: 50,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <TextComponent
-              text="Congratulations"
-              color={appColors.primary}
-              title
-              size={20}
-            />
-            <View
-              style={{
-                paddingHorizontal: 30,
-                paddingVertical: 20,
-                alignItems: 'center',
-              }}>
-              <TextComponent
-                text="You have successfully placed an order for National Music Festival. "
-                size={16}
-              />
-              <TextComponent text="Enjoy the event!" size={16} />
-            </View>
-            <ButtonComponent
-              onPress={() => {
-                navigation.navigate('TicketDetail');
-              }}
-              text="View E-Ticket"
-              type="primary"
-              styles={{marginVertical: 10}}
-            />
-            <ButtonComponent
-              text="Go Home"
-              type="primary"
-              onPress={() => navigation.navigate('Menu')}
-              color={appColors.purple2}
-              textColor={appColors.primary}
-            />
-          </View>
-        </View>
-      </Modal>}
+              <Modal transparent={true}>
+              <StatusBar backgroundColor="rgba(0, 0, 0, 0.5)" translucent={true} />
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                }}>
+                <View
+                  style={{
+                    backgroundColor: appColors.white,
+                    width: '80%',
+                    height: '60%',
+                    borderRadius: 50,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Image
+                    source={require('../../assets/images/success.png')}
+                    resizeMode="cover"
+                    style={{width:200, height:200}}
+                  />
+                  <TextComponent
+                    text="Chúc mừng"
+                    color={appColors.primary}
+                    title
+                    size={20}
+                  />
+                  <View
+                    style={{
+                      paddingHorizontal: 30,
+                      paddingVertical: 20,
+                      alignItems: 'center',
+                    }}>
+                    <TextComponent
+                      styles={{textAlign:'center'}}
+                      text="Ban đã đặt vé sự kiện thành công"
+                      size={16}
+                    />
+                    <TextComponent text="Hãy tận hưởng sự kiện" size={16} />
+                  </View>
+                  {/* <ButtonComponent
+                    onPress={() => {
+                      navigation.navigate('TicketDetail', orderInfo);
+                    }}
+                    text="Xem E-Ticket"
+                    type="primary"
+                    styles={{marginVertical: 10}}
+                  /> */}
+                  <ButtonComponent
+                    text="Trang chủ"
+                    type="primary"
+                    onPress={() => navigation.navigate('Menu')}
+                    color={appColors.purple2}
+                    textColor={appColors.primary}
+                  />
+                </View>
+              </View>
+            </Modal>
+      }
       <View
         style={[globalStyles.container, {paddingTop: StatusBar.currentHeight}]}>
         <HeaderComponent title="Đặt Vé" goBack />

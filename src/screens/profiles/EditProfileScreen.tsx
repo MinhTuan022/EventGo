@@ -200,6 +200,7 @@ const EditProfileScreen = ({route, navigation}: any) => {
           />
         </View>
         <ChoicePictureModal
+          avatar
           modalVisible={modalVisible}
           closeModal={closeModal}
           captureFromCamera={captureFromCamera}
@@ -268,7 +269,7 @@ const EditProfileScreen = ({route, navigation}: any) => {
             />
           </SectionComponent>
         )}
-        <SpaceComponent height={30}/>
+        <SpaceComponent height={30} />
       </ScrollView>
       <LoadingModal visible={isLoading} />
     </View>

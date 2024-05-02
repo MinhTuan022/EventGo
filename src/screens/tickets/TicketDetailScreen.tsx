@@ -29,8 +29,8 @@ import {UserModel} from '../../models/UserModel';
 import paypalApi from '../../apis/paymentApi';
 import paymentApi from '../../apis/paymentApi';
 import organizerAPI from '../../apis/organizerApi';
-import { OrganizerModel } from '../../models/OrganizerModel';
-import { DateTime } from '../../utils/convertDateTime';
+import {OrganizerModel} from '../../models/OrganizerModel';
+import {DateTime} from '../../utils/convertDateTime';
 
 const TicketDetailScreen = ({route, navigation}: any) => {
   const ticketInfo = route.params;
@@ -169,7 +169,8 @@ const TicketDetailScreen = ({route, navigation}: any) => {
                 size={16}
               />
             </RowComponent>
-            <RowComponent styles={{justifyContent: 'space-between', paddingVertical: 10}}>
+            <RowComponent
+              styles={{justifyContent: 'space-between', paddingVertical: 10}}>
               <TextComponent text="Loại vé" />
               <TextComponent
                 text={`${ticketInfo.ticketId.ticketType}`}
@@ -187,19 +188,30 @@ const TicketDetailScreen = ({route, navigation}: any) => {
             </RowComponent>
           </SectionComponent>
           <SectionComponent styles={localStyle.section}>
-            <RowComponent styles={{justifyContent: 'space-between'}}>
-              <TextComponent text="Phương thức thanh toán" />
-              <TextComponent text={`${payment?.paymentMethod}`} title size={16} />
-            </RowComponent>
-            <RowComponent
-              styles={{justifyContent: 'space-between', paddingVertical: 10}}>
-              <TextComponent text="Mã đơn hàng" />
-              <TextComponent
-                text={`${payment?.transactionId}`}
-                title
-                size={16}
-              />
-            </RowComponent>
+            {payment && (
+              <>
+                <RowComponent styles={{justifyContent: 'space-between'}}>
+                  <TextComponent text="Phương thức thanh toán" />
+                  <TextComponent
+                    text={`${payment.paymentMethod}`}
+                    title
+                    size={16}
+                  />
+                </RowComponent>
+                <RowComponent
+                  styles={{
+                    justifyContent: 'space-between',
+                    paddingVertical: 10,
+                  }}>
+                  <TextComponent text="Mã đơn hàng" />
+                  <TextComponent
+                    text={`${payment.transactionId}`}
+                    title
+                    size={16}
+                  />
+                </RowComponent>
+              </>
+            )}
             <RowComponent styles={{justifyContent: 'space-between'}}>
               <TextComponent text="Trạng thái" />
               <TextComponent text={`${ticketInfo.status}`} title size={16} />

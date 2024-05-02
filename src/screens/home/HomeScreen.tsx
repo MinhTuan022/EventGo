@@ -103,9 +103,9 @@ const HomeScreen = ({navigation}: any) => {
         text2: mess.notification.body,
         onPress: () => {
           console.log(mess);
-          const id = mess.data.id;
+          const id = mess && mess.data ? mess.data.id : '';
           console.log(id);
-          navigation.navigate('EventDetail', {id});
+          id && navigation.navigate('EventDetail', {id});
         },
       });
     });
@@ -160,9 +160,9 @@ const HomeScreen = ({navigation}: any) => {
   ) => {
     const api =
       lat && long
-        ? `/?limit=${6}&date=${currentTime}&lat=${lat}&long=${long}&distance=${
+        ? `/?date=${currentTime}&lat=${lat}&long=${long}&distance=${
             distance ? distance : 5
-          }&category=${category}`
+          }&category=${category}&limit=${9}`
         : `/?limit=${limit}&date=${currentTime}&category=${selectedCategory}`;
     try {
       setIsLoading(true);
@@ -336,6 +336,8 @@ const HomeScreen = ({navigation}: any) => {
             isLoading={isLoading}
             values={eventUpcoming.length}
             mess="Chưa có sự kiện nào sắp diễn ra"
+            textStyle={{fontFamily:fontFamilies.regular, fontSize:16}}
+            styles={{paddingTop:20}}
           />
         )}
         <RowComponent

@@ -28,7 +28,7 @@ import eventAPI from '../../apis/eventApi';
 import RBSheet from 'react-native-raw-bottom-sheet';
 const StatisticsScreen = ({navigation, route}: any) => {
   const eventData = route.params;
-  // console.log(eventData);
+  // console.log(eventData.startTime);
   const [hours, setHours] = useState<any>(['Không có dữ liệu']);
   const [counts, setCounts] = useState<number[]>([0]);
   const [hoursCancel, setHoursCancle] = useState<any>(['Không có dữ liệu']);
@@ -37,6 +37,8 @@ const StatisticsScreen = ({navigation, route}: any) => {
   const [revenue, setRevenue] = useState(0);
   const screenWidth = Dimensions.get('window').width;
   const refRBSheet = useRef<any>();
+  const [currentTime, setcurrentTime] = useState(new Date());
+  // console.log(currentTime)
 
   useEffect(() => {
     if (eventData) {
@@ -46,10 +48,10 @@ const StatisticsScreen = ({navigation, route}: any) => {
       getCancelled();
     }
   }, [eventData]);
-  useEffect(() => {
-    console.log(counts);
-    console.log(hours);
-  }, [counts, hours]);
+  // useEffect(() => {
+  //   console.log(counts);
+  //   console.log(hours);
+  // }, [counts, hours]);
   const chartConfig = {
     backgroundGradientFrom: '#FFFFFF',
     backgroundGradientTo: '#FFFFFF',
@@ -116,7 +118,7 @@ const StatisticsScreen = ({navigation, route}: any) => {
   const getTicketSold = async () => {
     try {
       const res = await orderAPI.HandleOrder(`/sold?eventId=${eventData._id}`);
-      console.log('fghfghfg', res);
+      // console.log('fghfghfg', res);
       setTicketSolds(res.data);
     } catch (error) {
       console.log(error);
@@ -128,7 +130,7 @@ const StatisticsScreen = ({navigation, route}: any) => {
       const res = await orderAPI.HandleOrder(
         `/revenue?eventId=${eventData._id}`,
       );
-      console.log('dđ', res);
+      // console.log('dđ', res);
       setRevenue(res.data);
     } catch (error) {
       console.log(error);
@@ -312,7 +314,7 @@ const StatisticsScreen = ({navigation, route}: any) => {
               renderItem={({item, index}) => (
                 <RowComponent key={index}>
                   <TextComponent
-                    text={`${item.percentageSold * 100} %`}
+                    text={`${(item.percentageSold * 100).toFixed(0)} %`}
                     font={fontFamilies.medium}
                     styles={{position: 'absolute', left: 35, zIndex: 1}}
                   />

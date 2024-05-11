@@ -37,6 +37,7 @@ const LoginScreen = ({navigation}: any) => {
   const [password, setPassword] = useState('');
   const [isRemember, setIsRemember] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
+  console.log(process.env.TTT)
   const validateForm = () => {
     let formIsValid = true;
     const newErrors: Errors = {};

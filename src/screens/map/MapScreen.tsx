@@ -86,7 +86,7 @@ const MapScreen = ({navigation}: any) => {
     }
   };
   const reverseGeoCode = async (lat: number, long: number) => {
-    const api = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=vi-VN&apiKey=${appInfo.API_KEY_REVGEOCODE}`;
+    const api = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${long}&lang=vi-VN&apiKey=${process.env.API_KEY_REVGEOCODE}`;
 
     try {
       const res = await axios(api);

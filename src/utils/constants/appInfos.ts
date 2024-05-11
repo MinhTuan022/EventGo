@@ -5,7 +5,7 @@ export const appInfo ={
       WIDTH: Dimensions.get('window').width,
       HEIGHT: Dimensions.get('window').height,
    },
-   BASE_URL: 'http://192.168.1.102:3001',
+   BASE_URL: 'http://192.168.2.218:3001',
    monthNames: [
     'Tháng 1',
     'Tháng 2',
@@ -22,6 +22,6 @@ export const appInfo ={
   ],
 
 
-  API_KEY_REVGEOCODE: "z1iOem3CvM7AZ_dXCpGfefoyNKUM_eO0urd3SzlmeiM"
+  // API_KEY_REVGEOCODE: "z1iOem3CvM7AZ_dXCpGfefoyNKUM_eO0urd3SzlmeiM"
 
 }

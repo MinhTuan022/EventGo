@@ -19,10 +19,10 @@ import { globalStyles } from '../styles/globalStyles';
 
 GoogleSignin.configure({
   webClientId:
-    '67131520038-lqf2ivrvijp5qgugo5vhqqcn76hbrsmm.apps.googleusercontent.com',
+    process.env.GOOGLE_CLIENT_ID,
 });
 
-Settings.setAppID('374685392083749');
+Settings.setAppID(`${process.env.FACEBOOK_APP_ID}`);
 
 const SocialComponent = () => {
   const [isLoading, setIsLoading] = useState(false);

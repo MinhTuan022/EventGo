@@ -71,15 +71,15 @@ const OrderDetail = ({route, navigation}: any) => {
 
   const handleResponse = (navState: any) => {
     const {url} = navState;
-    if (url.includes('http://192.168.1.102:3001/payment/paypal-success')) {
+    if (url.includes('http://172.20.10.2:3001/payment/paypal-success')) {
       setShowModal(false);
       setPaymentSuccess(true);
     } else if (
-      url.includes('http://192.168.1.102:3001/payment/vnpay-success')
+      url.includes('http://172.20.10.2:3001/payment/vnpay-success')
     ) {
       setShowModal(false);
       setPaymentSuccess(true);
-    } else if (url.includes('http://192.168.1.102:3001/payment/cancel')) {
+    } else if (url.includes('http://172.20.10.2:3001/payment/cancel')) {
       setShowModal(false);
       setPaymentFail(true);
     }

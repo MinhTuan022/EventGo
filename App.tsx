@@ -14,9 +14,9 @@ import Toast from 'react-native-toast-message';
 import {Host} from 'react-native-portalize';
 import linking from './src/linking';
 
-const token: string =
-  'pk.eyJ1IjoidHVhbmh5MjAyNCIsImEiOiJjbHR6enJrMnMwNWgyMmttcXV1bmllZWx1In0._QHVjgvwYlqrW5rW2b9JDw';
-Mapbox.setAccessToken(token);
+// const token: string =
+//   'pk.eyJ1IjoidHVhbmh5MjAyNCIsImEiOiJjbHR6enJrMnMwNWgyMmttcXV1bmllZWx1In0._QHVjgvwYlqrW5rW2b9JDw';
+Mapbox.setAccessToken(`${process.env.MAPBOX_TOKEN}`);
 
 const App = () => {
   // const [appState, setAppState] = useState(AppState.currentState);

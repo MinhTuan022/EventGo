@@ -1,79 +1,31 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-# Getting Started
+<h1>OnBoarding</h1>
+<div>
+   <img src="https://firebasestorage.googleapis.com/v0/b/eventhub-416509.appspot.com/o/Onboarding1.png?alt=media&token=0ae2944a-df81-42b9-a9f6-27186dfdd69e" alt="android" width="200" />
+<img src="https://firebasestorage.googleapis.com/v0/b/eventhub-416509.appspot.com/o/Onboarding2.png?alt=media&token=c9759bb7-9b68-4407-9771-4384d2f6bfba" alt="android" width="200" />
+   <img src="https://firebasestorage.googleapis.com/v0/b/eventhub-416509.appspot.com/o/Onboarding3.png?alt=media&token=4b81741e-0fc6-4c41-ab7a-b2d96564e3de" alt="android" width="200" />
+</div>   
+<h1>Home</h1>
+<img src="https://firebasestorage.googleapis.com/v0/b/eventhub-416509.appspot.com/o/home.jpg?alt=media&token=e4fa4105-7bb1-4077-aa3e-661ceacb657a" width="200"/>
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+<h1>Detail Screen</h1>
+<img src="https://firebasestorage.googleapis.com/v0/b/eventhub-416509.appspot.com/o/detail.jpg?alt=media&token=b78af6e8-136a-400f-9587-41470f71ec75" width="200"/>
 
-## Step 1: Start the Metro Server
+<h1>Payment Screen</h1>
+<img src="https://firebasestorage.googleapis.com/v0/b/eventhub-416509.appspot.com/o/payment.jpg?alt=media&token=1de4c42c-5495-42a7-8439-b264eb31a68e" width="200"/>
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
 
-To start Metro, run the following command from the _root_ of your React Native project:
+<h1>Favorite Screen</h1>
+<img src="https://firebasestorage.googleapis.com/v0/b/eventhub-416509.appspot.com/o/favorite.jpg?alt=media&token=a614fa6b-3542-4ab0-9806-efb49fb235a3" width="200"/>
 
-```bash
-# using npm
-npm start
+<h1>Ticket Screen</h1>
+<img src="https://firebasestorage.googleapis.com/v0/b/eventhub-416509.appspot.com/o/ticket.jpg?alt=media&token=bcb49f2b-38b0-4a0c-aeb1-9d3271267ba3" width="200"/>
 
-# OR using Yarn
-yarn start
-```
+<h1>Discover Screen</h1>
+<img src="https://firebasestorage.googleapis.com/v0/b/eventhub-416509.appspot.com/o/map-screen.jpg?alt=media&token=7a0e517b-7334-4039-906a-f18f360c3dce" width="200"/>
 
-## Step 2: Start your Application
+<h1>Profile Screen</h1>
+<img src="https://firebasestorage.googleapis.com/v0/b/eventhub-416509.appspot.com/o/profile.jpg?alt=media&token=8d13be09-6c80-4437-a131-2ee293bb69db" width="200"/>
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
 
-### For Android
 
-```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
-```
-
-### For iOS
-
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
